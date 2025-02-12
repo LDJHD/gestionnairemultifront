@@ -1,0 +1,9 @@
+{
+    "rewrites": [{ "source": "/(.*)", "destination": "/" }],
+    "build": {
+      "env": {
+        "NODE_ENV": "production"
+      }
+    }
+  }
+  
