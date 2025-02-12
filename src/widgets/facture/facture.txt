@@ -1,0 +1,129 @@
+import axios from "axios";
+import { useEffect, useState } from "react";
+
+const FacturePreview = ({ formData, selectedProducts, onClose }) => {
+  const [clientDetails, setClientDetails] = useState(null);
+
+  // Fonction pour récupérer les détails du client
+  const fetchClientDetails = async (id) => {
+    try {
+      const token = localStorage.getItem("token"); // Assurez-vous que le jeton est bien stocké
+      const response = await axios.post(
+        "${import.meta.env.VITE_API_URL}/api/v1/client/detailById",
+        { id },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Transmettre le jeton dans les en-têtes
+          },
+        }
+      );
+      setClientDetails(response.data);
+    } catch (error) {
+      console.error("Erreur lors de la récupération des détails du client :", error);
+    }
+  };
+
+  useEffect(() => {
+    if (formData.client) {
+      fetchClientDetails(formData.client);
+    }
+  }, [formData.client]);
+
+  // Calcul du total HT
+  const calculateTotalHT = () => {
+    return selectedProducts.reduce((acc, product) => acc + product.prix * product.quantity, 0);
+  };
+
+  // Calcul TVA
+  const calculateTVA = () => {
+    return calculateTotalHT() * 0.18; // Exemple avec TVA à 18%
+  };
+
+  // Calcul du total TTC
+  const calculateTotalTTC = () => {
+    return calculateTotalHT() + calculateTVA();
+  };
+
+  if (!clientDetails) {
+    return <p className="font-bold text-red-900 text-center">Veuillez sélectionné le client...</p>;
+  }
+
+  return (
+    <div className="fixed top-0 z-50 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-3/4">
+        <div>
+          <div className="text-justify">
+            <img src="logo.png" alt="" sizes="" srcset="" />
+          </div>
+          <div className="text-center">
+
+            <h1 className="text-2xl font-bold">ATON HELIOSTORE</h1>
+            <p>Fidjrossè centre</p>
+            <p>Tél: 229 97737399 - Email: superelim@gmail.com</p>
+            <p>IFU: 3202397094961</p>
+            <p>RCCM: RB/COT/23 B 34278</p>
+          </div>
+        </div>
+        <div className="mt-4 border-t border-b py-2">
+          <p>
+            <strong>FACTURE N°:</strong> {formData.invoiceNumber || "FV0005875"}
+          </p>
+          <p>
+            <strong>Client:</strong> {clientDetails.nom} {clientDetails.prenom}
+          </p>
+          <p>
+            <strong>IFU:</strong> {clientDetails.ifu}
+          </p>
+          <p>
+            <strong>Tél:</strong> {clientDetails.telephone}
+          </p>
+        </div>
+
+        <table className="w-full mt-4 border">
+          <thead className="bg-gray-100">
+            <tr>
+              <th className="border px-2 py-1">Référence</th>
+              <th className="border px-2 py-1">Libellé</th>
+              <th className="border px-2 py-1">Quantité</th>
+              <th className="border px-2 py-1">PU</th>
+              <th className="border px-2 py-1">Montant</th>
+            </tr>
+          </thead>
+          <tbody>
+            {selectedProducts.map((product) => (
+              <tr key={product.code_barre}>
+                <td className="border px-2 py-1">{product.code_barre}</td>
+                <td className="border px-2 py-1">{product.nom}</td>
+                <td className="border px-2 py-1">
+                  {product.quantity} {product.unit}
+                </td>
+                <td className="border px-2 py-1">{product.prix} Fcfa</td>
+                <td className="border px-2 py-1">{product.prix * product.quantity} Fcfa</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <div className="mt-4">
+          <p>
+            <strong>Total HT:</strong> {calculateTotalHT()} Fcfa
+          </p>
+          <p>
+            <strong>TVA (18%):</strong> {calculateTVA()} Fcfa
+          </p>
+          <p>
+            <strong>Total TTC:</strong> {calculateTotalTTC()} Fcfa
+          </p>
+        </div>
+
+        <div className="text-right mt-4">
+          <button onClick={onClose} className="p-2 bg-blue-600 text-white rounded">
+            Fermer
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default FacturePreview;
