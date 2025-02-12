@@ -11,9 +11,9 @@ import {
   import Toastadd from "@/widgets/toast/toastadd";
   import Droplist from "@/widgets/button/droplist";
   import { Link } from "react-router-dom";
-  import Modaleditcategorie from "@/widgets/modal/Modaleditcategorie";
+  import Modaleditcategorie from "@/widgets/modal/modaleditcategorie";
   import Swal from 'sweetalert2'
-  import Modaladdcategorie from "@/widgets/modal/Modaladdcategorie";
+  import Modaladdcategorie from "@/widgets/modal/modaladdcategorie";
   
   
   export function Categorie() {
