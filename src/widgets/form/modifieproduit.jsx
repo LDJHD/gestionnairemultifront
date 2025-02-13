@@ -11,6 +11,7 @@ export function ModifieProduit({ ProductId, handleformclick }) {
     nom: "",
     categorie_id: "",
     prix: "",
+    dateexpi: "",
     description: "",
   });
 
@@ -65,6 +66,7 @@ export function ModifieProduit({ ProductId, handleformclick }) {
         nom: product.produit.nom || "",
         categorie_id: product.produit.categorie_id || "",
         prix: product.produit.prix || "",
+        dateexpi: product.produit.dateexpi || "",
         description: product.produit.description || "",
       });
 
@@ -88,18 +90,18 @@ export function ModifieProduit({ ProductId, handleformclick }) {
     );
   };
 
-  const handleRemoveSupplement = (index,id) => {
+  const handleRemoveSupplement = (index, id) => {
     setSupplements((prevSupplements) => prevSupplements.filter((_, i) => i !== index));
 
 
-  const swalWithTailwindButtons = Swal.mixin({
+    const swalWithTailwindButtons = Swal.mixin({
       customClass: {
         confirmButton: 'bg-green-800 hover:bg-green-400 text-white font-bold py-2 mx-2 px-4 rounded',
         cancelButton: 'bg-red-800 hover:bg-red-200 text-white font-bold py-2 mx-2 px-4 rounded'
       },
       buttonsStyling: false
     });
-  
+
     swalWithTailwindButtons.fire({
       title: "Êtes-vous sûr ?",
       text: "Vous ne pourrez pas annuler cette action !",
@@ -120,7 +122,7 @@ export function ModifieProduit({ ProductId, handleformclick }) {
             },
             body: JSON.stringify({ id }),
           });
-  
+
           if (response.ok) {
             console.log("Réponse du serveur :", response);
             swalWithTailwindButtons.fire({
@@ -130,7 +132,7 @@ export function ModifieProduit({ ProductId, handleformclick }) {
             });
           } else {
             // Ce bloc ne devrait jamais être atteint si response.ok est true
-            const errorData = await response.json(); 
+            const errorData = await response.json();
             console.error("Erreur lors de la suppression :", errorData);
             swalWithTailwindButtons.fire({
               title: "Erreur",
@@ -190,7 +192,7 @@ export function ModifieProduit({ ProductId, handleformclick }) {
 
   // const updateSupplements = async () => {
   //   const token = localStorage.getItem("token");
-  
+
   //   // Tu passes une nouvelle structure d'objet sans l'ID pour les nouveaux champs
   //   await Promise.all(supplements.map(async (supplement) => {
   //     try {
@@ -198,7 +200,7 @@ export function ModifieProduit({ ProductId, handleformclick }) {
   //       const dataToSend = supplement.id
   //         ? { ...supplement } // Si l'ID existe, on envoie le supplément entier
   //         : { ...supplement, produit_id: ProductId }; // Si pas d'ID, on envoie seulement prix, unit et produit_id
-  
+
   //       await axios.post(
   //         `${import.meta.env.VITE_API_URL}/api/v1/supplement/update`,
   //         dataToSend,
@@ -217,7 +219,7 @@ export function ModifieProduit({ ProductId, handleformclick }) {
 
   const updateSupplements = async () => {
     const token = localStorage.getItem("token");
-  
+
     // Tu passes une nouvelle structure d'objet sans l'ID pour les nouveaux champs
     await Promise.all(supplements.map(async (supplement) => {
       try {
@@ -225,7 +227,7 @@ export function ModifieProduit({ ProductId, handleformclick }) {
         const dataToSend = supplement.id
           ? { ...supplement } // Si l'ID existe, on envoie le supplément entier
           : { ...supplement, produit_id: ProductId }; // Si pas d'ID, on envoie seulement prix, unit et produit_id
-  
+
         const response = await axios.post(
           `${import.meta.env.VITE_API_URL}/api/v1/supplement/update`,
           dataToSend,
@@ -236,9 +238,9 @@ export function ModifieProduit({ ProductId, handleformclick }) {
             },
           }
         );
-  
 
-  
+
+
       } catch (error) {
         if (error.response && error.response.data && error.response.data.erreur) {
           // Si le backend renvoie un message d'erreur, on l'affiche dans un toast
@@ -251,8 +253,8 @@ export function ModifieProduit({ ProductId, handleformclick }) {
       }
     }));
   };
-  
-  
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -341,6 +343,15 @@ export function ModifieProduit({ ProductId, handleformclick }) {
             placeholder="Prix"
             className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
           />
+
+          <input
+            type="date"
+            name="dateexpi"
+            value={formData.dateexpi}
+            onChange={(e) => setFormData({ ...formData, dateexpi: e.target.value })}
+            placeholder=""
+            className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
+          />
           <textarea
             name="description"
             value={formData.description}
@@ -391,7 +402,7 @@ export function ModifieProduit({ ProductId, handleformclick }) {
             />
 
             <button type="button"
-              onClick={() => handleRemoveSupplement(index,supplement.id)}
+              onClick={() => handleRemoveSupplement(index, supplement.id)}
               className="bg-red-500 text-white p-2 rounded-full">
               <TrashIcon className="w-6 h-6" />
             </button>

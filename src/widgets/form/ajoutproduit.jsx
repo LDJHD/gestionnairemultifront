@@ -14,6 +14,7 @@ export function AjoutProduit({ handleformclick, handletoast }) {
     nom: "",
     categorie_id: "",
     prix: "",
+    dateexpi:"",
     description: "",
   });
   const [categorie, setcategorie] = useState([]);
@@ -56,11 +57,11 @@ export function AjoutProduit({ handleformclick, handletoast }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // Empêche le rechargement de la page lors de la soumission du formulaire
-  
+
     try {
       // Récupérer le token depuis le localStorage
       const token = localStorage.getItem("token");
-  
+
       // Étape 1: Enregistrement du produit
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/produit/create`, {
         method: "POST",
@@ -70,14 +71,45 @@ export function AjoutProduit({ handleformclick, handletoast }) {
         },
         body: JSON.stringify(formData), // Données du formulaire à envoyer
       });
-  
+
+      if (formData.quantite_stock) { // Vérifie si quantite_stock est renseigné
+        const stockData = {
+          produit_id: produitId, // Associer le produit
+          quantite_stock: formData.quantite_stock, // Ajouter la quantité de stock
+        };
+      
+        console.log(stockData);
+      
+        // Envoi des données au backend
+        const stockResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/stock/create`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
+          body: JSON.stringify(stockData), // Envoie de l'objet stockData
+        });
+      
+        if (stockResponse.ok) {
+          toast.success("Stock enregistré avec succès !", { autoClose: 600 });
+          console.log("Stock enregistré avec succès !");
+        } else {
+          toast.error("Erreur lors de l'enregistrement du stock.");
+          console.error("Erreur lors de l'enregistrement du stock");
+        }
+      } else {
+        toast.warning("Veuillez renseigner la quantité en stock.");
+        console.log("Quantité en stock non renseignée.");
+      }
+      
+
       if (response.ok) {
         const data = await response.json();
         const produitId = data.id; // Supposons que l'ID du produit est retourné
-  
+
         toast.success("Produit ajouté avec succès !", { autoClose: 600 });
         console.log("Produit ajouté:", data);
-  
+
         // Étape 2: Envoi des données PriceUnitForm vers la table `supplement`
         if (priceUnitFields.length > 0) {
           const supplementData = priceUnitFields.map((item) => ({
@@ -85,7 +117,7 @@ export function AjoutProduit({ handleformclick, handletoast }) {
             prix: item.prix,
             unit: item.unit,
           }));
-  console.log(supplementData);
+          console.log(supplementData);
           const supplementResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/supplement/create`, {
             method: "POST",
             headers: {
@@ -94,7 +126,7 @@ export function AjoutProduit({ handleformclick, handletoast }) {
             },
             body: JSON.stringify({ supplements: supplementData }),
           });
-  
+
           if (supplementResponse.ok) {
             toast.success("Supplements enregistrés avec succès !", { autoClose: 600 });
             console.log("Supplements enregistrés avec succès !");
@@ -103,18 +135,19 @@ export function AjoutProduit({ handleformclick, handletoast }) {
             console.error("Erreur lors de l'enregistrement des supplements");
           }
         }
-  
+
         // Réinitialiser le formulaire
         setFormData({
           code_barre: "",
           nom: "",
           categorie_id: "",
           prix: "",
+          dateexpi:"",
           description: "",
         });
         setPriceUnitFields([]); // Réinitialiser les champs du formulaire PriceUnitForm
         setcharge(true)
-  
+
       } else {
         toast.error("Échec de l'ajout du produit.");
         console.error("Erreur:", response.statusText);
@@ -124,7 +157,7 @@ export function AjoutProduit({ handleformclick, handletoast }) {
       console.error("Erreur:", error);
     }
   };
-  
+
 
 
 
@@ -214,6 +247,35 @@ export function AjoutProduit({ handleformclick, handletoast }) {
               onChange={handleInputChange}
               className="mt-1 p-1 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
               placeholder="0.00"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="price" className="block text-sm font-semibold text-gray-700">
+              Quantité Stock
+            </label>
+            <input
+              type="number"
+              name="quantite_stock"
+              required
+              id="quantite_stock"
+              value={formData.quantite_stock}
+              onChange={handleInputChange}
+              className="mt-1 p-1 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
+              placeholder="100"
+            />
+          </div>
+
+          <div>
+            <label className="text-black" htmlFor="">Date Expiration</label>
+            <input
+              type="date"
+              id="dateexpi"
+              name="dateexpi"
+              value={formData.dateexpi || ""}
+              onChange={handleInputChange}
+              placeholder="Date expiration"
+              className="mt-1 p-1 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
             />
           </div>
           <PriceUnitForm onChange={setPriceUnitFields} charge={charge} />

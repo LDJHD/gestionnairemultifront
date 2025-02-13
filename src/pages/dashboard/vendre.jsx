@@ -10,11 +10,13 @@ import { useEffect, useState } from "react";
 import Modal from "@/widgets/modal/modal";
 import Toastadd from "@/widgets/toast/toastadd";
 import { Link } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
 import { useProductStore } from "@/widgets/store/useproductstore";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import FacturePreview from "@/widgets/facture/facturepreview"; // Composant de prévisualisation
 import { format } from "prettier";
+import axios from "axios";
 export function Vendre() {
   const setProductsstore = useProductStore((state) => state.setProductsstore); // Récupération de la méthode `setProducts` du store
   const productsstore = useProductStore((state) => state.productsstore); // Récupération des produits du store
@@ -30,7 +32,87 @@ export function Vendre() {
       setSelectedProducts([...selectedProducts, { ...product, quantity: 1, unit: "Sachet(s)" }]);
     }
     setProductsstore([]);
+  // Appeler fetchStockValue en passant l'ID du produit
+  console.log(product.id)
+  fetchStockValue(product.id);
   };
+
+
+//   const fetchStockValue = async (id) => {
+//     try {
+//         const token = localStorage.getItem("token"); // Récupérer le token d'authentification
+
+//         const response = await axios.post(
+//             `${import.meta.env.VITE_API_URL}/api/v1/stock/valeur`,
+//             { id },
+//             {
+//                 headers: {
+//                     Authorization: `Bearer ${token}`, // Passer le token dans les headers
+//                 },
+//             }
+//         );
+
+//         // Récupération des données
+//         const { quantite_stock } = response.data;
+
+//         console.log("Quantité en stock récupérée :", quantite_stock);
+
+//         // Vérifier la quantité en stock et afficher un toast d'alerte si nécessaire
+//         if (quantite_stock <= 0) {
+//             toast.error("❌ Votre stock est épuisé, veuillez recharger avant de vendre.", {
+//                 autoClose: 1000,
+//                 position: "top-center",
+//                 theme: "dark",
+//             });
+//         } else if (quantite_stock < 20) {
+//             toast.warning(`⚠️ Votre stock est presque épuisé ! Il vous reste seulement ${quantite_stock} en stock.`, {
+//                 autoClose: 1000,
+//                 position: "top-center",
+//                 theme: "dark",
+//             });
+//         }
+
+//     } catch (error) {
+//         console.error("Erreur lors de la récupération de la quantité en stock :", error);
+//         toast.error("⚠️ Impossible de récupérer les informations du stock.", {
+//             autoClose: 1000,
+//             position: "top-center",
+//             theme: "dark",
+//         });
+//     }
+// };
+
+
+const fetchStockValue = async (id) => {
+  try {
+      const token = localStorage.getItem("token");
+
+      const response = await axios.post(
+          `${import.meta.env.VITE_API_URL}/api/v1/stock/valeur`,
+          { id },
+          {
+              headers: {
+                  Authorization: `Bearer ${token}`,
+              },
+          }
+      );
+
+      const { quantite_stock, quantite_vendue, stock_restant } = response.data;
+
+      if (stock_restant < -1) {
+        alert("Votre stock est épuisé, veuillez recharger avant de vendre.");
+      }
+      // Si le stock est positif mais inférieur à 20
+      else if (stock_restant > 0 && stock_restant < 20) {
+        alert(`Votre stock est presque épuisé. Il vous reste ${stock_restant} en stock.`);
+      }
+      // Si le stock est suffisant (> 20), pas de message
+
+  } catch (error) {
+      console.error("Erreur lors de la récupération des données de stock :", error);
+  }
+};
+
 
   // Fonction pour supprimer un produit de la liste sélectionnée
   const handleRemoveProduct = (codeBarre) => {
@@ -272,6 +354,7 @@ export function Vendre() {
 
   return (
     <div className="mt-12 mb-8 sm:flex justify-between ">
+        <ToastContainer position="top-right" autoClose={5000} />
       <div className="w-full  bg-blue-gray-50 rounded-xl sm:w-7/12">
         <Card className="h-[800px] m-4">
           <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
