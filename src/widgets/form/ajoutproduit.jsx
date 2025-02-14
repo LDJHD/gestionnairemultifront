@@ -4,8 +4,6 @@ import "react-toastify/dist/ReactToastify.css";
 import PriceUnitForm from "./priceunitform";
 
 
-
-
 export function AjoutProduit({ handleformclick, handletoast }) {
   const [priceUnitFields, setPriceUnitFields] = useState([]);
   const [charge, setcharge] = useState(false);
@@ -82,6 +80,36 @@ export function AjoutProduit({ handleformclick, handletoast }) {
         toast.success("Produit ajouté avec succès !", { autoClose: 600 });
         console.log("Produit ajouté:", data);
 
+        if (formData.quantite_stock) { // Vérifie si quantite_stock est renseigné
+          const stockData = {
+            produit_id: data.id, // Associer le produit
+            quantite_stock: formData.quantite_stock, // Ajouter la quantité de stock
+          };
+        
+          console.log(stockData);
+        
+          // Envoi des données au backend
+          const stockResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/stock/create`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`,
+            },
+            body: JSON.stringify(stockData), // Envoie de l'objet stockData
+          });
+        
+          if (stockResponse.ok) {
+            toast.success("Stock enregistré avec succès !", { autoClose: 600 });
+            console.log("Stock enregistré avec succès !");
+          } else {
+            toast.error("Erreur lors de l'enregistrement du stock.");
+            console.error("Erreur lors de l'enregistrement du stock");
+          }
+        } else {
+          toast.warning("Veuillez renseigner la quantité en stock.");
+          console.log("Quantité en stock non renseignée.");
+        }
+
         // Étape 2: Envoi des données PriceUnitForm vers la table `supplement`
         if (priceUnitFields.length > 0) {
           const supplementData = priceUnitFields.map((item) => ({
@@ -108,35 +136,6 @@ export function AjoutProduit({ handleformclick, handletoast }) {
           }
 
           
-      if (formData.quantite_stock) { // Vérifie si quantite_stock est renseigné
-        const stockData = {
-          produit_id: data.id, // Associer le produit
-          quantite_stock: formData.quantite_stock, // Ajouter la quantité de stock
-        };
-      
-        console.log(stockData);
-      
-        // Envoi des données au backend
-        const stockResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/stock/create`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
-          },
-          body: JSON.stringify(stockData), // Envoie de l'objet stockData
-        });
-      
-        if (stockResponse.ok) {
-          toast.success("Stock enregistré avec succès !", { autoClose: 600 });
-          console.log("Stock enregistré avec succès !");
-        } else {
-          toast.error("Erreur lors de l'enregistrement du stock.");
-          console.error("Erreur lors de l'enregistrement du stock");
-        }
-      } else {
-        toast.warning("Veuillez renseigner la quantité en stock.");
-        console.log("Quantité en stock non renseignée.");
-      }
         }
 
         // Réinitialiser le formulaire
