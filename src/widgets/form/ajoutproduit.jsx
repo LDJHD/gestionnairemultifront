@@ -15,6 +15,7 @@ export function AjoutProduit({ handleformclick, handletoast }) {
     categorie_id: "",
     prix: "",
     dateexpi:"",
+    quantite_stock:"",
     description: "",
   });
   const [categorie, setcategorie] = useState([]);
@@ -72,35 +73,6 @@ export function AjoutProduit({ handleformclick, handletoast }) {
         body: JSON.stringify(formData), // Données du formulaire à envoyer
       });
 
-      if (formData.quantite_stock) { // Vérifie si quantite_stock est renseigné
-        const stockData = {
-          produit_id: produitId, // Associer le produit
-          quantite_stock: formData.quantite_stock, // Ajouter la quantité de stock
-        };
-      
-        console.log(stockData);
-      
-        // Envoi des données au backend
-        const stockResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/stock/create`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
-          },
-          body: JSON.stringify(stockData), // Envoie de l'objet stockData
-        });
-      
-        if (stockResponse.ok) {
-          toast.success("Stock enregistré avec succès !", { autoClose: 600 });
-          console.log("Stock enregistré avec succès !");
-        } else {
-          toast.error("Erreur lors de l'enregistrement du stock.");
-          console.error("Erreur lors de l'enregistrement du stock");
-        }
-      } else {
-        toast.warning("Veuillez renseigner la quantité en stock.");
-        console.log("Quantité en stock non renseignée.");
-      }
       
 
       if (response.ok) {
@@ -134,6 +106,37 @@ export function AjoutProduit({ handleformclick, handletoast }) {
             toast.error("Erreur lors de l'enregistrement des supplements.");
             console.error("Erreur lors de l'enregistrement des supplements");
           }
+
+          
+      if (formData.quantite_stock) { // Vérifie si quantite_stock est renseigné
+        const stockData = {
+          produit_id: data.id, // Associer le produit
+          quantite_stock: formData.quantite_stock, // Ajouter la quantité de stock
+        };
+      
+        console.log(stockData);
+      
+        // Envoi des données au backend
+        const stockResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/stock/create`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
+          body: JSON.stringify(stockData), // Envoie de l'objet stockData
+        });
+      
+        if (stockResponse.ok) {
+          toast.success("Stock enregistré avec succès !", { autoClose: 600 });
+          console.log("Stock enregistré avec succès !");
+        } else {
+          toast.error("Erreur lors de l'enregistrement du stock.");
+          console.error("Erreur lors de l'enregistrement du stock");
+        }
+      } else {
+        toast.warning("Veuillez renseigner la quantité en stock.");
+        console.log("Quantité en stock non renseignée.");
+      }
         }
 
         // Réinitialiser le formulaire
@@ -143,13 +146,17 @@ export function AjoutProduit({ handleformclick, handletoast }) {
           categorie_id: "",
           prix: "",
           dateexpi:"",
+          quantite_stock:"",
           description: "",
         });
         setPriceUnitFields([]); // Réinitialiser les champs du formulaire PriceUnitForm
         setcharge(true)
 
+
+        
+
       } else {
-        toast.error("Échec de l'ajout du produit.");
+        toast.error("Échec de l'ajout du produit.Ce produit pourrait etre déja enregistré");
         console.error("Erreur:", response.statusText);
       }
     } catch (error) {
