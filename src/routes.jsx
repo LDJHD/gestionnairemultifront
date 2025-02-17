@@ -25,6 +25,7 @@ import Vente from "./pages/dashboard/vente";
 import Vendre from "./pages/dashboard/vendre";
 import Statistique from "./pages/dashboard/statistique";
 import AuthGuard from "./pages/dashboard/authguard";
+import Unit from "./pages/dashboard/unit";
 
 const icon = {
   className: "w-5 h-5 text-inherit",
@@ -63,6 +64,12 @@ export const routes = [
         name: "Catégorie",
         path: "/categorie",
         element: <Categorie />,
+      },
+      {
+        icon: <FolderIcon {...icon} />,
+        name: "Unité",
+        path: "/unite",
+        element: <Unit />,
       },
       {
         icon: <ArchiveBoxIcon {...icon} />,

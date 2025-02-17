@@ -1,12 +1,14 @@
 import { useState } from "react";
-import { Card, Input, Button, Typography } from "@material-tailwind/react";
+import { Input, Button, Typography } from "@material-tailwind/react";
 import { Link, useNavigate } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 
 export function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [disabled, setDisabled] = useState(false);
   const navigate = useNavigate();
 
   const handleSignIn = async (e) => {
@@ -24,10 +26,11 @@ export function SignIn() {
 
       if (response.ok) {
         localStorage.setItem("token", data.token);
+        setDisabled(true)
         toast.success("Authentification réussie !");
         setTimeout(() => {
           navigate("/home");
-        }, 3100);
+        }, 700);
       } else {
         toast.error("Échec de l'authentification. Veuillez réessayer.");
       }
@@ -38,6 +41,7 @@ export function SignIn() {
 
   return (
     <section className="m-8 flex items-center justify-center min-h-screen">
+       <ToastContainer position="top-right" autoClose={600} />
       <div className="w-full h-full sm:w-6/12 border-solid rounded-2xl">
         <div className="text-center">
           <Typography variant="h2" className="font-bold mb-4">Bienvenue sur ATON HELIOSTORE</Typography>
@@ -76,15 +80,11 @@ export function SignIn() {
                 stroke="currentColor"
                 className="h-8 w-8 text-black absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
               >
-                {showPassword ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M3.98 8.4C5.78 5.5 9.27 3 12 3c2.73 0 6.22 2.5 8.02 5.4.35.58.35 1.32 0 1.9C18.22 13.5 14.73 16 12 16c-2.73 0-6.22-2.5-8.02-5.4a1.49 1.49 0 010-1.9z" />
-                ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 3l18 18M10.5 10.5l1 1m-2-2L3 3m18 18l-9-9m9 9l-9-9m0 0l-2-2m2 2l-2-2m2 2l-2-2m2 2l-2-2" />
-                )}
+                {showPassword ?<EyeIcon className="h-6 w-6" />:<EyeSlashIcon className="h-6 w-6" />}
               </svg>
             </div>
           </div>
-          <Button className="mt-6" fullWidth type="submit">
+          <Button disabled={disabled} className="mt-6" fullWidth type="submit">
             Sign In
           </Button>
           <Typography variant="paragraph" className="text-center text-blue-gray-500 font-medium mt-4">

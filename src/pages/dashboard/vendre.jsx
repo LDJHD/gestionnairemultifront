@@ -38,50 +38,6 @@ export function Vendre() {
   };
 
 
-//   const fetchStockValue = async (id) => {
-//     try {
-//         const token = localStorage.getItem("token"); // Récupérer le token d'authentification
-
-//         const response = await axios.post(
-//             `${import.meta.env.VITE_API_URL}/api/v1/stock/valeur`,
-//             { id },
-//             {
-//                 headers: {
-//                     Authorization: `Bearer ${token}`, // Passer le token dans les headers
-//                 },
-//             }
-//         );
-
-//         // Récupération des données
-//         const { quantite_stock } = response.data;
-
-//         console.log("Quantité en stock récupérée :", quantite_stock);
-
-//         // Vérifier la quantité en stock et afficher un toast d'alerte si nécessaire
-//         if (quantite_stock <= 0) {
-//             toast.error("❌ Votre stock est épuisé, veuillez recharger avant de vendre.", {
-//                 autoClose: 1000,
-//                 position: "top-center",
-//                 theme: "dark",
-//             });
-//         } else if (quantite_stock < 20) {
-//             toast.warning(`⚠️ Votre stock est presque épuisé ! Il vous reste seulement ${quantite_stock} en stock.`, {
-//                 autoClose: 1000,
-//                 position: "top-center",
-//                 theme: "dark",
-//             });
-//         }
-
-//     } catch (error) {
-//         console.error("Erreur lors de la récupération de la quantité en stock :", error);
-//         toast.error("⚠️ Impossible de récupérer les informations du stock.", {
-//             autoClose: 1000,
-//             position: "top-center",
-//             theme: "dark",
-//         });
-//     }
-// };
-
 
 const fetchStockValue = async (id) => {
   try {
@@ -250,7 +206,7 @@ const fetchStockValue = async (id) => {
   const [filteredclient, setFilteredclient] = useState([]);
   const [selectedclient, setSelectedclient] = useState(null); // Stocke le client sélectionné
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // Contrôle l'ouverture de la liste déroulante
-
+  const [loading, setLoading] = useState(true); // Ajout d'un état pour suivre le chargement
 
   const handleclientSelect = (client) => {
     setSelectedclient(client); // Enregistrer le client sélectionné
@@ -308,6 +264,8 @@ const fetchStockValue = async (id) => {
       }
     } catch (error) {
       console.error("Erreur réseau:", error);
+    } finally {
+      setLoading(false); // Arrêt du chargement après récupération des données
     }
   };
 
@@ -365,6 +323,13 @@ const fetchStockValue = async (id) => {
           </CardHeader>
           <CardBody className="overflow-x-auto  overflow-y-auto px-0 pt-0 pb-2">
             {/* Tableau des produits disponibles */}
+             {/* Affichage de l'animation si les données sont en cours de chargement */}
+          {loading ? (
+            <div className="flex flex-col items-center justify-center h-64">
+              <img src=" /image/loading.png" alt="Chargement..." className="w-24 h-24 animate-spin" />
+              
+            </div>
+          ) : (
             <table className="w-full min-w-[500px] table-auto mb-8">
               <thead>
                 <tr>
@@ -400,7 +365,7 @@ const fetchStockValue = async (id) => {
                         <button
                           type="button"
                           onClick={() => handleAddProduct(product)}
-                          className="w-5/12 md:w-3/12 bg-blue-700 text-white rounded-md flex items-center justify-center"
+                          className="w-[30px] h-[30px] bg-blue-700 text-white rounded-md flex items-center justify-center"
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -408,7 +373,7 @@ const fetchStockValue = async (id) => {
                             viewBox="0 0 24 24"
                             strokeWidth="4"
                             stroke="currentColor"
-                            className="size-3"
+                            className="size-3 fo"
                           >
                             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                           </svg>
@@ -419,6 +384,7 @@ const fetchStockValue = async (id) => {
                 })}
               </tbody>
             </table>
+            )}
           </CardBody>
         </Card>
       </div>

@@ -3,6 +3,38 @@ import { PlusIcon, TrashIcon } from "@heroicons/react/24/solid";
 
 export default function PriceUnitForm({ onChange,charge }) {
   const [fields, setFields] = useState([]);
+  const [unit, setunit] = useState([]);
+
+
+  // Fonction pour récupérer les categories
+  const fetchunit = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/unit/listall`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setunit(data);
+      } else {
+        console.error("Erreur lors de la récupération des categories:", response.status);
+      }
+    } catch (error) {
+      console.error("Erreur réseau:", error);
+    }
+  };
+
+
+
+  // Appel de fetchcategories lors du chargement du composant
+  useEffect(() => {
+    fetchunit();
+  }, []);
 
    useEffect(() => {
     setFields([]); // Ferme les champs quand `resetTrigger` change
@@ -51,26 +83,11 @@ export default function PriceUnitForm({ onChange,charge }) {
                 className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
               >
                 <option value="">Sélectionner</option>
-                <option>Sachet(s)</option>
-                <option>Paquet(s)</option>
-                <option>Boite(s)</option>
-                <option>Plaquette(s)</option>
-                <option>Carton(s)</option>
-                <option>Bouteille(s)</option>
-                <option>Litre(s)</option>
-                <option>Kilogramme(s)</option>
-                <option>Gramme(s)</option>
-                <option>Pot(s)</option>
-                <option>Barquette(s)</option>
-                <option>Tube(s)</option>
-                <option>Piece(s)</option>
-                <option>Dose(s)</option>
-                <option>Flacon(s)</option>
-                <option>Bidon(s)</option>
-                <option>Pack(s)</option>
-                <option>Palette(s)</option>
-                <option>Contenant</option>
-                <option>1/2_Demi</option>
+                {unit.map((unit) => (
+                <option key={unit.id} value={unit.id}>
+                  {unit.nom}
+                </option>
+              ))}
               </select>
             </div>
             <button onClick={() => handleRemoveField(item.id)} className="text-red-500 hover:text-red-700 transition">

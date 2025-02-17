@@ -11,6 +11,8 @@ export function ModifieProduit({ ProductId, handleformclick }) {
     nom: "",
     categorie_id: "",
     prix: "",
+    prix_achat: "",
+    taxation: "",
     dateexpi: "",
     description: "",
   });
@@ -18,6 +20,40 @@ export function ModifieProduit({ ProductId, handleformclick }) {
   const [supplements, setSupplements] = useState([]);
   const [categorie, setcategorie] = useState([]);
   const [fields, setFields] = useState([]); // Initialement, pas de champ dynamique
+
+  const [unit, setunit] = useState([]);
+
+
+  // Fonction pour récupérer les categories
+  const fetchunit = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/unit/listall`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setunit(data);
+      } else {
+        console.error("Erreur lors de la récupération des categories:", response.status);
+      }
+    } catch (error) {
+      console.error("Erreur réseau:", error);
+    }
+  };
+
+
+
+  // Appel de fetchcategories lors du chargement du composant
+  useEffect(() => {
+    fetchunit();
+  }, []);
+
 
   // Fonction pour récupérer les categories
   const fetchcategories = async () => {
@@ -66,6 +102,8 @@ export function ModifieProduit({ ProductId, handleformclick }) {
         nom: product.produit.nom || "",
         categorie_id: product.produit.categorie_id || "",
         prix: product.produit.prix || "",
+        prix_achat: product.produit.prix_achat || "",
+        taxation: product.produit.taxation || "",
         dateexpi: product.produit.dateexpi || "",
         description: product.produit.description || "",
       });
@@ -168,54 +206,6 @@ export function ModifieProduit({ ProductId, handleformclick }) {
       { unit: "", prix: "" }, // Nouveau champ vide
     ]);
   };
-
-  // const updateSupplements = async () => {
-  //   const token = localStorage.getItem("token");
-  //   await Promise.all(supplements.map(async (supplement) => {
-  //     try {
-  //       await axios.post(
-  //         `${import.meta.env.VITE_API_URL}/api/v1/supplement/update`,
-  //         { ...supplement },
-  //         {
-  //           headers: {
-  //             "Content-Type": "application/json",
-  //             Authorization: `Bearer ${token}`,
-  //           },
-  //         }
-  //       );
-  //     } catch (error) {
-  //       console.error("Erreur lors de la mise à jour du supplément :", error);
-  //     }
-  //   }));
-  // };
-
-
-  // const updateSupplements = async () => {
-  //   const token = localStorage.getItem("token");
-
-  //   // Tu passes une nouvelle structure d'objet sans l'ID pour les nouveaux champs
-  //   await Promise.all(supplements.map(async (supplement) => {
-  //     try {
-  //       // Tu vérifies si le supplément a un ID ou non
-  //       const dataToSend = supplement.id
-  //         ? { ...supplement } // Si l'ID existe, on envoie le supplément entier
-  //         : { ...supplement, produit_id: ProductId }; // Si pas d'ID, on envoie seulement prix, unit et produit_id
-
-  //       await axios.post(
-  //         `${import.meta.env.VITE_API_URL}/api/v1/supplement/update`,
-  //         dataToSend,
-  //         {
-  //           headers: {
-  //             "Content-Type": "application/json",
-  //             Authorization: `Bearer ${token}`,
-  //           },
-  //         }
-  //       );
-  //     } catch (error) {
-  //       console.error("Erreur lors de la mise à jour du supplément :", error);
-  //     }
-  //   }));
-  // };
 
   const updateSupplements = async () => {
     const token = localStorage.getItem("token");
@@ -345,6 +335,36 @@ export function ModifieProduit({ ProductId, handleformclick }) {
           />
 
           <input
+            type="number"
+            name="prix_achat"
+            value={formData.prix_achat}
+            onChange={(e) => setFormData({ ...formData, prix_achat: e.target.value })}
+            placeholder="Prix Achat"
+            className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
+          />
+
+          <div>
+            <label htmlFor="categorie_id" className="block text-sm font-semibold text-gray-700">
+              Taxation
+            </label>
+            <select
+              id="taxation"
+              name="taxation"
+              required
+              value={formData.taxation}
+              onChange={(e) => setFormData({ ...formData, taxation: e.target.value })}
+              className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
+            >
+              <option value="">Sélectionnez une taxation</option>
+              <option>A</option>
+              <option>B</option>
+              <option>C</option>
+              <option>D</option>
+              <option>E</option>
+            </select>
+          </div>
+
+          <input
             type="date"
             name="dateexpi"
             value={formData.dateexpi}
@@ -371,27 +391,13 @@ export function ModifieProduit({ ProductId, handleformclick }) {
               className="p-2 w-full border rounded"
             >
               <option value="">Sélectionner</option>
-              <option>Sachet(s)</option>
-              <option>Paquet(s)</option>
-              <option>Boite(s)</option>
-              <option>Plaquette(s)</option>
-              <option>Carton(s)</option>
-              <option>Bouteille(s)</option>
-              <option>Litre(s)</option>
-              <option>Kilogramme(s)</option>
-              <option>Gramme(s)</option>
-              <option>Pot(s)</option>
-              <option>Barquette(s)</option>
-              <option>Tube(s)</option>
-              <option>Piece(s)</option>
-              <option>Dose(s)</option>
-              <option>Flacon(s)</option>
-              <option>Bidon(s)</option>
-              <option>Pack(s)</option>
-              <option>Palette(s)</option>
-              <option>Contenant</option>
-              <option>1/2_Demi</option>
+              {unit.map((unit) => (
+                <option key={unit.id} value={unit.id}>
+                  {unit.nom}
+                </option>
+              ))}
             </select>
+
             <input
               type="number"
               name="prix"

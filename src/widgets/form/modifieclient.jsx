@@ -162,7 +162,6 @@ export function Modifieclient({ClientId,handleformclick}) {
             type="email"
             name="email"
             id="email"
-            required
             value={formData.email}
             onChange={handleInputChange}
             className="mt-1 p-1 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
@@ -178,7 +177,6 @@ export function Modifieclient({ClientId,handleformclick}) {
             type="text"
             name="telephone"
             id="telephone"
-            required
             value={formData.telephone}
             onChange={handleInputChange}
             className="mt-1 p-1 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
@@ -194,7 +192,6 @@ export function Modifieclient({ClientId,handleformclick}) {
             type="text"
             name="adresse"
             id="adresse"
-            required
             value={formData.adresse}
             onChange={handleInputChange}
             className="mt-1 p-1 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
@@ -210,7 +207,6 @@ export function Modifieclient({ClientId,handleformclick}) {
             type="text"
             name="ifu"
             id="ifu"
-            required
             value={formData.ifu}
             onChange={handleInputChange}
             className="mt-1 p-1 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"

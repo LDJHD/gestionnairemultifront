@@ -12,11 +12,47 @@ export function AjoutProduit({ handleformclick, handletoast }) {
     nom: "",
     categorie_id: "",
     prix: "",
+    prix_achat: "",
+    taxation:"",
     dateexpi:"",
     quantite_stock:"",
     description: "",
   });
   const [categorie, setcategorie] = useState([]);
+
+  const [unit, setunit] = useState([]);
+
+
+  // Fonction pour récupérer les categories
+  const fetchunit = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/unit/listall`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setunit(data);
+      } else {
+        console.error("Erreur lors de la récupération des categories:", response.status);
+      }
+    } catch (error) {
+      console.error("Erreur réseau:", error);
+    }
+  };
+
+
+
+  // Appel de fetchcategories lors du chargement du composant
+  useEffect(() => {
+    fetchunit();
+  }, []);
+
 
 
   // Fonction pour récupérer les categories
@@ -144,6 +180,8 @@ export function AjoutProduit({ handleformclick, handletoast }) {
           nom: "",
           categorie_id: "",
           prix: "",
+          prix_achat: "",
+          taxation:"",
           dateexpi:"",
           quantite_stock:"",
           description: "",

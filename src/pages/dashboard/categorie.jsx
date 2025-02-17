@@ -85,6 +85,7 @@ import {
     const [menuActif, setMenuActif] = useState(null);
     const [toast, setToast] = useState(false);
     const rep = "Enregistrement effectué avec succès";
+    const [loading, setLoading] = useState(true); // Ajout d'un état pour suivre le chargement
   
     
     // Gestion des menus actifs
@@ -120,6 +121,8 @@ import {
         }
       } catch (error) {
         console.error("Erreur réseau:", error);
+      } finally {
+        setLoading(false); // Arrêt du chargement après récupération des données
       }
     };
   
@@ -143,6 +146,13 @@ import {
             </div>
           </CardHeader>
           <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
+             {/* Affichage de l'animation si les données sont en cours de chargement */}
+          {loading ? (
+            <div className="flex flex-col items-center justify-center h-64">
+              <img src=" /image/loading.png" alt="Chargement..." className="w-24 h-24 animate-spin" />
+              
+            </div>
+          ) : (
             <table className="w-full table-auto">
               <thead>
                 <tr>
@@ -200,6 +210,7 @@ import {
                 })}
               </tbody>
             </table>
+            )}
           </CardBody>
         </Card>
         {toast && <Toastadd reponse={rep} />}

@@ -85,6 +85,7 @@ export function Stock() {
   const [menuActif, setMenuActif] = useState(null);
   const [toast, setToast] = useState(false);
   const rep = "Enregistrement effectué avec succès";
+  const [loading, setLoading] = useState(true); // Ajout d'un état pour suivre le chargement
 
   // Fonction pour supprimer un produit de la liste
   const removeStock = (id) => {
@@ -124,6 +125,8 @@ export function Stock() {
       }
     } catch (error) {
       console.error("Erreur réseau:", error);
+    } finally {
+      setLoading(false); // Arrêt du chargement après récupération des données
     }
   };
 
@@ -147,6 +150,13 @@ export function Stock() {
           </div>
         </CardHeader>
         <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
+           {/* Affichage de l'animation si les données sont en cours de chargement */}
+           {loading ? (
+            <div className="flex flex-col items-center justify-center h-64">
+              <img src=" /image/loading.png" alt="Chargement..." className="w-24 h-24 animate-spin" />
+              
+            </div>
+          ) : (
           <table className="w-full min-w-[1000px] table-auto">
             <thead>
               <tr>
@@ -209,6 +219,7 @@ export function Stock() {
               })}
             </tbody>
           </table>
+          )}
         </CardBody>
       </Card>
       {toast && <Toastadd reponse={rep} />}
