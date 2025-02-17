@@ -296,6 +296,44 @@ export function AjoutProduit({ handleformclick, handletoast }) {
 
           <div>
             <label htmlFor="price" className="block text-sm font-semibold text-gray-700">
+              Prix Achat
+            </label>
+            <input
+              type="number"
+              name="prix_achat"
+              required
+              id="prix_achat"
+              value={formData.prix_achat}
+              onChange={handleInputChange}
+              className="mt-1 p-1 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
+              placeholder="0.00"
+            />
+          </div>
+
+
+          <div>
+            <label htmlFor="categorie_id" className="block text-sm font-semibold text-gray-700">
+              Taxation
+            </label>
+            <select
+              id="taxation"
+              name="taxation"
+              required
+              value={formData.taxation}
+              onChange={(e) => setFormData({ ...formData, taxation: e.target.value })}
+              className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
+            >
+              <option value="">Sélectionnez une taxation</option>
+              <option>A</option>
+              <option>B</option>
+              <option>C</option>
+              <option>D</option>
+              <option>E</option>
+            </select>
+          </div>
+
+          <div>
+            <label htmlFor="price" className="block text-sm font-semibold text-gray-700">
               Quantité Stock
             </label>
             <input
