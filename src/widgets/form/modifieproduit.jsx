@@ -104,7 +104,7 @@ export function ModifieProduit({ ProductId, handleformclick }) {
         prix: product.produit.prix || "",
         prix_achat: product.produit.prix_achat || "",
         taxation: product.produit.taxation || "",
-        dateexpi: product.produit.dateexpi || "",
+        dateexpi: product.produit.dateexpi ? product.produit.dateexpi.split("T")[0] : "",
         description: product.produit.description || "",
       });
 
@@ -288,6 +288,10 @@ export function ModifieProduit({ ProductId, handleformclick }) {
         <ToastContainer position="top-right" autoClose={5000} />
         <h2 className="text-2xl font-bold">Modifier un Produit</h2>
         <div className="grid grid-cols-1 gap-4">
+        <div>
+            <label htmlFor="categorie_id" className="block text-sm font-semibold text-gray-700">
+              Code barre
+            </label>
           <input
             type="text"
             name="code_barre"
@@ -296,6 +300,11 @@ export function ModifieProduit({ ProductId, handleformclick }) {
             placeholder="Code barre"
             className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
           />
+          </div>
+          <div>
+            <label htmlFor="categorie_id" className="block text-sm font-semibold text-gray-700">
+              Nom
+            </label>
           <input
             type="text"
             name="nom"
@@ -304,6 +313,7 @@ export function ModifieProduit({ ProductId, handleformclick }) {
             placeholder="Nom"
             className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
           />
+          </div>
           <div>
             <label htmlFor="categorie_id" className="block text-sm font-semibold text-gray-700">
               Catégorie
@@ -324,7 +334,10 @@ export function ModifieProduit({ ProductId, handleformclick }) {
               ))}
             </select>
           </div>
-
+          <div>
+            <label htmlFor="categorie_id" className="block text-sm font-semibold text-gray-700">
+              Prix
+            </label>
           <input
             type="number"
             name="prix"
@@ -333,15 +346,21 @@ export function ModifieProduit({ ProductId, handleformclick }) {
             placeholder="Prix"
             className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
           />
-
+          </div>
+  <div>
+            <label htmlFor="categorie_id" className="block text-sm font-semibold text-gray-700">
+              Prix d'achat
+            </label>
           <input
             type="number"
             name="prix_achat"
+            required
             value={formData.prix_achat}
             onChange={(e) => setFormData({ ...formData, prix_achat: e.target.value })}
             placeholder="Prix Achat"
             className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
           />
+          </div>
 
           <div>
             <label htmlFor="categorie_id" className="block text-sm font-semibold text-gray-700">
@@ -363,7 +382,10 @@ export function ModifieProduit({ ProductId, handleformclick }) {
               <option>E</option>
             </select>
           </div>
-
+          <div>
+            <label htmlFor="categorie_id" className="block text-sm font-semibold text-gray-700">
+              Date d'expiration
+            </label>
           <input
             type="date"
             name="dateexpi"
@@ -372,6 +394,11 @@ export function ModifieProduit({ ProductId, handleformclick }) {
             placeholder=""
             className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
           />
+           </div>
+           <div>
+            <label htmlFor="categorie_id" className="block text-sm font-semibold text-gray-700">
+              Description
+            </label>
           <textarea
             name="description"
             value={formData.description}
@@ -379,6 +406,7 @@ export function ModifieProduit({ ProductId, handleformclick }) {
             placeholder="Description"
             className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
           />
+           </div>
         </div>
 
         <h3 className="text-lg font-bold mt-4">Suppléments</h3>

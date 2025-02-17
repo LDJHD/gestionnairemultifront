@@ -11,10 +11,11 @@ import {
   ChartBarIcon, // Ajouté pour Statistique/Comptabilité
   CubeIcon, // Ajouté pour Produit
   FolderIcon, // Ajouté pour Catégorie
-  ReceiptPercentIcon, // Ajouté pour Vente
+  ReceiptPercentIcon,
+  Squares2X2Icon, // Ajouté pour Vente
 } from "@heroicons/react/24/solid";
 
-import { Home, Profile, Tables, Notifications, Client } from "@/pages/dashboard";
+import { Home, Profile, Tables, Client } from "@/pages/dashboard";
 import { SignIn, SignUp } from "@/pages/auth";
 import Clients from "./pages/dashboard/client";
 import Produit from "./pages/dashboard/produit";
@@ -26,6 +27,7 @@ import Vendre from "./pages/dashboard/vendre";
 import Statistique from "./pages/dashboard/statistique";
 import AuthGuard from "./pages/dashboard/authguard";
 import Unit from "./pages/dashboard/unit";
+import Notifications from "./pages/dashboard/notifications";
 
 const icon = {
   className: "w-5 h-5 text-inherit",
@@ -66,7 +68,7 @@ export const routes = [
         element: <Categorie />,
       },
       {
-        icon: <FolderIcon {...icon} />,
+        icon: <Squares2X2Icon {...icon} />, // Icône représentant des unités en lot ou paquet
         name: "Unité",
         path: "/unite",
         element: <Unit />,

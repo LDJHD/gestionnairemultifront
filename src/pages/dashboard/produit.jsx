@@ -11,6 +11,7 @@ import Toastadd from "@/widgets/toast/toastadd";
 import Droplist from "@/widgets/button/droplist";
 import { Link } from "react-router-dom";
 import { useProductStore } from "@/widgets/store/useproductstore";
+import ProductReminder from "@/widgets/modal/productreminder";
 
 export function Produit() {
     const setProductsstore = useProductStore((state) => state.setProductsstore); // Récupération de la méthode `setProducts` du store
@@ -77,6 +78,7 @@ export function Produit() {
 
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12">
+      <ProductReminder products={products} />
       <Card>
         <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
           <div className="flex justify-between items-center">

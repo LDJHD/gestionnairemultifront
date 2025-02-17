@@ -310,7 +310,6 @@ export function AjoutProduit({ handleformclick, handletoast }) {
             />
           </div>
 
-
           <div>
             <label htmlFor="categorie_id" className="block text-sm font-semibold text-gray-700">
               Taxation
