@@ -6,6 +6,7 @@ import {
   CardBody,
 } from "@material-tailwind/react";
 import { useCountStore } from "@/widgets/store/usecounstore";
+import Swal from "sweetalert2";
 
 const Notifications = () => {
   const [notifications, setNotifications] = useState([]);
@@ -42,10 +43,71 @@ const fetchNotifications = async () => {
   }
 };
 
+const handleAlert = (id) => {
+  const swalWithTailwindButtons = Swal.mixin({
+    customClass: {
+      confirmButton: 'bg-green-800 hover:bg-green-400 text-white font-bold py-2 mx-2 px-4 rounded',
+      cancelButton: 'bg-red-800 hover:bg-red-200 text-white font-bold py-2 mx-2 px-4 rounded'
+    },
+    buttonsStyling: false
+  });
 
-  // Fonction pour supprimer une notification de la liste
+  swalWithTailwindButtons.fire({
+    title: "Êtes-vous sûr ?",
+    text: "Vous ne pourrez pas annuler cette action !",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Oui, supprimez !",
+    cancelButtonText: "Non, annulez !",
+    reverseButtons: true
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/notification/delete`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ id }),
+        });
+
+        if (response.ok) {
+          swalWithTailwindButtons.fire({
+            title: "Supprimé !",
+            text: "La suppression a été effectuée avec succès.",
+            icon: "success",
+          });
+          // Appelle removeStock pour mettre à jour la liste localement
+          removeNotification(id);
+        } else {
+          swalWithTailwindButtons.fire({
+            title: "Erreur",
+            text: "La suppression a échoué.",
+            icon: "error",
+          });
+        }
+      } catch (error) {
+        swalWithTailwindButtons.fire({
+          title: "Erreur",
+          text: "Une erreur est survenue lors de la connexion au serveur.",
+          icon: "error",
+        });
+      }
+    } else if (result.dismiss === Swal.DismissReason.cancel) {
+      swalWithTailwindButtons.fire({
+        title: "Annulé",
+        text: "Votre fichier imaginaire est en sécurité :)",
+        icon: "error",
+      });
+    }
+  });
+}
+
   const removeNotification = (id) => {
     setNotifications((prevNotifications) => prevNotifications.filter((notif) => notif.id !== id));
+      // Fonction pour supprimer une notification de la liste
   };
 
   // Charger les notifications au montage du composant
@@ -97,10 +159,10 @@ const fetchNotifications = async () => {
                 </span>
                 <span className="ml-3 flex-1 line-clamp-2">
                   <span className="font-bold">{notif.lu === 0 ? "Nouvelle notification :" : "Notification lue :"}</span>
-                  {` ${notif.messsage.slice(0, 100)}...`}
+                  {` ${notif.message.slice(0, 100)}...`}
                 </span>
                 <button
-                  onClick={() => removeNotification(notif.id)}
+                  onClick={() => handleAlert(notif.id)}
                   className="ml-4 text-gray-500 hover:text-red-600"
                 >
                   ❌
