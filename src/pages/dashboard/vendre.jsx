@@ -17,6 +17,7 @@ import "react-toastify/dist/ReactToastify.css";
 import FacturePreview from "@/widgets/facture/facturepreview"; // Composant de prévisualisation
 import { format } from "prettier";
 import axios from "axios";
+import FacturePrevieww from "@/widgets/facture/factureprevieww";
 export function Vendre() {
   const setProductsstore = useProductStore((state) => state.setProductsstore); // Récupération de la méthode `setProducts` du store
   const productsstore = useProductStore((state) => state.productsstore); // Récupération des produits du store
@@ -114,6 +115,7 @@ const fetchStockValue = async (id) => {
   
 
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [isPreviewOpen2, setIsPreviewOpen2] = useState(false);
   const [products, setProducts] = useState([]);
   const [menuActif, setMenuActif] = useState(null);
   const [toast, setToast] = useState(false);
@@ -122,11 +124,15 @@ const fetchStockValue = async (id) => {
   const [formData, setFormData] = useState({
     client: "",
     remise: "",
-    format: "A4",
+    format: "Ticket",
   });
 
   const handlePreview = () => {
     setIsPreviewOpen(true); // Ouvrir la prévisualisation
+  };
+
+  const handlePreview2 = () => {
+    setIsPreviewOpen2(true); // Ouvrir la prévisualisation
   };
 
   const handleInputChange = (e) => {
@@ -458,9 +464,9 @@ const fetchStockValue = async (id) => {
                     onChange={handleInputChange}
                     className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
                   >
+                    <option>Ticket</option>
                     <option>A4</option>
                     <option>A3</option>
-                    <option>Ticket</option>
                   </select>
                 </div>
               </div>
@@ -595,12 +601,41 @@ const fetchStockValue = async (id) => {
               </svg>
             </button>
 
+            <button
+              type="button"
+              onClick={handlePreview2}
+              className="flex items-center space-x-2 m-2 p-2 bg-orange-600 text-white font-bold rounded-md"
+            >
+              <span>Details Facture simple</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="1.5"
+                stroke="currentColor"
+                className="w-5 h-5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 0 1-2.25 2.25M16.5 7.5V18a2.25 2.25 0 0 0 2.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 0 0 2.25 2.25h13.5M6 7.5h3v3H6v-3Z"
+                />
+              </svg>
+            </button>
+
             {/* Prévisualisation de la facture */}
             {isPreviewOpen && (
               <FacturePreview
                 formData={formData}
                 selectedProducts={selectedProducts}
                 onClose={() => setIsPreviewOpen(false)}
+              />
+            )}
+            {isPreviewOpen2 && (
+              <FacturePrevieww
+                formData={formData}
+                selectedProducts={selectedProducts}
+                onClose={() => setIsPreviewOpen2(false)}
               />
             )}
 

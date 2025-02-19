@@ -32,6 +32,7 @@ import Notifications from "./pages/dashboard/notifications";
 const icon = {
   className: "w-5 h-5 text-inherit",
 };
+const notificationsCount = parseInt(localStorage.getItem('notificationsCount'), 10) || 0;
 
 export const routes = [
   {
@@ -99,7 +100,7 @@ export const routes = [
       },
       {
         icon: <InformationCircleIcon {...icon} />,
-        name: "Notifications",
+        name:  `Notifications (${notificationsCount})`,
         path: "/notifications",
         element: <Notifications />,
       },
