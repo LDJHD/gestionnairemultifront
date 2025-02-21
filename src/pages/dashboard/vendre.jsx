@@ -125,6 +125,7 @@ const fetchStockValue = async (id) => {
     client: "",
     remise: "",
     format: "Ticket",
+    aib:"N/A"
   });
 
   const handlePreview = () => {
@@ -457,7 +458,7 @@ const fetchStockValue = async (id) => {
                     Format
                   </label>
                   <select
-                    id="format"
+                    id="aib"
                     name="format"
                     required
                     value={formData.format}
@@ -469,6 +470,26 @@ const fetchStockValue = async (id) => {
                     <option>A3</option>
                   </select>
                 </div>
+
+
+                <div>
+                  <label htmlFor="aib" className="block text-sm font-semibold text-gray-700">
+                    AIB
+                  </label>
+                  <select
+                    id="aib"
+                    name="aib"
+                    required
+                    value={formData.aib}
+                    onChange={handleInputChange}
+                    className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
+                  >
+                    <option value="N/A">N/A</option>
+                    <option value="A">1%</option>
+                    <option value="B" >5%</option>
+                  </select>
+                </div>
+
               </div>
 
             </form>

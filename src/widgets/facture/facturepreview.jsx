@@ -127,6 +127,7 @@ const FacturePreview = ({ formData, selectedProducts, onClose }) => {
     const invoiceData = {
       format: formData.format,
       ifu: "3202397904961", // Remplacez par l'IFU du client
+      aib:formData.aib,
       type: "FV", // Type de facture
       operator: {
         name: utilisateurs.nom, // Remplacez par le nom de l'opérateur
@@ -137,7 +138,7 @@ const FacturePreview = ({ formData, selectedProducts, onClose }) => {
         price: product.prix, // Prix unitaire
         quantity: product.quantity, // Quantité
         unit: product.unit,
-        taxGroup: product.taxGroup || "A", // Groupe fiscal (par défaut "A")
+        taxGroup: product.taxation || "A", // Groupe fiscal (par défaut "A")
       })),
       client: {
         contact: clientDetails.telephone,
@@ -301,7 +302,7 @@ const FacturePreview = ({ formData, selectedProducts, onClose }) => {
             <strong>Total HT:</strong> {calculateTotalHT()} Fcfa
           </p>
           <p>
-            <strong>Total TVA (0%):</strong> {calculateTVA()} Fcfa
+            <strong>Total TVA (18%):</strong> {calculateTVA()} Fcfa
           </p>
           <p>
             <strong>Total TTC:</strong> {calculateTotalTTC()} Fcfa
@@ -311,6 +312,9 @@ const FacturePreview = ({ formData, selectedProducts, onClose }) => {
           </p>
           <p>
             <strong>Montant à payé :</strong> {calculateTotalWithRemise()} Fcfa
+          </p>
+          <p>
+            <strong>AIB, {formData.aib === "A" ? 1 : formData.aib === "B" ? 5 : "N/A"}:</strong> {calculateTotalWithRemise()} Fcfa
           </p>
         </div>
 

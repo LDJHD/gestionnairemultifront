@@ -101,7 +101,16 @@ const FacturePrevieww = ({ formData, selectedProducts, onClose }) => {
 
   // Calcul TVA
   const calculateTVA = () => {
-    return calculateTotalHT() * 0; // Exemple avec TVA à 18%
+    return selectedProducts.reduce((totalTVA, product) => {
+      const tauxTVA =
+        product.taxation === "B" ? 0.18 :
+        product.taxation === "D" ? 0.18 :
+        product.taxation === "AIBA" ? 0.01 :
+        product.taxation === "AIBB" ? 0.05 :
+        0; // Par défaut, pas de TVA (0) pour "A" ou autres valeurs inconnues
+  
+      return totalTVA + product.prix * product.quantity * tauxTVA;
+    }, 0);
   };
 
   // Calcul du total TTC
@@ -126,6 +135,7 @@ const FacturePrevieww = ({ formData, selectedProducts, onClose }) => {
     const invoiceData = {
       format: formData.format,
       ifu: "3202397904961", // Remplacez par l'IFU du client
+      aib:formData.aib,
       type: "FV", // Type de facture
       operator: {
         name: utilisateurs.nom, // Remplacez par le nom de l'opérateur
@@ -136,7 +146,7 @@ const FacturePrevieww = ({ formData, selectedProducts, onClose }) => {
         price: product.prix, // Prix unitaire
         quantity: product.quantity, // Quantité
         unit: product.unit,
-        taxGroup: product.taxGroup || "A", // Groupe fiscal (par défaut "A")
+        taxGroup: product.taxation || "A", // Groupe fiscal (par défaut "A")
       })),
       client: {
         contact: clientDetails.telephone,
@@ -297,7 +307,7 @@ const FacturePrevieww = ({ formData, selectedProducts, onClose }) => {
             <strong>Total HT:</strong> {calculateTotalHT()} Fcfa
           </p>
           <p>
-            <strong>Total TVA (0%):</strong> {calculateTVA()} Fcfa
+            <strong>Total TVA (18%):</strong> {calculateTVA()} Fcfa
           </p>
           <p>
             <strong>Total TTC:</strong> {calculateTotalTTC()} Fcfa
@@ -307,6 +317,9 @@ const FacturePrevieww = ({ formData, selectedProducts, onClose }) => {
           </p>
           <p>
             <strong>Montant à payé :</strong> {calculateTotalWithRemise()} Fcfa
+          </p>
+          <p>
+            <strong>AIB,{formData.aib === "A" ? 1 : formData.aib === "B" ? 5 : "N/A"} %:</strong> {calculateTotalWithRemise()} Fcfa
           </p>
         </div>
 
