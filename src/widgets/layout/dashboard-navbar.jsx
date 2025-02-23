@@ -139,6 +139,7 @@ export function DashboardNavbar() {
       setIsDropdownOpen(false)
       console.log('loose');
       setProductsstore([]);
+      fetchProductselectDetails(formData.produit_id);
     }
   }, [formData.produit_id]);
 
@@ -341,7 +342,7 @@ export function DashboardNavbar() {
         console.log(token);
         // Supprime le token et redirige l'utilisateur
         localStorage.removeItem("token");
-        toast.success("Deconnexion reussi !");
+        toast.success("deconnexion reussi !");
 
         navigate("/auth/sign-in"); // Redirection après succès
       } else {
@@ -543,7 +544,7 @@ export function DashboardNavbar() {
               className="hidden items-center gap-1 px-4 xl:flex normal-case bg-red-900 text-white font-bold"
             >
               <UserCircleIcon className="h-5 w-5 text-blue-gray-500" />
-              Sign Out
+              deconnexion
             </Button>
             <IconButton
               variant="text"

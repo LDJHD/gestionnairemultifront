@@ -6,9 +6,9 @@ import {
   Button,
   Typography,
 } from "@material-tailwind/react";
-import { Link, Navigate } from "react-router-dom";
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
+import { Link, useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 
 export function SignUp() {
   const [nom, setNom] = useState('');
@@ -19,6 +19,9 @@ export function SignUp() {
   const [whatsapp, setWhatsapp] = useState('');
   const [pays, setPays] = useState('');
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -34,22 +37,12 @@ export function SignUp() {
       return;
     }
 
-    const utilisateur = {
-      nom,
-      prenom,
-      email,
-      password,
-      whatsapp,
-      pays,
-      confirmpassword
-    };
+    const utilisateur = { nom, prenom, email, password, whatsapp, pays, confirmpassword };
 
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/utilisateurs/create`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(utilisateur)
       });
 
@@ -57,20 +50,21 @@ export function SignUp() {
         const result = await response.json();
         console.log("Inscription réussie", result);
         toast.success("Inscription réussie !", { autoClose: 600 });
-        navigate("/sign-in"); // Redirection après succès
-    } else {
-        const errorData = await response.json(); // Récupère le JSON de l'erreur
+        navigate("/auth/sign-in"); 
+      } else {
+        const errorData = await response.json();
         console.error("Erreur lors de l'inscription :", errorData.erreur);
-        toast.error(errorData.erreur || "Erreur lors de l'inscription", { autoClose: 1000 });
-    }
-    
+        toast.error(errorData.erreur || "Erreur lors de l'inscription", { autoClose: 600 });
+      }
     } catch (error) {
       console.error("Erreur de serveur :", error);
+      toast.error("Erreur Serveur", { autoClose: 600 });
     }
   };
 
   return (
     <section className="flex items-center justify-center min-h-screen">
+      <ToastContainer position="top-right" autoClose={600} />
       <div className="w-full sm:w-6/12 flex flex-col items-center justify-center">
         <div className="text-center">
           <Typography variant="h2" className="font-bold mb-4">Inscrivez-vous !</Typography>
@@ -85,21 +79,51 @@ export function SignUp() {
             <Input size="lg" label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
             <Input size="lg" label="WhatsApp" value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)} required />
             <Input size="lg" label="Pays" value={pays} onChange={(e) => setPays(e.target.value)} required />
-            <Input size="lg" label="Mot de passe" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-            <Input size="lg" label="Confirmer le mot de passe" type="password" value={confirmpassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
+
+            {/* Champ Mot de passe */}
+            <div className="relative">
+              <Input 
+                size="lg"
+                label="Mot de passe"
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <button
+                type="button"
+                className="absolute right-4 top-3 text-gray-600"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <EyeIcon className="h-6 w-6" /> : <EyeSlashIcon className="h-6 w-6" />}
+              </button>
+            </div>
+
+            {/* Champ Confirmation Mot de passe */}
+            <div className="relative">
+              <Input 
+                size="lg"
+                label="Confirmer le mot de passe"
+                type={showConfirmPassword ? "text" : "password"}
+                value={confirmpassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+              />
+              <button
+                type="button"
+                className="absolute right-4 top-3 text-gray-600"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              >
+                {showConfirmPassword ? <EyeIcon className="h-6 w-6" /> : <EyeSlashIcon className="h-6 w-6" />}
+              </button>
+            </div>
           </div>
+
           <Checkbox
             label={
-              <Typography
-                variant="small"
-                color="gray"
-                className="flex items-center justify-start font-medium"
-              >
+              <Typography variant="small" color="gray" className="flex items-center justify-start font-medium">
                 J'accepte les&nbsp;
-                <a
-                  href="#"
-                  className="font-normal text-black transition-colors hover:text-gray-900 underline"
-                >
+                <a href="#" className="font-normal text-black transition-colors hover:text-gray-900 underline">
                   Termes et Conditions
                 </a>
               </Typography>

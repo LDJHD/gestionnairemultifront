@@ -75,41 +75,63 @@ const FacturePreview = ({ formData, selectedProducts, onClose }) => {
     }
   }, [formData.client]);
 
-  // Calcul du total HT
-  const calculateTotalHT = () => {
+   // Calcul du total HT
+   const calculateTotalHT = () => {
     return selectedProducts.reduce((acc, product) => acc + product.prix * product.quantity, 0);
   };
-
   const calculateTotalWithRemise = () => {
     const totalHT = selectedProducts.reduce(
       (acc, product) => acc + product.prix * product.quantity,
       0
     );
-
-    // Convertir la remise en un facteur (par exemple, 10% devient 0.1)
+  
+    const tva = calculateTVA(); // Calcul de la TVA
+    const aib = calculateAIB(); // Calcul de l'AIB
+  
+    const totalTTC = totalHT + tva + aib; // Total TTC avant remise
+  
+    // Convertir la remise en un facteur (ex: 10% devient 0.1)
     const remisePourcentage = formData.remise / 100;
-
-    // Calculer la valeur de la remise
-    const remiseValeur = totalHT * remisePourcentage;
-
-    // Total HT après remise
-    // Total HT après remise (arrondi à l'entier le plus proche)
-    const totalApresRemise = Math.round(totalHT - remiseValeur);
-
-
-    return totalApresRemise;  // Total après remise
+  
+    // Calculer la valeur de la remise sur le TTC
+    const remiseValeur = totalTTC * remisePourcentage;
+  
+    // Total TTC après remise (arrondi à l'entier le plus proche)
+    const totalApresRemise = Math.round(totalTTC - remiseValeur);
+  
+    return totalApresRemise;
   };
+  
 
   // Calcul TVA
   const calculateTVA = () => {
-    return calculateTotalHT() * 0; // Exemple avec TVA à 18%
+    return selectedProducts.reduce((totalTVA, product) => {
+      const tauxTVA =
+        product.taxation === "B" ? 0.18 :
+        product.taxation === "D" ? 0.18 :
+        product.taxation === "AIBA" ? 0.01 :
+        product.taxation === "AIBB" ? 0.05 :
+        0; // Par défaut, pas de TVA (0) pour "A" ou autres valeurs inconnues
+  
+      return totalTVA + product.prix * product.quantity * tauxTVA;
+    }, 0);
+  };
+
+  const calculateAIB = () => {
+    return selectedProducts.reduce((totalAIB, product) => {
+      // Vérifier si l'AIB doit être appliqué (taxation ≠ "B" et "D" + formData.aib ≠ "N/A")
+      if (!["B", "D"].includes(product.taxation) && formData.aib !== "N/A") {
+        const tauxAIB = formData.aib === "A" ? 0.01 : formData.aib === "B" ? 0.05 : 0;
+        return totalAIB + product.prix * product.quantity * tauxAIB;
+      }
+      return totalAIB; // Sinon, pas d'AIB
+    }, 0);
   };
 
   // Calcul du total TTC
   const calculateTotalTTC = () => {
-    return calculateTotalHT() + calculateTVA();
+    return calculateTotalHT() + calculateTVA() +calculateAIB();
   };
-
   // Calcul du montant payé (exemple basé sur une saisie utilisateur)
   const calculatePaidAmount = (paidAmount) => parseFloat(paidAmount) || 0;
 
@@ -125,8 +147,13 @@ const FacturePreview = ({ formData, selectedProducts, onClose }) => {
 
     // Données de la facture
     const invoiceData = {
+      cAIB:calculateAIB(),
+      cHT:calculateTotalHT(),
+      cTTC:calculateTotalTTC(),
+      cTVA:calculateTVA(),
       format: formData.format,
       ifu: "3202397904961", // Remplacez par l'IFU du client
+      aib:formData.aib,
       type: "FV", // Type de facture
       operator: {
         name: utilisateurs.nom, // Remplacez par le nom de l'opérateur
@@ -137,7 +164,7 @@ const FacturePreview = ({ formData, selectedProducts, onClose }) => {
         price: product.prix, // Prix unitaire
         quantity: product.quantity, // Quantité
         unit: product.unit,
-        taxGroup: product.taxGroup || "A", // Groupe fiscal (par défaut "A")
+        taxGroup: product.taxation || "A", // Groupe fiscal (par défaut "A")
       })),
       client: {
         contact: clientDetails.telephone,
@@ -301,7 +328,7 @@ const FacturePreview = ({ formData, selectedProducts, onClose }) => {
             <strong>Total HT:</strong> {calculateTotalHT()} Fcfa
           </p>
           <p>
-            <strong>Total TVA (0%):</strong> {calculateTVA()} Fcfa
+            <strong>Total TVA (18%):</strong> {calculateTVA()} Fcfa
           </p>
           <p>
             <strong>Total TTC:</strong> {calculateTotalTTC()} Fcfa
@@ -311,6 +338,9 @@ const FacturePreview = ({ formData, selectedProducts, onClose }) => {
           </p>
           <p>
             <strong>Montant à payé :</strong> {calculateTotalWithRemise()} Fcfa
+          </p>
+          <p>
+            <strong>AIB, {formData.aib === "A" ? 1 : formData.aib === "B" ? 5 : "N/A"}:</strong> {calculateTotalWithRemise()} Fcfa
           </p>
         </div>
 

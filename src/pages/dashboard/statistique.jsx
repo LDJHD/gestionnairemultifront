@@ -105,7 +105,7 @@ function FactureTabContent({ ceJour, septJour, trenteDerniersJours, totalEnregis
       septJour,
       trenteDerniersJours,
     };
-  
+
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/invoice/statistique`, {
@@ -116,24 +116,24 @@ function FactureTabContent({ ceJour, septJour, trenteDerniersJours, totalEnregis
         },
         body: JSON.stringify(data),
       });
-  
+
       if (!response.ok) {
         throw new Error("Erreur lors de la génération du PDF");
       }
-  
+
       const jsonResponse = await response.json(); // Récupérer la réponse JSON du backend
       const { datee } = jsonResponse; // Date de création du PDF
-      
+
       // Télécharge le PDF directement en tant que blob
       const blobResponse = await fetch(`${import.meta.env.VITE_API_URL}/pdf/${datee}_statistiques_comptabilite.pdf`);
-      
+
       if (!blobResponse.ok) {
         throw new Error("Erreur lors du téléchargement du PDF");
       }
-  
+
       const blob = await blobResponse.blob(); // Récupérer le PDF sous forme de blob
       const downloadUrl = window.URL.createObjectURL(blob);
-  
+
       const a = document.createElement("a");
       a.href = downloadUrl;
       a.download = `${datee}_statistiques_comptabilite.pdf`; // Nom du fichier PDF à télécharger
@@ -144,7 +144,7 @@ function FactureTabContent({ ceJour, septJour, trenteDerniersJours, totalEnregis
       console.error("Erreur:", error);
     }
   };
-  
+
 
 
 
@@ -404,6 +404,7 @@ export function Statistique() {
   const [totalEnregistrementDefaut, settotalEnregistrementDefaut] = useState(0);
   const [trenteDerniersJours, settrenteDerniersJours] = useState(0);
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(true); // Ajout d'un état pour suivre le chargement
 
 
 
@@ -427,7 +428,7 @@ export function Statistique() {
   const handleclientSelect = (client) => {
     setSelectedclient(client); // Enregistrer le client sélectionné
     setFormData((prev) => ({ ...prev, client_id: client.nom })); // Enregistrer l'ID du client
-    fetchventeselectvente(formData.client_id, formData.dateDebut, formData.dateFin, formData.produit_id);
+    // fetchventeselectvente(formData.client_id, formData.dateDebut, formData.dateFin, formData.produit_id);
     setIsDropdownOpenclient(false); // Fermer la liste déroulante
   };
   // Fetch all client on mount
@@ -465,7 +466,7 @@ export function Statistique() {
     if (name === "client_id") {
       setSelectedclient(null); // Réinitialiser le client sélectionné
       setFormData((prevData) => ({ ...prevData, [name]: value }));
-      setIsDropdownOpen(true); // Ouvrir la liste déroulante
+      setIsDropdownOpenclient(true); // Ouvrir la liste déroulante
 
       // Filtrer les produits par `nom` ou `code_barre`
       const filtered = client.filter(
@@ -541,6 +542,8 @@ export function Statistique() {
       } else {
         console.error("Erreur inattendue :", error.message);
       }
+    } finally {
+      setLoading(false); // Arrêt du chargement après récupération des données
     }
   };
 
@@ -675,24 +678,30 @@ export function Statistique() {
 
         </CardHeader>
         <CardBody className="flex w-full  h-full justify-center  px-0 pt-0 pb-2">
-          <Tabs className="w-full" value={activeTab} onChange={(value) => setActiveTab(value)}>
-            <TabsHeader >
-              {data.map(({ label, value }) => (
-                <Tab key={value} value={value}>
-                  {label}
-                </Tab>
-              ))}
-            </TabsHeader>
-            <TabsBody className="w-full mt-7">
+          {loading ? (
+            <div className="flex flex-col items-center justify-center h-64">
+              <img src=" /image/loading.png" alt="Chargement..." className="w-24 h-24 animate-spin" />
 
-              <TabPanel value="vente">
-                <VenteTabContent ventesnombre={ventesnombre} totalMontant={totalMontant} totalProduit={totalProduit} />
-              </TabPanel>
-              <TabPanel value="produit">
-                <FactureTabContent ceJour={ceJour} septJour={septJour} trenteDerniersJours={trenteDerniersJours} totalEnregistrementDefaut={totalEnregistrementDefaut} totalMontantDefaut={totalMontantDefaut} />
-              </TabPanel>
-            </TabsBody>
-          </Tabs>
+            </div>
+          ) : (
+            <Tabs className="w-full" value={activeTab} onChange={(value) => setActiveTab(value)}>
+              <TabsHeader >
+                {data.map(({ label, value }) => (
+                  <Tab key={value} value={value}>
+                    {label}
+                  </Tab>
+                ))}
+              </TabsHeader>
+              <TabsBody className="w-full mt-7">
+                <TabPanel value="vente">
+                  <VenteTabContent ventesnombre={ventesnombre} totalMontant={totalMontant} totalProduit={totalProduit} />
+                </TabPanel>
+                <TabPanel value="produit">
+                  <FactureTabContent ceJour={ceJour} septJour={septJour} trenteDerniersJours={trenteDerniersJours} totalEnregistrementDefaut={totalEnregistrementDefaut} totalMontantDefaut={totalMontantDefaut} />
+                </TabPanel>
+              </TabsBody>
+            </Tabs>
+          )}
         </CardBody>
       </Card>
 

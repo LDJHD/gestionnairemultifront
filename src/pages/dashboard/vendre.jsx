@@ -10,11 +10,14 @@ import { useEffect, useState } from "react";
 import Modal from "@/widgets/modal/modal";
 import Toastadd from "@/widgets/toast/toastadd";
 import { Link } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
 import { useProductStore } from "@/widgets/store/useproductstore";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import FacturePreview from "@/widgets/facture/facturepreview"; // Composant de prévisualisation
 import { format } from "prettier";
+import axios from "axios";
+import FacturePrevieww from "@/widgets/facture/factureprevieww";
 export function Vendre() {
   const setProductsstore = useProductStore((state) => state.setProductsstore); // Récupération de la méthode `setProducts` du store
   const productsstore = useProductStore((state) => state.productsstore); // Récupération des produits du store
@@ -30,7 +33,43 @@ export function Vendre() {
       setSelectedProducts([...selectedProducts, { ...product, quantity: 1, unit: "Sachet(s)" }]);
     }
     setProductsstore([]);
+  // Appeler fetchStockValue en passant l'ID du produit
+  console.log(product.id)
+  fetchStockValue(product.id);
   };
+
+
+
+const fetchStockValue = async (id) => {
+  try {
+      const token = localStorage.getItem("token");
+
+      const response = await axios.post(
+          `${import.meta.env.VITE_API_URL}/api/v1/stock/valeur`,
+          { id },
+          {
+              headers: {
+                  Authorization: `Bearer ${token}`,
+              },
+          }
+      );
+
+      const { quantite_stock, quantite_vendue, stock_restant } = response.data;
+
+      if (stock_restant < -1) {
+        alert("Votre stock est épuisé, veuillez recharger avant de vendre.");
+      }
+      // Si le stock est positif mais inférieur à 20
+      else if (stock_restant > 0 && stock_restant < 20) {
+        alert(`Votre stock est presque épuisé. Il vous reste ${stock_restant} en stock.`);
+      }
+      // Si le stock est suffisant (> 20), pas de message
+
+  } catch (error) {
+      console.error("Erreur lors de la récupération des données de stock :", error);
+  }
+};
+
 
   // Fonction pour supprimer un produit de la liste sélectionnée
   const handleRemoveProduct = (codeBarre) => {
@@ -76,6 +115,7 @@ export function Vendre() {
   
 
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [isPreviewOpen2, setIsPreviewOpen2] = useState(false);
   const [products, setProducts] = useState([]);
   const [menuActif, setMenuActif] = useState(null);
   const [toast, setToast] = useState(false);
@@ -84,11 +124,16 @@ export function Vendre() {
   const [formData, setFormData] = useState({
     client: "",
     remise: "",
-    format: "A4",
+    format: "Ticket",
+    aib:"N/A"
   });
 
   const handlePreview = () => {
     setIsPreviewOpen(true); // Ouvrir la prévisualisation
+  };
+
+  const handlePreview2 = () => {
+    setIsPreviewOpen2(true); // Ouvrir la prévisualisation
   };
 
   const handleInputChange = (e) => {
@@ -168,7 +213,7 @@ export function Vendre() {
   const [filteredclient, setFilteredclient] = useState([]);
   const [selectedclient, setSelectedclient] = useState(null); // Stocke le client sélectionné
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // Contrôle l'ouverture de la liste déroulante
-
+  const [loading, setLoading] = useState(true); // Ajout d'un état pour suivre le chargement
 
   const handleclientSelect = (client) => {
     setSelectedclient(client); // Enregistrer le client sélectionné
@@ -226,6 +271,8 @@ export function Vendre() {
       }
     } catch (error) {
       console.error("Erreur réseau:", error);
+    } finally {
+      setLoading(false); // Arrêt du chargement après récupération des données
     }
   };
 
@@ -272,6 +319,7 @@ export function Vendre() {
 
   return (
     <div className="mt-12 mb-8 sm:flex justify-between ">
+        <ToastContainer position="top-right" autoClose={5000} />
       <div className="w-full  bg-blue-gray-50 rounded-xl sm:w-7/12">
         <Card className="h-[800px] m-4">
           <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
@@ -282,6 +330,13 @@ export function Vendre() {
           </CardHeader>
           <CardBody className="overflow-x-auto  overflow-y-auto px-0 pt-0 pb-2">
             {/* Tableau des produits disponibles */}
+             {/* Affichage de l'animation si les données sont en cours de chargement */}
+          {loading ? (
+            <div className="flex flex-col items-center justify-center h-64">
+              <img src=" /image/loading.png" alt="Chargement..." className="w-24 h-24 animate-spin" />
+              
+            </div>
+          ) : (
             <table className="w-full min-w-[500px] table-auto mb-8">
               <thead>
                 <tr>
@@ -317,7 +372,7 @@ export function Vendre() {
                         <button
                           type="button"
                           onClick={() => handleAddProduct(product)}
-                          className="w-5/12 md:w-3/12 bg-blue-700 text-white rounded-md flex items-center justify-center"
+                          className="w-[30px] h-[30px] bg-blue-700 text-white rounded-md flex items-center justify-center"
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -325,7 +380,7 @@ export function Vendre() {
                             viewBox="0 0 24 24"
                             strokeWidth="4"
                             stroke="currentColor"
-                            className="size-3"
+                            className="size-3 fo"
                           >
                             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                           </svg>
@@ -336,6 +391,7 @@ export function Vendre() {
                 })}
               </tbody>
             </table>
+            )}
           </CardBody>
         </Card>
       </div>
@@ -409,11 +465,31 @@ export function Vendre() {
                     onChange={handleInputChange}
                     className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
                   >
+                    <option>Ticket</option>
                     <option>A4</option>
                     <option>A3</option>
-                    <option>Ticket</option>
                   </select>
                 </div>
+
+
+                <div>
+                  <label htmlFor="aib" className="block text-sm font-semibold text-gray-700">
+                    AIB
+                  </label>
+                  <select
+                    id="aib"
+                    name="aib"
+                    required
+                    value={formData.aib}
+                    onChange={handleInputChange}
+                    className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
+                  >
+                    <option value=" ">N/A</option>
+                    <option value="A">1%</option>
+                    <option value="B" >5%</option>
+                  </select>
+                </div>
+
               </div>
 
             </form>
@@ -546,12 +622,41 @@ export function Vendre() {
               </svg>
             </button>
 
+            <button
+              type="button"
+              onClick={handlePreview2}
+              className="flex items-center space-x-2 m-2 p-2 bg-orange-600 text-white font-bold rounded-md"
+            >
+              <span>Details Facture simple</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="1.5"
+                stroke="currentColor"
+                className="w-5 h-5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 0 1-2.25 2.25M16.5 7.5V18a2.25 2.25 0 0 0 2.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 0 0 2.25 2.25h13.5M6 7.5h3v3H6v-3Z"
+                />
+              </svg>
+            </button>
+
             {/* Prévisualisation de la facture */}
             {isPreviewOpen && (
               <FacturePreview
                 formData={formData}
                 selectedProducts={selectedProducts}
                 onClose={() => setIsPreviewOpen(false)}
+              />
+            )}
+            {isPreviewOpen2 && (
+              <FacturePrevieww
+                formData={formData}
+                selectedProducts={selectedProducts}
+                onClose={() => setIsPreviewOpen2(false)}
               />
             )}
 

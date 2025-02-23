@@ -11,12 +11,49 @@ export function ModifieProduit({ ProductId, handleformclick }) {
     nom: "",
     categorie_id: "",
     prix: "",
+    prix_achat: "",
+    taxation: "",
+    dateexpi: "",
     description: "",
   });
 
   const [supplements, setSupplements] = useState([]);
   const [categorie, setcategorie] = useState([]);
   const [fields, setFields] = useState([]); // Initialement, pas de champ dynamique
+
+  const [unit, setunit] = useState([]);
+
+
+  // Fonction pour récupérer les categories
+  const fetchunit = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/unit/listall`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setunit(data);
+      } else {
+        console.error("Erreur lors de la récupération des categories:", response.status);
+      }
+    } catch (error) {
+      console.error("Erreur réseau:", error);
+    }
+  };
+
+
+
+  // Appel de fetchcategories lors du chargement du composant
+  useEffect(() => {
+    fetchunit();
+  }, []);
+
 
   // Fonction pour récupérer les categories
   const fetchcategories = async () => {
@@ -65,6 +102,9 @@ export function ModifieProduit({ ProductId, handleformclick }) {
         nom: product.produit.nom || "",
         categorie_id: product.produit.categorie_id || "",
         prix: product.produit.prix || "",
+        prix_achat: product.produit.prix_achat || "",
+        taxation: product.produit.taxation || "",
+        dateexpi: product.produit.dateexpi ? product.produit.dateexpi.split("T")[0] : "",
         description: product.produit.description || "",
       });
 
@@ -88,18 +128,18 @@ export function ModifieProduit({ ProductId, handleformclick }) {
     );
   };
 
-  const handleRemoveSupplement = (index,id) => {
+  const handleRemoveSupplement = (index, id) => {
     setSupplements((prevSupplements) => prevSupplements.filter((_, i) => i !== index));
 
 
-  const swalWithTailwindButtons = Swal.mixin({
+    const swalWithTailwindButtons = Swal.mixin({
       customClass: {
         confirmButton: 'bg-green-800 hover:bg-green-400 text-white font-bold py-2 mx-2 px-4 rounded',
         cancelButton: 'bg-red-800 hover:bg-red-200 text-white font-bold py-2 mx-2 px-4 rounded'
       },
       buttonsStyling: false
     });
-  
+
     swalWithTailwindButtons.fire({
       title: "Êtes-vous sûr ?",
       text: "Vous ne pourrez pas annuler cette action !",
@@ -120,7 +160,7 @@ export function ModifieProduit({ ProductId, handleformclick }) {
             },
             body: JSON.stringify({ id }),
           });
-  
+
           if (response.ok) {
             console.log("Réponse du serveur :", response);
             swalWithTailwindButtons.fire({
@@ -130,7 +170,7 @@ export function ModifieProduit({ ProductId, handleformclick }) {
             });
           } else {
             // Ce bloc ne devrait jamais être atteint si response.ok est true
-            const errorData = await response.json(); 
+            const errorData = await response.json();
             console.error("Erreur lors de la suppression :", errorData);
             swalWithTailwindButtons.fire({
               title: "Erreur",
@@ -167,57 +207,9 @@ export function ModifieProduit({ ProductId, handleformclick }) {
     ]);
   };
 
-  // const updateSupplements = async () => {
-  //   const token = localStorage.getItem("token");
-  //   await Promise.all(supplements.map(async (supplement) => {
-  //     try {
-  //       await axios.post(
-  //         `${import.meta.env.VITE_API_URL}/api/v1/supplement/update`,
-  //         { ...supplement },
-  //         {
-  //           headers: {
-  //             "Content-Type": "application/json",
-  //             Authorization: `Bearer ${token}`,
-  //           },
-  //         }
-  //       );
-  //     } catch (error) {
-  //       console.error("Erreur lors de la mise à jour du supplément :", error);
-  //     }
-  //   }));
-  // };
-
-
-  // const updateSupplements = async () => {
-  //   const token = localStorage.getItem("token");
-  
-  //   // Tu passes une nouvelle structure d'objet sans l'ID pour les nouveaux champs
-  //   await Promise.all(supplements.map(async (supplement) => {
-  //     try {
-  //       // Tu vérifies si le supplément a un ID ou non
-  //       const dataToSend = supplement.id
-  //         ? { ...supplement } // Si l'ID existe, on envoie le supplément entier
-  //         : { ...supplement, produit_id: ProductId }; // Si pas d'ID, on envoie seulement prix, unit et produit_id
-  
-  //       await axios.post(
-  //         `${import.meta.env.VITE_API_URL}/api/v1/supplement/update`,
-  //         dataToSend,
-  //         {
-  //           headers: {
-  //             "Content-Type": "application/json",
-  //             Authorization: `Bearer ${token}`,
-  //           },
-  //         }
-  //       );
-  //     } catch (error) {
-  //       console.error("Erreur lors de la mise à jour du supplément :", error);
-  //     }
-  //   }));
-  // };
-
   const updateSupplements = async () => {
     const token = localStorage.getItem("token");
-  
+
     // Tu passes une nouvelle structure d'objet sans l'ID pour les nouveaux champs
     await Promise.all(supplements.map(async (supplement) => {
       try {
@@ -225,7 +217,7 @@ export function ModifieProduit({ ProductId, handleformclick }) {
         const dataToSend = supplement.id
           ? { ...supplement } // Si l'ID existe, on envoie le supplément entier
           : { ...supplement, produit_id: ProductId }; // Si pas d'ID, on envoie seulement prix, unit et produit_id
-  
+
         const response = await axios.post(
           `${import.meta.env.VITE_API_URL}/api/v1/supplement/update`,
           dataToSend,
@@ -236,9 +228,9 @@ export function ModifieProduit({ ProductId, handleformclick }) {
             },
           }
         );
-  
 
-  
+
+
       } catch (error) {
         if (error.response && error.response.data && error.response.data.erreur) {
           // Si le backend renvoie un message d'erreur, on l'affiche dans un toast
@@ -251,8 +243,8 @@ export function ModifieProduit({ ProductId, handleformclick }) {
       }
     }));
   };
-  
-  
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -296,6 +288,10 @@ export function ModifieProduit({ ProductId, handleformclick }) {
         <ToastContainer position="top-right" autoClose={5000} />
         <h2 className="text-2xl font-bold">Modifier un Produit</h2>
         <div className="grid grid-cols-1 gap-4">
+        <div>
+            <label htmlFor="categorie_id" className="block text-sm font-semibold text-gray-700">
+              Code barre
+            </label>
           <input
             type="text"
             name="code_barre"
@@ -304,6 +300,11 @@ export function ModifieProduit({ ProductId, handleformclick }) {
             placeholder="Code barre"
             className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
           />
+          </div>
+          <div>
+            <label htmlFor="categorie_id" className="block text-sm font-semibold text-gray-700">
+              Nom
+            </label>
           <input
             type="text"
             name="nom"
@@ -312,6 +313,7 @@ export function ModifieProduit({ ProductId, handleformclick }) {
             placeholder="Nom"
             className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
           />
+          </div>
           <div>
             <label htmlFor="categorie_id" className="block text-sm font-semibold text-gray-700">
               Catégorie
@@ -332,7 +334,10 @@ export function ModifieProduit({ ProductId, handleformclick }) {
               ))}
             </select>
           </div>
-
+          <div>
+            <label htmlFor="categorie_id" className="block text-sm font-semibold text-gray-700">
+              Prix
+            </label>
           <input
             type="number"
             name="prix"
@@ -341,6 +346,59 @@ export function ModifieProduit({ ProductId, handleformclick }) {
             placeholder="Prix"
             className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
           />
+          </div>
+  <div>
+            <label htmlFor="categorie_id" className="block text-sm font-semibold text-gray-700">
+              Prix d'achat
+            </label>
+          <input
+            type="number"
+            name="prix_achat"
+            required
+            value={formData.prix_achat}
+            onChange={(e) => setFormData({ ...formData, prix_achat: e.target.value })}
+            placeholder="Prix Achat"
+            className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
+          />
+          </div>
+
+          <div>
+            <label htmlFor="categorie_id" className="block text-sm font-semibold text-gray-700">
+              Taxation
+            </label>
+            <select
+              id="taxation"
+              name="taxation"
+              required
+              value={formData.taxation}
+              onChange={(e) => setFormData({ ...formData, taxation: e.target.value })}
+              className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
+            >
+              <option value="">Sélectionnez une taxation</option>
+              <option>A</option>
+              <option>B</option>
+              <option>C</option>
+              <option>D</option>
+              <option>E</option>
+            </select>
+          </div>
+          <div>
+            <label htmlFor="categorie_id" className="block text-sm font-semibold text-gray-700">
+              Date d'expiration
+            </label>
+          <input
+            type="date"
+            name="dateexpi"
+            value={formData.dateexpi}
+            onChange={(e) => setFormData({ ...formData, dateexpi: e.target.value })}
+            placeholder=""
+            className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
+          />
+           </div>
+           <div>
+            <label htmlFor="categorie_id" className="block text-sm font-semibold text-gray-700">
+              Description
+            </label>
           <textarea
             name="description"
             value={formData.description}
@@ -348,6 +406,7 @@ export function ModifieProduit({ ProductId, handleformclick }) {
             placeholder="Description"
             className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
           />
+           </div>
         </div>
 
         <h3 className="text-lg font-bold mt-4">Suppléments</h3>
@@ -360,27 +419,13 @@ export function ModifieProduit({ ProductId, handleformclick }) {
               className="p-2 w-full border rounded"
             >
               <option value="">Sélectionner</option>
-              <option>Sachet(s)</option>
-              <option>Paquet(s)</option>
-              <option>Boite(s)</option>
-              <option>Plaquette(s)</option>
-              <option>Carton(s)</option>
-              <option>Bouteille(s)</option>
-              <option>Litre(s)</option>
-              <option>Kilogramme(s)</option>
-              <option>Gramme(s)</option>
-              <option>Pot(s)</option>
-              <option>Barquette(s)</option>
-              <option>Tube(s)</option>
-              <option>Piece(s)</option>
-              <option>Dose(s)</option>
-              <option>Flacon(s)</option>
-              <option>Bidon(s)</option>
-              <option>Pack(s)</option>
-              <option>Palette(s)</option>
-              <option>Contenant</option>
-              <option>1/2_Demi</option>
+              {unit.map((unit) => (
+                <option key={unit.id} value={unit.id}>
+                  {unit.nom}
+                </option>
+              ))}
             </select>
+
             <input
               type="number"
               name="prix"
@@ -391,7 +436,7 @@ export function ModifieProduit({ ProductId, handleformclick }) {
             />
 
             <button type="button"
-              onClick={() => handleRemoveSupplement(index,supplement.id)}
+              onClick={() => handleRemoveSupplement(index, supplement.id)}
               className="bg-red-500 text-white p-2 rounded-full">
               <TrashIcon className="w-6 h-6" />
             </button>
