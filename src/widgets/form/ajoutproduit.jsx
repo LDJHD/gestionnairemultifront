@@ -215,7 +215,7 @@ export function AjoutProduit({ handleformclick, handletoast }) {
         </svg>
         </button>
       </div>
-      <form className="w-full " onSubmit={handleSubmit}>
+      {/* <form className="w-full " onSubmit={handleSubmit}>
         <ToastContainer position="top-right" autoClose={5000} />
 
         <div className="border-b border-gray-200 pb-6">
@@ -385,7 +385,186 @@ export function AjoutProduit({ handleformclick, handletoast }) {
             Ajouter le Produit
           </button>
         </div>
-      </form>
+      </form> */}
+      <form className="w-full max-w-6xl mx-auto" onSubmit={handleSubmit}>
+  <ToastContainer position="top-right" autoClose={600} />
+
+  <div className="border-b border-gray-200 pb-6">
+    <h2 className="text-2xl font-bold text-gray-800">Ajouter un Produit</h2>
+    <p className="mt-2 text-sm text-gray-500">
+      Remplissez les détails du produit à ajouter.
+    </p>
+  </div>
+
+  {/* Grid pour afficher 2 champs par ligne */}
+  <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+    <div>
+      <label htmlFor="code_barre" className="block text-sm font-semibold text-gray-700">
+        Code barre
+      </label>
+      <input
+        required
+        type="text"
+        name="code_barre"
+        id="code_barre"
+        value={formData.code_barre}
+        onChange={handleInputChange}
+        className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
+        placeholder="Ex: 123456789"
+      />
+    </div>
+
+    <div>
+      <label htmlFor="nom" className="block text-sm font-semibold text-gray-700">
+        Nom du Produit
+      </label>
+      <input
+        type="text"
+        name="nom"
+        required
+        id="nom"
+        value={formData.nom}
+        onChange={handleInputChange}
+        className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
+        placeholder="Ex: Jus d'orange"
+      />
+    </div>
+
+    <div>
+      <label htmlFor="categorie_id" className="block text-sm font-semibold text-gray-700">
+        Catégorie
+      </label>
+      <select
+        id="categorie_id"
+        name="categorie_id"
+        required
+        value={formData.categorie_id}
+        onChange={handleInputChange}
+        className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
+      >
+        <option value="">Sélectionnez une catégorie</option>
+        {categorie.map((categorie) => (
+          <option key={categorie.id} value={categorie.id}>
+            {categorie.nom}
+          </option>
+        ))}
+      </select>
+    </div>
+
+    <div>
+      <label htmlFor="prix" className="block text-sm font-semibold text-gray-700">
+        Prix
+      </label>
+      <input
+        type="number"
+        name="prix"
+        required
+        id="prix"
+        value={formData.prix}
+        onChange={handleInputChange}
+        className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
+        placeholder="0.00"
+      />
+    </div>
+
+
+    <PriceUnitForm onChange={setPriceUnitFields} charge={charge} />
+
+    <div>
+      <label htmlFor="prix_achat" className="block text-sm font-semibold text-gray-700">
+        Prix Achat
+      </label>
+      <input
+        type="number"
+        name="prix_achat"
+        required
+        id="prix_achat"
+        value={formData.prix_achat}
+        onChange={handleInputChange}
+        className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
+        placeholder="0.00"
+      />
+    </div>
+
+    <div>
+      <label htmlFor="taxation" className="block text-sm font-semibold text-gray-700">
+        Taxation
+      </label>
+      <select
+        id="taxation"
+        name="taxation"
+        required
+        value={formData.taxation}
+        onChange={(e) => setFormData({ ...formData, taxation: e.target.value })}
+        className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
+      >
+        <option value="">Sélectionnez une taxation</option>
+        <option>A</option>
+        <option>B</option>
+        <option>C</option>
+        <option>D</option>
+        <option>E</option>
+      </select>
+    </div>
+
+    <div>
+      <label htmlFor="quantite_stock" className="block text-sm font-semibold text-gray-700">
+        Quantité Stock
+      </label>
+      <input
+        type="number"
+        name="quantite_stock"
+        required
+        id="quantite_stock"
+        value={formData.quantite_stock}
+        onChange={handleInputChange}
+        className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
+        placeholder="100"
+      />
+    </div>
+
+    <div>
+      <label className="text-black" htmlFor="dateexpi">
+        Date Expiration
+      </label>
+      <input
+        type="date"
+        id="dateexpi"
+        name="dateexpi"
+        value={formData.dateexpi || ""}
+        onChange={handleInputChange}
+        placeholder="Date expiration"
+        className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
+      />
+    </div>
+
+    <div className="col-span-2">
+      <label htmlFor="description" className="block text-sm font-semibold text-gray-700">
+        Description
+      </label>
+      <textarea
+        name="description"
+        id="description"
+        required
+        rows="2"
+        value={formData.description}
+        onChange={handleInputChange}
+        className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
+        placeholder="Description"
+      />
+    </div>
+  </div>
+
+  <div className="mt-6">
+    <button
+      type="submit"
+      className="w-full py-2 px-4 rounded-md bg-indigo-600 text-white font-semibold shadow-md hover:bg-indigo-500 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-300"
+    >
+      Ajouter le Produit
+    </button>
+  </div>
+</form>
+
 
 
     </div>
