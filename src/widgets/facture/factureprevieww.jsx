@@ -147,6 +147,10 @@ const FacturePrevieww = ({ formData, selectedProducts, onClose }) => {
 
     // Données de la facture
     const invoiceData = {
+      cAIB:calculateAIB(),
+      cHT:calculateTotalHT(),
+      cTTC:calculateTotalTTC(),
+      cTVA:calculateTVA(),
       format: formData.format,
       ifu: "3202397904961", // Remplacez par l'IFU du client
       aib:formData.aib,
