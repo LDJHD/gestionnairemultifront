@@ -458,7 +458,7 @@ const fetchStockValue = async (id) => {
                     Format
                   </label>
                   <select
-                    id="aib"
+                    id="format"
                     name="format"
                     required
                     value={formData.format}
@@ -484,7 +484,7 @@ const fetchStockValue = async (id) => {
                     onChange={handleInputChange}
                     className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
                   >
-                    <option value="N/A">N/A</option>
+                    <option value=" ">N/A</option>
                     <option value="A">1%</option>
                     <option value="B" >5%</option>
                   </select>

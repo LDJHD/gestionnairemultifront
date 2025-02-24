@@ -78,26 +78,29 @@ const FacturePrevieww = ({ formData, selectedProducts, onClose }) => {
   const calculateTotalHT = () => {
     return selectedProducts.reduce((acc, product) => acc + product.prix * product.quantity, 0);
   };
-
   const calculateTotalWithRemise = () => {
     const totalHT = selectedProducts.reduce(
       (acc, product) => acc + product.prix * product.quantity,
       0
     );
-
-    // Convertir la remise en un facteur (par exemple, 10% devient 0.1)
+  
+    const tva = calculateTVA(); // Calcul de la TVA
+    const aib = calculateAIB(); // Calcul de l'AIB
+  
+    const totalTTC = totalHT + tva + aib; // Total TTC avant remise
+  
+    // Convertir la remise en un facteur (ex: 10% devient 0.1)
     const remisePourcentage = formData.remise / 100;
-
-    // Calculer la valeur de la remise
-    const remiseValeur = totalHT * remisePourcentage;
-
-    // Total HT après remise
-    // Total HT après remise (arrondi à l'entier le plus proche)
-    const totalApresRemise = Math.round(totalHT - remiseValeur);
-
-
-    return totalApresRemise;  // Total après remise
+  
+    // Calculer la valeur de la remise sur le TTC
+    const remiseValeur = totalTTC * remisePourcentage;
+  
+    // Total TTC après remise (arrondi à l'entier le plus proche)
+    const totalApresRemise = Math.round(totalTTC - remiseValeur);
+  
+    return totalApresRemise;
   };
+  
 
   // Calcul TVA
   const calculateTVA = () => {
@@ -113,9 +116,20 @@ const FacturePrevieww = ({ formData, selectedProducts, onClose }) => {
     }, 0);
   };
 
+  const calculateAIB = () => {
+    return selectedProducts.reduce((totalAIB, product) => {
+      // Vérifier si l'AIB doit être appliqué (taxation ≠ "B" et "D" + formData.aib ≠ "N/A")
+      if (!["B", "D"].includes(product.taxation) && formData.aib !== "N/A") {
+        const tauxAIB = formData.aib === "A" ? 0.01 : formData.aib === "B" ? 0.05 : 0;
+        return totalAIB + product.prix * product.quantity * tauxAIB;
+      }
+      return totalAIB; // Sinon, pas d'AIB
+    }, 0);
+  };
+
   // Calcul du total TTC
   const calculateTotalTTC = () => {
-    return calculateTotalHT() + calculateTVA();
+    return calculateTotalHT() + calculateTVA() +calculateAIB();
   };
 
   // Calcul du montant payé (exemple basé sur une saisie utilisateur)
@@ -319,7 +333,7 @@ const FacturePrevieww = ({ formData, selectedProducts, onClose }) => {
             <strong>Montant à payé :</strong> {calculateTotalWithRemise()} Fcfa
           </p>
           <p>
-            <strong>AIB,{formData.aib === "A" ? 1 : formData.aib === "B" ? 5 : "N/A"} %:</strong> {calculateTotalWithRemise()} Fcfa
+            <strong>AIB,{formData.aib === "A" ? 1 : formData.aib === "B" ? 5 : "N/A"} %:</strong> {calculateAIB()} Fcfa
           </p>
         </div>
 
