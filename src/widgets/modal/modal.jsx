@@ -54,7 +54,7 @@ export  function Modal({handletoast}) {
     <div className="flex min-h-full items-center justify-center p-4 text-center sm:items-center sm:p-0">
       <DialogPanel
         transition
-        className="relative w-full h-full transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all data-[closed]:translate-y-4 data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in"
+        className="relative h-full transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all data-[closed]:translate-y-4 data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in"
       >
         <div className="px-4 pb-4 pt-5 sm:p-6 sm:pb-4 h-full">
           <div className="h-full">

@@ -109,6 +109,7 @@ export function ModifieProduit({ ProductId, handleformclick }) {
       });
 
       setSupplements(product.supplements || []);
+  
     } catch (error) {
       console.error("Erreur lors de la récupération des détails du produit :", error);
     }
@@ -120,10 +121,18 @@ export function ModifieProduit({ ProductId, handleformclick }) {
     }
   }, [ProductId]);
 
+  // const handleInputChange = (index, field, value) => {
+  //   setSupplements((prevSupplements) =>
+  //     prevSupplements.map((supplement, i) =>
+  //       i === index ? { ...supplement, [field]: value } : supplement
+  //     )
+  //   );
+  // };
+
   const handleInputChange = (index, field, value) => {
     setSupplements((prevSupplements) =>
       prevSupplements.map((supplement, i) =>
-        i === index ? { ...supplement, [field]: value } : supplement
+        i === index ? { ...supplement, [field]: value, unit_id: value } : supplement
       )
     );
   };
@@ -215,9 +224,8 @@ export function ModifieProduit({ ProductId, handleformclick }) {
       try {
         // Tu vérifies si le supplément a un ID ou non
         const dataToSend = supplement.id
-          ? { ...supplement } // Si l'ID existe, on envoie le supplément entier
-          : { ...supplement, produit_id: ProductId }; // Si pas d'ID, on envoie seulement prix, unit et produit_id
-
+        ? { ...supplement, unit: supplement.unit_id } // Si l'ID existe, unit prend la valeur de unit_id
+        : { ...supplement, produit_id: ProductId }; // Sinon, on garde unit tel quel
         const response = await axios.post(
           `${import.meta.env.VITE_API_URL}/api/v1/supplement/update`,
           dataToSend,
@@ -276,7 +284,7 @@ export function ModifieProduit({ ProductId, handleformclick }) {
   };
 
   return (
-    <div className="w-full mx-auto rounded-lg p-6">
+    <div className="w-full z-50 mx-auto rounded-lg p-6">
       <div className="flex justify-end">
         <button onClick={handleformclick} className="text-xl rounded-full text-black w-6 h-6 bg-white border-3 border-gray-900">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
@@ -284,7 +292,7 @@ export function ModifieProduit({ ProductId, handleformclick }) {
           </svg>
         </button>
       </div>
-      <form className="w-full" onSubmit={handleSubmit}>
+      {/* <form className="w-full" onSubmit={handleSubmit}>
         <ToastContainer position="top-right" autoClose={5000} />
         <h2 className="text-2xl font-bold">Modifier un Produit</h2>
         <div className="grid grid-cols-1 gap-4">
@@ -421,7 +429,7 @@ export function ModifieProduit({ ProductId, handleformclick }) {
               <option value="">Sélectionner</option>
               {unit.map((unit) => (
                 <option key={unit.id} value={unit.id}>
-                  {unit.nom}
+                  {unit.unit}
                 </option>
               ))}
             </select>
@@ -456,7 +464,177 @@ export function ModifieProduit({ ProductId, handleformclick }) {
         >
           Mettre à jour le produit
         </button>
+      </form> */}
+
+      <form className="w-full z-50" onSubmit={handleSubmit}>
+        <ToastContainer position="top-right" autoClose={5000} />
+        <h2 className="text-2xl font-bold mb-4">Modifier un Produit</h2>
+
+        <div className="grid grid-cols-2 gap-4">
+          {/* Code barre */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700">Code barre</label>
+            <input
+              type="text"
+              name="code_barre"
+              value={formData.code_barre}
+              onChange={(e) => setFormData({ ...formData, code_barre: e.target.value })}
+              placeholder="Code barre"
+              className="mt-1 p-2 block w-full rounded-md border ring-1 ring-black shadow-sm transition duration-300"
+            />
+          </div>
+
+          {/* Nom */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700">Nom</label>
+            <input
+              type="text"
+              name="nom"
+              value={formData.nom}
+              onChange={(e) => setFormData({ ...formData, nom: e.target.value })}
+              placeholder="Nom"
+              className="mt-1 p-2 block w-full rounded-md border ring-1 ring-black shadow-sm transition duration-300"
+            />
+          </div>
+
+          {/* Catégorie */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700">Catégorie</label>
+            <select
+              name="categorie_id"
+              required
+              value={formData.categorie_id}
+              onChange={(e) => setFormData({ ...formData, categorie_id: e.target.value })}
+              className="mt-1 p-2 block w-full rounded-md border ring-1 ring-black shadow-sm transition duration-300"
+            >
+              <option value="">Sélectionnez une catégorie</option>
+              {categorie.map((cat) => (
+                <option key={cat.id} value={cat.id}>{cat.nom}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Prix */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700">Prix</label>
+            <input
+              type="number"
+              name="prix"
+              value={formData.prix}
+              onChange={(e) => setFormData({ ...formData, prix: e.target.value })}
+              placeholder="Prix"
+              className="mt-1 p-2 block w-full rounded-md border ring-1 ring-black shadow-sm transition duration-300"
+            />
+          </div>
+
+          {/* Prix d'achat */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700">Prix d'achat</label>
+            <input
+              type="number"
+              name="prix_achat"
+              required
+              value={formData.prix_achat}
+              onChange={(e) => setFormData({ ...formData, prix_achat: e.target.value })}
+              placeholder="Prix Achat"
+              className="mt-1 p-2 block w-full rounded-md border ring-1 ring-black shadow-sm transition duration-300"
+            />
+          </div>
+
+          {/* Taxation */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700">Taxation</label>
+            <select
+              name="taxation"
+              required
+              value={formData.taxation}
+              onChange={(e) => setFormData({ ...formData, taxation: e.target.value })}
+              className="mt-1 p-2 block w-full rounded-md border ring-1 ring-black shadow-sm transition duration-300"
+            >
+              <option value="">Sélectionnez une taxation</option>
+              <option>A</option>
+              <option>B</option>
+              <option>C</option>
+              <option>D</option>
+              <option>E</option>
+            </select>
+          </div>
+
+          {/* Date d'expiration */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700">Date d'expiration</label>
+            <input
+              type="date"
+              name="dateexpi"
+              value={formData.dateexpi}
+              onChange={(e) => setFormData({ ...formData, dateexpi: e.target.value })}
+              className="mt-1 p-2 block w-full rounded-md border ring-1 ring-black shadow-sm transition duration-300"
+            />
+          </div>
+
+          {/* Description (col-span-2 pour occuper toute la largeur) */}
+          <div className="col-span-2">
+            <label className="block text-sm font-semibold text-gray-700">Description</label>
+            <textarea
+              name="description"
+              value={formData.description}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              placeholder="Description"
+              className="mt-1 p-2 block w-full rounded-md border ring-1 ring-black shadow-sm transition duration-300"
+            />
+          </div>
+        </div>
+
+        {/* Suppléments */}
+        <h3 className="text-lg font-bold mt-6">Suppléments</h3>
+        {supplements.map((supplement, index) => (
+          <div key={index} className="flex w-full space-x-4 mt-2">
+            <select
+              name="unit"
+              value={supplement.unit_id}
+              onChange={(e) => handleInputChange(index, "unit", e.target.value)}
+              className="p-2 w-full border rounded"
+            >
+              <option >Sélectionner</option>
+              {unit.map((unit) => (
+                <option key={unit.id} value={unit.id}>{unit.nom}</option>
+              ))}
+            </select>
+
+            <input
+              type="number"
+              name="prix"
+              value={supplement.prix}
+              onChange={(e) => handleInputChange(index, "prix", e.target.value)}
+              className="p-2 w-full border rounded"
+              placeholder="Prix"
+            />
+
+            <button type="button"
+              onClick={() => handleRemoveSupplement(index, supplement.id)}
+              className="bg-red-500 text-white p-2 rounded-full">
+              <TrashIcon className="w-6 h-6" />
+            </button>
+          </div>
+        ))}
+
+        <button
+          type="button"
+          onClick={handleAddField}
+          className="mt-4 bg-blue-500 text-white p-2 rounded-lg"
+        >
+          Ajouter un champ
+        </button>
+
+        {/* Bouton de soumission */}
+        <button
+          type="submit"
+          className="mt-4 bg-blue-500 text-white p-2 rounded-lg w-full"
+        >
+          Mettre à jour le produit
+        </button>
       </form>
+
     </div>
   );
 }
