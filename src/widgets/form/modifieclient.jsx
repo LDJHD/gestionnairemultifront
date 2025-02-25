@@ -6,7 +6,7 @@ import axios from 'axios';
 
 
 
-export function Modifieclient({ClientId,handleformclick}) {
+export function Modifieuser({userId,handleformclick}) {
   
   const [formData, setFormData] = useState({
     nom: "",
@@ -19,13 +19,13 @@ export function Modifieclient({ClientId,handleformclick}) {
 
 
 
-    // Fonction pour récupérer les détails du Client
-    const fetchclientDetails = async (id) => {
+    // Fonction pour récupérer les détails du user
+    const fetchuserDetails = async (id) => {
       try {
           const token = localStorage.getItem("token"); // Assurez-vous que le jeton est bien stocké
   
           const response = await axios.post(
-              `${import.meta.env.VITE_API_URL}/api/v1/client/detailById`,
+              `${import.meta.env.VITE_API_URL}/api/v1/user/detailById`,
               { id },
               {
                   headers: {
@@ -34,31 +34,31 @@ export function Modifieclient({ClientId,handleformclick}) {
               }
           );
           
-          const client = response.data;
-          console.log(client);
+          const user = response.data;
+          console.log(user);
   
           setFormData({
-              nom: client.nom || "",
-              prenom: client.prenom || "",
-              email: client.email || "",
-              telephone: client.telephone || "",
-              adresse: client.adresse || "",
-              ifu: client.ifu || "",
+              nom: user.nom || "",
+              prenom: user.prenom || "",
+              email: user.email || "",
+              telephone: user.telephone || "",
+              adresse: user.adresse || "",
+              ifu: user.ifu || "",
           });
       } catch (error) {
-          console.error("Erreur lors de la récupération des détails du Client :", error);
+          console.error("Erreur lors de la récupération des détails du user :", error);
       }
   };
   
     
       useEffect(() => {
-        if (ClientId) {
-          fetchclientDetails(ClientId); // Charger les détails si l'ID du Client est fourni
-          console.log(ClientId);
+        if (userId) {
+          fetchuserDetails(userId); // Charger les détails si l'ID du user est fourni
+          console.log(userId);
         }else {
           console.log('loose');
         }
-      }, [ClientId]);
+      }, [userId]);
 
 
 
@@ -75,7 +75,7 @@ export function Modifieclient({ClientId,handleformclick}) {
         // Récupérer le token depuis le localStorage
         const token = localStorage.getItem("token");
   
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/client/update`, {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/user/update`, {
             method: "POST", // Utilisez la méthode POST pour la mise à jour
             headers: {
                 "Content-Type": "application/json",
@@ -83,17 +83,17 @@ export function Modifieclient({ClientId,handleformclick}) {
             },
             body: JSON.stringify({
                 ...formData,
-                id: ClientId, // Inclure l'ID du Client dans les données envoyées
+                id: userId, // Inclure l'ID du user dans les données envoyées
             }),
         });
   
         if (response.ok) {
             const data = await response.json();
-            toast.success("Client mis à jour avec succès !",{ autoClose: 600 });
+            toast.success("user mis à jour avec succès !",{ autoClose: 600 });
             console.log("Response data:", data);
             
         } else {
-            toast.error("Échec de la mise à jour du Client.");
+            toast.error("Échec de la mise à jour du user.");
             console.error("Error:", response.statusText);
         }
     } catch (error) {
@@ -117,8 +117,8 @@ export function Modifieclient({ClientId,handleformclick}) {
       <ToastContainer position="top-right" autoClose={5000} />
 
       <div className="border-b border-gray-200 pb-6">
-        <h2 className="text-2xl font-bold text-gray-800">Modifier un Client</h2>
-        <p className="mt-2 text-sm text-gray-500">Mettez à jour les détails du Client.</p>
+        <h2 className="text-2xl font-bold text-gray-800">Modifier un user</h2>
+        <p className="mt-2 text-sm text-gray-500">Mettez à jour les détails du user.</p>
       </div>
 
       <div className="mt-6 grid grid-cols-1 gap-6">
@@ -231,4 +231,4 @@ export function Modifieclient({ClientId,handleformclick}) {
   );
 }
 
-export default Modifieclient;
+export default Modifieuser;

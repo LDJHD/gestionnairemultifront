@@ -28,6 +28,7 @@ import Statistique from "./pages/dashboard/statistique";
 import AuthGuard from "./pages/dashboard/authguard";
 import Unit from "./pages/dashboard/unit";
 import Notifications from "./pages/dashboard/notifications";
+import User from "./pages/dashboard/user";
 
 const icon = {
   className: "w-5 h-5 text-inherit",
@@ -103,6 +104,12 @@ export const routes = [
         name:  `Notifications (${notificationsCount})`,
         path: "/notifications",
         element: <Notifications />,
+      },
+      {
+        icon: <UserCircleIcon {...icon} />,
+        name: "Utilisateurs",
+        path: "/Utilisateurs",
+        element: <User />,
       },
     ],
   },
