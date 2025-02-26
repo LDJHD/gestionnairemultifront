@@ -11,33 +11,64 @@ export function SignIn() {
   const [disabled, setDisabled] = useState(false);
   const navigate = useNavigate();
 
+  // const handleSignIn = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/login`, {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({ email, password }),
+  //     });
+
+  //     const data = await response.json();
+
+  //     if (response.ok) {
+  //       localStorage.setItem("token", data.token);
+  //       setDisabled(true)
+  //       toast.success("Authentification réussie !");
+  //       setTimeout(() => {
+  //         navigate("/home");
+  //       }, 700);
+  //     } else {
+  //       toast.error("Échec de l'authentification. Veuillez réessayer.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Erreur lors de l'authentification :", error);
+  //   }
+  // };
+
   const handleSignIn = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/login`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email, password }),
+        });
 
-      const data = await response.json();
+        const data = await response.json();
 
-      if (response.ok) {
-        localStorage.setItem("token", data.token);
-        setDisabled(true)
-        toast.success("Authentification réussie !");
-        setTimeout(() => {
-          navigate("/home");
-        }, 700);
-      } else {
-        toast.error("Échec de l'authentification. Veuillez réessayer.");
-      }
+        if (response.ok) {
+            localStorage.setItem("token", data.token);
+            setDisabled(true);
+            toast.success("Authentification réussie !");
+            setTimeout(() => {
+                navigate("/home");
+            }, 700);
+        } else {
+            // 🔥 Correction ici : on utilise `data.erreur` au lieu de `error.response.data.erreur`
+            toast.error(data.erreur || "Une erreur s'est produite.");
+        }
     } catch (error) {
-      console.error("Erreur lors de l'authentification :", error);
+        console.error("Erreur lors de l'authentification :", error);
+        toast.error("Une erreur réseau est survenue.");
     }
-  };
+};
+
 
   return (
     <section className="m-8 flex items-center justify-center min-h-screen">
