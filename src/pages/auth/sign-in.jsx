@@ -75,7 +75,6 @@ export function SignIn() {
        <ToastContainer position="top-right" autoClose={600} />
       <div className="w-full h-full sm:w-6/12 border-solid rounded-2xl">
         <div className="text-center">
-          <Typography variant="h2" className="font-bold mb-4">Bienvenue sur ATON HELIOSTORE</Typography>
           <Typography variant="paragraph" color="blue-gray" className="text-lg font-normal">
             Connectez-vous !
           </Typography>
