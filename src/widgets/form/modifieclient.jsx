@@ -146,7 +146,6 @@ export function Modifieuser({userId,handleformclick}) {
             type="text"
             name="prenom"
             id="prenom"
-            required
             value={formData.prenom}
             onChange={handleInputChange}
             className="mt-1 p-1 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"

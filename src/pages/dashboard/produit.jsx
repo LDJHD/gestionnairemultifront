@@ -106,7 +106,7 @@ export function Produit() {
                   ))}
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="mb-10">
                 {displayproducts.map((product, key) => {
                   const className = `py-3 px-5 ${key === displayproducts.length - 1 ? "" : "border-b border-blue-gray-50"}`;
                   return (

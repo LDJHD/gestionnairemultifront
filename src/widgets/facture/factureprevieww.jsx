@@ -208,7 +208,7 @@ const FacturePrevieww = ({ formData, selectedProducts, onClose }) => {
 
       // Étape 2: Enregistrer la vente avec la facture
       const venteData = {
-        montant_total: calculateTotalHT(), // Total HT
+        montant_total: calculateTotalWithRemise(), // Total HT
         tva: calculateTVA(), // TVA
         montant_total_ttc: calculateTotalTTC(), // Total TTC
         client_id: formData.client, // ID du client sélectionné
@@ -218,7 +218,7 @@ const FacturePrevieww = ({ formData, selectedProducts, onClose }) => {
           quantite: product.quantity, // Quantité
         })),
         facture: {
-          montant_total: calculateTotalHT(),
+          montant_total: calculateTotalWithRemise(),
           tva: calculateTVA(), // TVA
           remise: formData.remise,
           montant_paye: calculatePaidAmount(paidAmountInput), // Montant payé (input utilisateur)

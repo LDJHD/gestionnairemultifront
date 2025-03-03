@@ -3,7 +3,6 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import PriceUnitForm from "./priceunitform";
 
-
 export function AjoutProduit({ handleformclick, handletoast }) {
   const [priceUnitFields, setPriceUnitFields] = useState([]);
   const [charge, setcharge] = useState(false);
@@ -13,14 +12,22 @@ export function AjoutProduit({ handleformclick, handletoast }) {
     categorie_id: "",
     prix: "",
     prix_achat: "",
-    taxation:"",
-    dateexpi:"",
-    quantite_stock:"",
+    taxation: "",
+    dateexpi: "",
+    quantite_stock: "",
     description: "",
   });
   const [categorie, setcategorie] = useState([]);
 
   const [unit, setunit] = useState([]);
+
+  // pour categorie
+
+  const [filteredCategorie, setFilteredCategorie] = useState([]);
+  const [selectedCategorie, setSelectedCategorie] = useState(null); // Stocke la categorie sélectionné
+  const [isDropdownOpenCategorie, setIsDropdownOpenCategorie] = useState(false); // Contrôle l'ouverture de la liste déroulante
+
+
 
 
   // Fonction pour récupérer les categories
@@ -55,40 +62,76 @@ export function AjoutProduit({ handleformclick, handletoast }) {
 
 
 
-  // Fonction pour récupérer les categories
-  const fetchcategories = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/categorie/listall`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
 
-      if (response.ok) {
-        const data = await response.json();
-        setcategorie(data);
-      } else {
-        console.error("Erreur lors de la récupération des categories:", response.status);
+  // Appel de fetchcategories lors du chargement du composant
+  useEffect(() => {
+    // Fonction pour récupérer les categories
+    const fetchcategories = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/categorie/listall`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setcategorie(data);
+          setFilteredCategorie(data)
+        } else {
+          console.error("Erreur lors de la récupération des categories:", response.status);
+        }
+      } catch (error) {
+        console.error("Erreur réseau:", error);
       }
-    } catch (error) {
-      console.error("Erreur réseau:", error);
+    };
+    fetchcategories();
+  }, []);
+
+
+
+  // filtrred categorie
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+
+    // Gérer la recherche dynamique pour le produit
+    if (name === "categorie_id") {
+      setSelectedCategorie(null); // Réinitialiser le produit sélectionné
+      setFormData((prevData) => ({ ...prevData, [name]: value }));
+      setIsDropdownOpenCategorie(true); // Ouvrir la liste déroulante
+
+      // Filtrer les produits par `nom` ou `code_barre`
+      const filtered = categorie.filter(
+        (categories) =>
+          categories.nom.toLowerCase().includes(value.toLowerCase()) ||
+          (categories.code_barre && categories.code_barre.toLowerCase().includes(value.toLowerCase()))
+      );
+
+      setFilteredCategorie(filtered);
+    } else {
+      setFormData((prevData) => ({ ...prevData, [name]: value }));
     }
   };
 
 
-
-  // Appel de fetchcategories lors du chargement du composant
-  useEffect(() => {
-    fetchcategories();
-  }, []);
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
+  const handleCategorieSelect = (categorie) => {
+    setSelectedCategorie(categorie); // Enregistrer le produit sélectionné
+    setFormData((prev) => ({ ...prev, categorie_id: categorie.id })); // Enregistrer l'ID du produit
+    setIsDropdownOpenCategorie(false); // Fermer la liste déroulante
   };
+
+
+
+
+
+  // const handleInputChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setFormData((prevData) => ({ ...prevData, [name]: value }));
+  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // Empêche le rechargement de la page lors de la soumission du formulaire
@@ -107,7 +150,7 @@ export function AjoutProduit({ handleformclick, handletoast }) {
         body: JSON.stringify(formData), // Données du formulaire à envoyer
       });
 
-      
+
 
       if (response.ok) {
         const data = await response.json();
@@ -121,9 +164,9 @@ export function AjoutProduit({ handleformclick, handletoast }) {
             produit_id: data.id, // Associer le produit
             quantite_stock: formData.quantite_stock, // Ajouter la quantité de stock
           };
-        
+
           console.log(stockData);
-        
+
           // Envoi des données au backend
           const stockResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/stock/create`, {
             method: "POST",
@@ -133,7 +176,7 @@ export function AjoutProduit({ handleformclick, handletoast }) {
             },
             body: JSON.stringify(stockData), // Envoie de l'objet stockData
           });
-        
+
           if (stockResponse.ok) {
             toast.success("Stock enregistré avec succès !", { autoClose: 600 });
             console.log("Stock enregistré avec succès !");
@@ -171,7 +214,7 @@ export function AjoutProduit({ handleformclick, handletoast }) {
             console.error("Erreur lors de l'enregistrement des supplements");
           }
 
-          
+
         }
 
         // Réinitialiser le formulaire
@@ -181,16 +224,18 @@ export function AjoutProduit({ handleformclick, handletoast }) {
           categorie_id: "",
           prix: "",
           prix_achat: "",
-          taxation:"",
-          dateexpi:"",
-          quantite_stock:"",
+          taxation: "",
+          dateexpi: "",
+          quantite_stock: "",
           description: "",
         });
+        setSelectedCategorie(null)
+        setFilteredCategorie(categorie)
         setPriceUnitFields([]); // Réinitialiser les champs du formulaire PriceUnitForm
         setcharge(true)
 
 
-        
+
 
       } else {
         toast.error("Échec de l'ajout du produit.Ce produit pourrait etre déja enregistré");
@@ -202,7 +247,11 @@ export function AjoutProduit({ handleformclick, handletoast }) {
     }
   };
 
-
+  const genererCodeUnique = () => {
+    const timestamp = Date.now(); // Nombre de millisecondes depuis 1970
+    const codeUnique = `AH${timestamp.toString().slice(-8)}`; // On prend les 8 derniers chiffres
+    setFormData({ ...formData, code_barre: codeUnique });
+  };
 
 
 
@@ -387,183 +436,243 @@ export function AjoutProduit({ handleformclick, handletoast }) {
         </div>
       </form> */}
       <form className="w-full max-w-6xl mx-auto" onSubmit={handleSubmit}>
-  <ToastContainer position="top-right" autoClose={600} />
+        <ToastContainer position="top-right" autoClose={600} />
 
-  <div className="border-b border-gray-200 pb-6">
-    <h2 className="text-2xl font-bold text-gray-800">Ajouter un Produit</h2>
-    <p className="mt-2 text-sm text-gray-500">
-      Remplissez les détails du produit à ajouter.
-    </p>
-  </div>
+        <div className="border-b border-gray-200 pb-6">
+          <h2 className="text-2xl font-bold text-gray-800">Ajouter un Produit</h2>
+          <p className="mt-2 text-sm text-gray-500">
+            Remplissez les détails du produit à ajouter.
+          </p>
+        </div>
 
-  {/* Grid pour afficher 2 champs par ligne */}
-  <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
-    <div>
-      <label htmlFor="code_barre" className="block text-sm font-semibold text-gray-700">
-        Code barre
-      </label>
-      <input
-        required
-        type="text"
-        name="code_barre"
-        id="code_barre"
-        value={formData.code_barre}
-        onChange={handleInputChange}
-        className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
-        placeholder="Ex: 123456789"
-      />
-    </div>
+        {/* Grid pour afficher 2 champs par ligne */}
+        <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+          {/* <div>
+            <label htmlFor="code_barre" className="block text-sm font-semibold text-gray-700">
+              Code barre
+            </label>
+            <input
+              required
+              type="text"
+              name="code_barre"
+              id="code_barre"
+              value={formData.code_barre}
+              onChange={handleInputChange}
+              className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
+              placeholder="Ex: 123456789"
+            />
+          </div> */}
 
-    <div>
-      <label htmlFor="nom" className="block text-sm font-semibold text-gray-700">
-        Nom du Produit
-      </label>
-      <input
-        type="text"
-        name="nom"
-        required
-        id="nom"
-        value={formData.nom}
-        onChange={handleInputChange}
-        className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
-        placeholder="Ex: Jus d'orange"
-      />
-    </div>
+          <div className="flex items-center gap-2">
+            <div className="w-full">
+              <label htmlFor="code_barre" className="block text-sm font-semibold text-gray-700">
+                Code barre
+              </label>
+              <input
+                required
+                type="text"
+                name="code_barre"
+                id="code_barre"
+                value={formData.code_barre}
+                onChange={handleInputChange}
+                className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
+                placeholder="Ex: 123456789"
+              />
+            </div>
 
-    <div>
-      <label htmlFor="categorie_id" className="block text-sm font-semibold text-gray-700">
-        Catégorie
-      </label>
-      <select
-        id="categorie_id"
-        name="categorie_id"
-        required
-        value={formData.categorie_id}
-        onChange={handleInputChange}
-        className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
-      >
-        <option value="">Sélectionnez une catégorie</option>
-        {categorie.map((categorie) => (
-          <option key={categorie.id} value={categorie.id}>
-            {categorie.nom}
-          </option>
-        ))}
-      </select>
-    </div>
+            {/* Bouton pour générer le code */}
+            <button
+              type="button"
+              onClick={genererCodeUnique}
+              className="mt-6 px-4 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition duration-300"
+            >
+              Générer
+            </button>
+          </div>
 
-    <div>
-      <label htmlFor="prix" className="block text-sm font-semibold text-gray-700">
-        Prix
-      </label>
-      <input
-        type="number"
-        name="prix"
-        required
-        id="prix"
-        value={formData.prix}
-        onChange={handleInputChange}
-        className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
-        placeholder="0.00"
-      />
-    </div>
+          <div>
+            <label htmlFor="nom" className="block text-sm font-semibold text-gray-700">
+              Nom du Produit
+            </label>
+            <input
+              type="text"
+              name="nom"
+              required
+              id="nom"
+              value={formData.nom}
+              onChange={handleInputChange}
+              className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
+              placeholder="Ex: Jus d'orange"
+            />
+          </div>
+
+          {/* <div>
+            <label htmlFor="categorie_id" className="block text-sm font-semibold text-gray-700">
+              Catégorie
+            </label>
+            <select
+              id="categorie_id"
+              name="categorie_id"
+              required
+              value={formData.categorie_id}
+              onChange={handleInputChange}
+              className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
+            >
+              <option value="">Sélectionnez une catégorie</option>
+              {categorie.map((categorie) => (
+                <option key={categorie.id} value={categorie.id}>
+                  {categorie.nom}
+                </option>
+              ))}
+            </select>
+          </div> */}
+          <div>
+            <label htmlFor="produit_id" className="block text-sm font-semibold text-gray-700">
+              Categorie
+            </label>
+            <input
+              type="text"
+              id="categorie_id"
+              name="categorie_id"
+              value={selectedCategorie ? selectedCategorie.nom : formData.categorie_id}
+              onChange={handleInputChange}
+              onFocus={() => setIsDropdownOpenCategorie(true)} // Ouvrir la liste déroulante
+              placeholder="Rechercher votre categorie"
+              className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
+            />
+            {isDropdownOpenCategorie && (
+              <ul className="mt-2 border border-gray-300 rounded-md max-h-40 overflow-auto bg-white">
+                {filteredCategorie.map((categorie) => (
+                  <li
+                    key={categorie.id}
+                    onClick={() => handleCategorieSelect(categorie)}
+                    className="p-2 cursor-pointer hover:bg-gray-100"
+                  >
+                    {categorie.nom}
+                  </li>
+                ))}
+                {filteredCategorie.length === 0 && (
+                  <li className="p-2 text-gray-500">Aucune categorie trouvé</li>
+                )}
+              </ul>
+            )}
+          </div>
 
 
-    <PriceUnitForm onChange={setPriceUnitFields} charge={charge} />
+          <div>
+            <label htmlFor="prix" className="block text-sm font-semibold text-gray-700">
+              Prix
+            </label>
+            <input
+              type="number"
+              name="prix"
+              required
+              id="prix"
+              value={formData.prix}
+              onChange={handleInputChange}
+              className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
+              placeholder="0.00"
+            />
+          </div>
 
-    <div>
-      <label htmlFor="prix_achat" className="block text-sm font-semibold text-gray-700">
-        Prix Achat
-      </label>
-      <input
-        type="number"
-        name="prix_achat"
-        required
-        id="prix_achat"
-        value={formData.prix_achat}
-        onChange={handleInputChange}
-        className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
-        placeholder="0.00"
-      />
-    </div>
 
-    <div>
-      <label htmlFor="taxation" className="block text-sm font-semibold text-gray-700">
-        Taxation
-      </label>
-      <select
-        id="taxation"
-        name="taxation"
-        required
-        value={formData.taxation}
-        onChange={(e) => setFormData({ ...formData, taxation: e.target.value })}
-        className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
-      >
-        <option value="">Sélectionnez une taxation</option>
-        <option>A</option>
-        <option>B</option>
-        <option>C</option>
-        <option>D</option>
-        <option>E</option>
-      </select>
-    </div>
+          <PriceUnitForm onChange={setPriceUnitFields} charge={charge} />
 
-    <div>
-      <label htmlFor="quantite_stock" className="block text-sm font-semibold text-gray-700">
-        Quantité Stock
-      </label>
-      <input
-        type="number"
-        name="quantite_stock"
-        required
-        id="quantite_stock"
-        value={formData.quantite_stock}
-        onChange={handleInputChange}
-        className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
-        placeholder="100"
-      />
-    </div>
+          <div>
+            <label htmlFor="prix_achat" className="block text-sm font-semibold text-gray-700">
+              Prix Achat
+            </label>
+            <input
+              type="number"
+              name="prix_achat"
+              required
+              id="prix_achat"
+              value={formData.prix_achat}
+              onChange={handleInputChange}
+              className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
+              placeholder="0.00"
+            />
+          </div>
 
-    <div>
-      <label className="text-black" htmlFor="dateexpi">
-        Date Expiration
-      </label>
-      <input
-        type="date"
-        id="dateexpi"
-        name="dateexpi"
-        value={formData.dateexpi || ""}
-        onChange={handleInputChange}
-        placeholder="Date expiration"
-        className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
-      />
-    </div>
+          <div>
+            <label htmlFor="taxation" className="block text-sm font-semibold text-gray-700">
+              Taxation
+            </label>
+            <select
+              id="taxation"
+              name="taxation"
+              required
+              value={formData.taxation}
+              onChange={(e) => setFormData({ ...formData, taxation: e.target.value })}
+              className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
+            >
+              <option value="">Sélectionnez une taxation</option>
+              <option>A</option>
+              <option>B</option>
+              <option>C</option>
+              <option>D</option>
+              <option>E</option>
+              <option>AIBA</option>
+              <option>AIBB</option>
+            </select>
+          </div>
 
-    <div className="col-span-2">
-      <label htmlFor="description" className="block text-sm font-semibold text-gray-700">
-        Description
-      </label>
-      <textarea
-        name="description"
-        id="description"
-        required
-        rows="2"
-        value={formData.description}
-        onChange={handleInputChange}
-        className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
-        placeholder="Description"
-      />
-    </div>
-  </div>
+          <div>
+            <label htmlFor="quantite_stock" className="block text-sm font-semibold text-gray-700">
+              Quantité Stock
+            </label>
+            <input
+              type="number"
+              name="quantite_stock"
+              required
+              id="quantite_stock"
+              value={formData.quantite_stock}
+              onChange={handleInputChange}
+              className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
+              placeholder="100"
+            />
+          </div>
 
-  <div className="mt-6">
-    <button
-      type="submit"
-      className="w-full py-2 px-4 rounded-md bg-indigo-600 text-white font-semibold shadow-md hover:bg-indigo-500 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-300"
-    >
-      Ajouter le Produit
-    </button>
-  </div>
-</form>
+          <div>
+            <label className="text-black" htmlFor="dateexpi">
+              Date Expiration
+            </label>
+            <input
+              type="date"
+              id="dateexpi"
+              name="dateexpi"
+              value={formData.dateexpi || ""}
+              onChange={handleInputChange}
+              placeholder="Date expiration"
+              className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
+            />
+          </div>
+
+          <div className="col-span-2">
+            <label htmlFor="description" className="block text-sm font-semibold text-gray-700">
+              Description
+            </label>
+            <textarea
+              name="description"
+              id="description"
+              rows="2"
+              value={formData.description}
+              onChange={handleInputChange}
+              className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
+              placeholder="Description"
+            />
+          </div>
+        </div>
+
+        <div className="mt-6">
+          <button
+            type="submit"
+            className="w-full py-2 px-4 rounded-md bg-indigo-600 text-white font-semibold shadow-md hover:bg-indigo-500 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-300"
+          >
+            Ajouter le Produit
+          </button>
+        </div>
+      </form>
 
 
 

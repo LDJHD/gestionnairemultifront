@@ -557,6 +557,8 @@ export function ModifieProduit({ ProductId, handleformclick }) {
               <option>C</option>
               <option>D</option>
               <option>E</option>
+              <option>AIBA</option>
+              <option>AIBB</option>
             </select>
           </div>
 

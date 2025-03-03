@@ -103,7 +103,6 @@ export function AjoutClient({handleformclick,handletoast}) {
           <input
             type="text"
             name="prenom"
-            required
             id="prenom"
             value={formData.prenom}
             onChange={handleInputChange}

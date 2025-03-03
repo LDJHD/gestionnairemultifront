@@ -324,7 +324,7 @@ export function DashboardNavbar() {
     const token = localStorage.getItem("token");
     if (!token) {
       alert("Vous êtes déjà déconnecté." + token);
-      return navigate("/auth/sign-in");
+      return navigate("/");
     }
 
     try {

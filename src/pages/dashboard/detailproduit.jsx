@@ -64,7 +64,7 @@ function HtmlTabContent({ product }) {
                         </p>
                         <p className="flex justify-between">
                             <span className="font-bold">Catégorie</span>
-                            <span>{product.categorie_id}</span>
+                            <span>{product.nom_categorie}</span>
                         </p>
                         <p className="flex justify-between">
                             <span className="font-bold">Description</span>

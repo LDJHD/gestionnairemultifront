@@ -30,7 +30,7 @@ export function Vendre() {
   const handleAddProduct = (product) => {
     // Ajouter seulement si le produit n'est pas déjà dans la liste
     if (!selectedProducts.some((p) => p.code_barre === product.code_barre)) {
-      setSelectedProducts([...selectedProducts, { ...product, quantity: 1, unit: "Sachet(s)" }]);
+      setSelectedProducts([...selectedProducts, { ...product, quantity: 1, unit: "Unité(s)" }]);
     }
     setProductsstore([]);
   // Appeler fetchStockValue en passant l'ID du produit
@@ -560,7 +560,7 @@ const fetchStockValue = async (id) => {
                           }
                           className="mt-1 w-15 p-2 block rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300 w-min-[100px]"
                         >
-                          <option value="">Par defaut</option>
+                          <option value="">Unité(s)</option>
                           {product.supplements.map((supplement) => (
                             <option key={supplement.id} value={supplement.unit}>
                               {supplement.unit}
@@ -600,7 +600,7 @@ const fetchStockValue = async (id) => {
           </CardBody>
           <div className="flex justify-between items-center">
             {/* Bouton gauche */}
-            {/* <button
+            <button
               type="button"
               onClick={handlePreview}
               className="flex items-center space-x-2 m-2 p-2 bg-blue-600 text-white font-bold rounded-md"
@@ -620,7 +620,7 @@ const fetchStockValue = async (id) => {
                   d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 0 1-2.25 2.25M16.5 7.5V18a2.25 2.25 0 0 0 2.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 0 0 2.25 2.25h13.5M6 7.5h3v3H6v-3Z"
                 />
               </svg>
-            </button> */}
+            </button>
 
             <button
               type="button"
