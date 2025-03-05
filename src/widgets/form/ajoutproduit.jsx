@@ -16,7 +16,13 @@ export function AjoutProduit({ handleformclick, handletoast }) {
     dateexpi: "",
     quantite_stock: "",
     description: "",
+    acceptdoublons: 0,
   });
+
+  const [produitsExistants, setProduitsExistants] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+
+
   const [categorie, setcategorie] = useState([]);
 
   const [unit, setunit] = useState([]);
@@ -154,6 +160,12 @@ export function AjoutProduit({ handleformclick, handletoast }) {
 
       if (response.ok) {
         const data = await response.json();
+        if (data.existe === 1) {
+          // Si le produit existe déjà, stocker les produits existants et afficher le modal
+          setProduitsExistants(data.produits);
+          setShowModal(true);
+          return;
+        }
         const produitId = data.id; // Supposons que l'ID du produit est retourné
 
         toast.success("Produit ajouté avec succès !", { autoClose: 600 });
@@ -228,6 +240,7 @@ export function AjoutProduit({ handleformclick, handletoast }) {
           dateexpi: "",
           quantite_stock: "",
           description: "",
+          acceptdoublons:"",
         });
         setSelectedCategorie(null)
         setFilteredCategorie(categorie)
@@ -254,6 +267,116 @@ export function AjoutProduit({ handleformclick, handletoast }) {
   };
 
 
+  //confirmer ajout
+
+  const confirmerAjout = async () => {
+    setShowModal(false);
+    setFormData({ ...formData, acceptdoublons: 1 });
+  
+    try {
+      // Récupérer le token depuis le localStorage
+      const token = localStorage.getItem("token");
+  
+      // Étape 1: Enregistrement du produit
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/produit/create`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify({ ...formData, acceptdoublons: 1 }),
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        const produitId = data.id; // Supposons que l'ID du produit est retourné
+  
+        toast.success("Produit ajouté avec succès !", { autoClose: 600 });
+        console.log("Produit ajouté:", data);
+  
+        // Étape 2: Vérifier et enregistrer la quantité de stock
+        if (formData.quantite_stock) {
+          const stockData = {
+            produit_id: produitId,
+            quantite_stock: formData.quantite_stock,
+          };
+  
+          const stockResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/stock/create`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`,
+            },
+            body: JSON.stringify(stockData),
+          });
+  
+          if (stockResponse.ok) {
+            toast.success("Stock enregistré avec succès !", { autoClose: 600 });
+            console.log("Stock enregistré !");
+          } else {
+            toast.error("Erreur lors de l'enregistrement du stock.");
+            console.error("Erreur stock:", stockResponse.statusText);
+          }
+        } else {
+          toast.warning("Veuillez renseigner la quantité en stock.");
+        }
+  
+        // Étape 3: Enregistrement des supplements (PriceUnitForm)
+        if (priceUnitFields.length > 0) {
+          const supplementData = priceUnitFields.map((item) => ({
+            produit_id: produitId,
+            prix: item.prix,
+            unit: item.unit,
+          }));
+  
+          const supplementResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/supplement/create`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`,
+            },
+            body: JSON.stringify({ supplements: supplementData }),
+          });
+  
+          if (supplementResponse.ok) {
+            toast.success("Supplements enregistrés avec succès !", { autoClose: 600 });
+            console.log("Supplements enregistrés !");
+          } else {
+            toast.error("Erreur lors de l'enregistrement des supplements.");
+            console.error("Erreur supplements:", supplementResponse.statusText);
+          }
+        }
+  
+        // Réinitialiser le formulaire
+        setFormData({
+          code_barre: "",
+          nom: "",
+          categorie_id: "",
+          prix: "",
+          prix_achat: "",
+          taxation: "",
+          dateexpi: "",
+          quantite_stock: "",
+          description: "",
+          acceptdoublons: "",
+        });
+        setSelectedCategorie(null);
+        setFilteredCategorie(categorie);
+        setPriceUnitFields([]);
+        setcharge(true);
+      } else {
+        toast.error("Échec de l'ajout du produit. Ce produit pourrait être déjà enregistré.");
+        console.error("Erreur produit:", response.statusText);
+      }
+    } catch (error) {
+      toast.error("Erreur de connexion au serveur.");
+      console.error("Erreur:", error);
+    }
+  };
+
+
+
+  
 
 
   return (
@@ -561,7 +684,7 @@ export function AjoutProduit({ handleformclick, handletoast }) {
 
           <div>
             <label htmlFor="prix" className="block text-sm font-semibold text-gray-700">
-              Prix
+              Prix de l'unité
             </label>
             <input
               type="number"
@@ -674,7 +797,44 @@ export function AjoutProduit({ handleformclick, handletoast }) {
         </div>
       </form>
 
+{/* Modal affiche */}
 
+
+{showModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white rounded-lg shadow-lg p-6 max-w-lg w-full">
+            <h2 className="text-xl font-bold text-gray-800 mb-4">Produits existants</h2>
+
+            <table className="w-full border-collapse border border-gray-200">
+              <thead>
+                <tr className="bg-gray-100">
+                  <th className="border p-2">Nom</th>
+                  <th className="border p-2">Prix</th>
+                  <th className="border p-2">Code Barre</th>
+                </tr>
+              </thead>
+              <tbody>
+                {produitsExistants.map((produit) => (
+                  <tr key={produit.id}>
+                    <td className="border p-2">{produit.nom}</td>
+                    <td className="border p-2">{produit.prix} FCFA</td>
+                    <td className="border p-2">{produit.code_barre}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            <div className="flex justify-end mt-4">
+              <button onClick={() => setShowModal(false)} className="mr-4 px-4 py-2 bg-gray-300 rounded-md">
+                Annuler
+              </button>
+              <button onClick={confirmerAjout} className="px-4 py-2 bg-blue-600 text-white rounded-md">
+                Confirmer l'ajout
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );

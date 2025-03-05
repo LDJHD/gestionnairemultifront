@@ -516,7 +516,7 @@ export function ModifieProduit({ ProductId, handleformclick }) {
 
           {/* Prix */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700">Prix</label>
+            <label className="block text-sm font-semibold text-gray-700">Prix de l'unité</label>
             <input
               type="number"
               name="prix"

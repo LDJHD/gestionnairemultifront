@@ -59,11 +59,11 @@ const fetchStockValue = async (id) => {
       if (stock_restant < -1) {
         alert("Votre stock est épuisé, veuillez recharger avant de vendre.");
       }
-      // Si le stock est positif mais inférieur à 20
-      else if (stock_restant > 0 && stock_restant < 20) {
+      // Si le stock est positif mais inférieur à 6
+      else if (stock_restant > 0 && stock_restant < 6) {
         alert(`Votre stock est presque épuisé. Il vous reste ${stock_restant} en stock.`);
       }
-      // Si le stock est suffisant (> 20), pas de message
+      // Si le stock est suffisant (> 6), pas de message
 
   } catch (error) {
       console.error("Erreur lors de la récupération des données de stock :", error);
