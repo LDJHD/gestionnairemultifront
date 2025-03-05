@@ -18,6 +18,19 @@ import { MaterialTailwindControllerProvider } from "@/context";
 import "../public/css/tailwind.css";
 import { ToastContainer,Bounce } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker
+      .register("/service-worker.js")
+      .then((registration) => {
+        console.log("Service Worker enregistré avec succès", registration);
+      })
+      .catch((error) => {
+        console.log("Erreur d'enregistrement du Service Worker", error);
+      });
+  });
+}
+
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <BrowserRouter>

@@ -1,0 +1,22 @@
+{
+    "name": "ATON HELIOSTORE",
+    "short_name": "Atonheliostore",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#000000",
+    "description": "Une application de gestion de vente web",
+    "icons": [
+      {
+        "src": "/image/logo.png",
+        "sizes": "192x192",
+        "type": "image/png"
+      },
+      {
+        "src": "/image/logo.png",
+        "sizes": "512x512",
+        "type": "image/png"
+      }
+    ]
+  }
+  
