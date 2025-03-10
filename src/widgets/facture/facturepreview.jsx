@@ -197,6 +197,7 @@ const FacturePreview = ({ formData, selectedProducts, onClose }) => {
 
       const { uid } = invoiceResponse.data; // Récupérer l'UID de la facture générée
       const { datee } = invoiceResponse.data;
+      const { invoiceId } = invoiceResponse.data;
 
       // Construire l'URL du fichier PDF
       const filePath = `${import.meta.env.VITE_API_URL}/factures/facture_${uid}.pdf`;
@@ -234,7 +235,8 @@ const FacturePreview = ({ formData, selectedProducts, onClose }) => {
           client_id: formData.client,
         },
         pdf: filesavePath, // Lien du PDF généré
-        pdf2: filesavePathsimple
+        pdf2: filesavePathsimple,
+        invoice_id:invoiceId,
       };
 
       // Appeler l'API backend pour enregistrer la vente

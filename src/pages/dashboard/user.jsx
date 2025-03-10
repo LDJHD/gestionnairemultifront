@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import Toastadd from "@/widgets/toast/toastadd";
 import Modaledituser from "@/widgets/modal/modaledituser";
 import Swal from 'sweetalert2';
+import Modaleditpassword from "@/widgets/modal/modaleditpassword";
 
 export function User() {
     const [users, setUsers] = useState([]);
@@ -15,7 +16,7 @@ export function User() {
     const rep = "Enregistrement effectué avec succès";
     const [loading, setLoading] = useState(true);
 
-    const roles = ["User", "Admin", "Caissière", "Gestionnaire", "Comptabilité"];
+    const roles = ["user", "Admin", "Caissiere", "Gestionnaire", "Comptabilite"];
 
     // Modifier le rôle de l'utilisateur
     const handleRoleChange = async (id, newRole) => {
@@ -170,8 +171,8 @@ export function User() {
                                             <td className={className}>{user.nom}</td>
                                             <td className={className}>{user.prenom}</td>
                                             <td className={className}>{user.email}</td>
-                                            <td className={className}>{user.telephone}</td>
-                                            <td className={className}>{user.adresse}</td>
+                                            <td className={className}>{user.whatsapp}</td>
+                                            <td className={className}>{user.pays}</td>
 
                                             <td className={className}>
                                                 <select value={user.status} onChange={(e) => handleRoleChange(user.id, e.target.value)} className="border border-gray-300 rounded px-2 py-1 text-sm">
@@ -205,7 +206,7 @@ export function User() {
                                             <td className={className}>{user.date}</td>
 
                                             <td className={className}>
-                                                <div className="flex gap-2">
+                                                <div className="flex items-center gap-2">
                                                     <Modaledituser userId={user.id} handletoast={() => setToast(true)} />
                                                     {/* <button onClick={() => handleDeleteUser(user.id)} className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-700">Supprimer</button> */}
                                                     <button
@@ -228,6 +229,7 @@ export function User() {
                                                             />
                                                         </svg>
                                                     </button>
+                                                    <Modaleditpassword userId={user.id} handletoast={() => setToast(true)} />
                                                 </div>
                                             </td>
                                         </tr>
