@@ -6,15 +6,22 @@ export default defineConfig({
   base: "/", // Assure que toutes les routes fonctionnent correctement
   plugins: [
     react(),
-    VitePWA({ // ✅ Correction ici
+    VitePWA({
       registerType: "autoUpdate",
+      // En dev, on installe un SW « no-op » : il ne met rien en cache mais il
+      // neutralise un éventuel SW de production resté actif (sinon page blanche).
+      devOptions: {
+        enabled: true,
+        type: "module",
+        suppressWarnings: true,
+      },
       manifest: {
-        name: "ATON HELIOSTORE",
-        short_name: "Atonheliostore",
+        name: "Le Gestionnaire",
+        short_name: "Gestionnaire",
         start_url: "/",
         display: "standalone",
         background_color: "#ffffff",
-        theme_color: "#000000",
+        theme_color: "#4f46e5",
         icons: [
           {
             src: "/image/logo.png",
@@ -39,7 +46,10 @@ export default defineConfig({
       output: {
         manualChunks(id) {
           if (id.includes("node_modules")) {
-            return "vendor"; // Sépare les dépendances dans un fichier vendor.js
+            if (/node_modules\/(react|react-dom|scheduler)\//.test(id)) return "react-vendor";
+            if (/node_modules\/(apexcharts|react-apexcharts)\//.test(id)) return "charts-vendor";
+            if (/node_modules\/(\@material-tailwind|\@headlessui|\@heroicons|tw-elements-react)\//.test(id)) return "ui-vendor";
+            return "vendor";
           }
         },
       },

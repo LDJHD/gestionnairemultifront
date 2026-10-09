@@ -1,57 +1,76 @@
 import {
   Card,
   CardBody,
-  CardHeader,
   CardFooter,
   Avatar,
-  Typography,
   Tabs,
   TabsHeader,
   Tab,
   Switch,
   Tooltip,
-  Button,
 } from "@material-tailwind/react";
 import {
   HomeIcon,
   ChatBubbleLeftEllipsisIcon,
   Cog6ToothIcon,
   PencilIcon,
+  ShareIcon,
+  HashtagIcon,
+  CameraIcon,
 } from "@heroicons/react/24/solid";
 import { Link } from "react-router-dom";
 import { ProfileInfoCard, MessageCard } from "@/widgets/cards";
 import { platformSettingsData, conversationsData, projectsData } from "@/data";
 
+/** Titre de section avec pastille d'icône. */
+function TitreSection({ icone: Icone, titre, sousTitre, ton = "brand" }) {
+  const tons = {
+    brand: "bg-brand-50 text-brand-600 ring-brand-100",
+    accent: "bg-accent-50 text-accent-600 ring-accent-100",
+    violet: "bg-violet-50 text-violet-600 ring-violet-100",
+  };
+  return (
+    <div className="flex items-center gap-2.5">
+      <span className={`lg-icon-chip h-9 w-9 ring-1 ring-inset ${tons[ton] || tons.brand}`}>
+        <Icone className="h-[18px] w-[18px]" />
+      </span>
+      <div>
+        <p className="font-display text-base font-extrabold text-ink-900">{titre}</p>
+        <p className="text-[13px] text-ink-500">{sousTitre}</p>
+      </div>
+    </div>
+  );
+}
+
 export function Profile() {
   return (
-    <>
-      <div className="relative mt-8 h-72 w-full overflow-hidden rounded-xl bg-[url('/img/background-image.png')] bg-cover	bg-center">
-        <div className="absolute inset-0 h-full w-full bg-gray-900/75" />
+    <div className="mt-6 mb-10 flex flex-col gap-6 animate-fade-in">
+      {/* ══════════════ BANDEAU DE COUVERTURE ══════════════ */}
+      <div className="relative h-64 w-full overflow-hidden rounded-2xl bg-[url('/img/background-image.png')] bg-cover bg-center shadow-card">
+        <div className="absolute inset-0 h-full w-full bg-ink-900/70" />
+        <div className="absolute inset-0 h-full w-full bg-brand-900/40" />
       </div>
-      <Card className="mx-3 -mt-16 mb-6 lg:mx-4 border border-blue-gray-100">
-        <CardBody className="p-4">
-          <div className="mb-10 flex items-center justify-between flex-wrap gap-6">
-            <div className="flex items-center gap-6">
+
+      {/* ══════════════ CARTE DE PROFIL ══════════════ */}
+      <Card className="lg-card mx-4 -mt-24 overflow-hidden">
+        <CardBody className="p-5">
+          {/* Identité + navigation */}
+          <div className="flex flex-wrap items-center justify-between gap-6">
+            <div className="flex items-center gap-5">
               <Avatar
                 src="/img/bruce-mars.jpeg"
                 alt="bruce-mars"
                 size="xl"
                 variant="rounded"
-                className="rounded-lg shadow-lg shadow-blue-gray-500/40"
+                className="rounded-2xl shadow-lift ring-4 ring-white"
               />
               <div>
-                <Typography variant="h5" color="blue-gray" className="mb-1">
-                  Richard Davis
-                </Typography>
-                <Typography
-                  variant="small"
-                  className="font-normal text-blue-gray-600"
-                >
-                  CEO / Co-Founder
-                </Typography>
+                <h1 className="lg-page-title">Richard Davis</h1>
+                <p className="lg-page-sub">CEO / Co-Founder</p>
+                <span className="lg-badge-brand mt-2">Administrateur</span>
               </div>
             </div>
-            <div className="w-96">
+            <div className="w-full lg:w-96">
               <Tabs value="app">
                 <TabsHeader>
                   <Tab value="app">
@@ -70,18 +89,22 @@ export function Profile() {
               </Tabs>
             </div>
           </div>
-          <div className="gird-cols-1 mb-12 grid gap-12 px-4 lg:grid-cols-2 xl:grid-cols-3">
-            <div>
-              <Typography variant="h6" color="blue-gray" className="mb-3">
-                Platform Settings
-              </Typography>
-              <div className="flex flex-col gap-12">
+
+          <div className="mt-12 grid gap-6 lg:grid-cols-2 xl:grid-cols-3">
+            {/* ── Réglages de la plateforme ── */}
+            <div className="lg-card p-5">
+              <TitreSection
+                icone={Cog6ToothIcon}
+                titre="Réglages plateforme"
+                sousTitre="Préférences de la plateforme"
+              />
+              <div className="mt-5 flex flex-col gap-6">
                 {platformSettingsData.map(({ title, options }) => (
                   <div key={title}>
-                    <Typography className="mb-4 block text-xs font-semibold uppercase text-blue-gray-500">
+                    <p className="mb-3 block text-[11px] font-bold uppercase tracking-wider text-ink-400">
                       {title}
-                    </Typography>
-                    <div className="flex flex-col gap-6">
+                    </p>
+                    <div className="flex flex-col gap-4">
                       {options.map(({ checked, label }) => (
                         <Switch
                           key={label}
@@ -89,7 +112,7 @@ export function Profile() {
                           label={label}
                           defaultChecked={checked}
                           labelProps={{
-                            className: "text-sm font-normal text-blue-gray-500",
+                            className: "text-[13px] font-normal text-ink-600",
                           }}
                         />
                       ))}
@@ -98,6 +121,8 @@ export function Profile() {
                 ))}
               </div>
             </div>
+
+            {/* ── Informations du profil (widget partagé) ── */}
             <ProfileInfoCard
               title="Profile Information"
               description="Hi, I'm Alec Thompson, Decisions: If you can't decide, the answer is no. If two equally difficult paths, choose the one more painful in the short term (pain avoidance is creating an illusion of equality)."
@@ -107,114 +132,107 @@ export function Profile() {
                 email: "alecthompson@mail.com",
                 location: "USA",
                 social: (
-                  <div className="flex items-center gap-4">
-                    <i className="fa-brands fa-facebook text-blue-700" />
-                    <i className="fa-brands fa-twitter text-blue-400" />
-                    <i className="fa-brands fa-instagram text-purple-500" />
+                  <div className="flex items-center gap-2">
+                    {[
+                      { Icone: ShareIcon, ton: "hover:bg-brand-50 hover:text-brand-700", libelle: "Facebook" },
+                      { Icone: HashtagIcon, ton: "hover:bg-ink-100 hover:text-ink-800", libelle: "X (Twitter)" },
+                      { Icone: CameraIcon, ton: "hover:bg-violet-50 hover:text-violet-700", libelle: "Instagram" },
+                    ].map(({ Icone, ton, libelle }) => (
+                      <span
+                        key={libelle}
+                        role="img"
+                        aria-label={libelle}
+                        className={`grid h-8 w-8 place-items-center rounded-lg text-ink-400 ring-1 ring-inset ring-ink-200 transition-colors ${ton}`}
+                      >
+                        <Icone className="h-4 w-4" />
+                      </span>
+                    ))}
                   </div>
                 ),
               }}
               action={
                 <Tooltip content="Edit Profile">
-                  <PencilIcon className="h-4 w-4 cursor-pointer text-blue-gray-500" />
+                  <PencilIcon className="h-4 w-4 cursor-pointer text-ink-400" />
                 </Tooltip>
               }
             />
+
+            {/* ── Messages (widget partagé) ── */}
             <div>
-              <Typography variant="h6" color="blue-gray" className="mb-3">
-                Platform Settings
-              </Typography>
-              <ul className="flex flex-col gap-6">
+              <TitreSection
+                icone={ChatBubbleLeftEllipsisIcon}
+                titre="Messages"
+                sousTitre="Conversations récentes"
+                ton="accent"
+              />
+              <ul className="mt-4 flex flex-col gap-4">
                 {conversationsData.map((props) => (
                   <MessageCard
                     key={props.name}
                     {...props}
                     action={
-                      <Button variant="text" size="sm">
+                      <button type="button" className="lg-btn-soft lg-btn-sm">
                         reply
-                      </Button>
+                      </button>
                     }
                   />
                 ))}
               </ul>
             </div>
           </div>
-          <div className="px-4 pb-4">
-            <Typography variant="h6" color="blue-gray" className="mb-2">
-              Projects
-            </Typography>
-            <Typography
-              variant="small"
-              className="font-normal text-blue-gray-500"
-            >
-              Architects design houses
-            </Typography>
-            <div className="mt-6 grid grid-cols-1 gap-12 md:grid-cols-2 xl:grid-cols-4">
-              {projectsData.map(
-                ({ img, title, description, tag, route, members }) => (
-                  <Card key={title} color="transparent" shadow={false}>
-                    <CardHeader
-                      floated={false}
-                      color="gray"
-                      className="mx-0 mt-0 mb-4 h-64 xl:h-40"
-                    >
-                      <img
-                        src={img}
-                        alt={title}
-                        className="h-full w-full object-cover"
-                      />
-                    </CardHeader>
-                    <CardBody className="py-0 px-1">
-                      <Typography
-                        variant="small"
-                        className="font-normal text-blue-gray-500"
-                      >
-                        {tag}
-                      </Typography>
-                      <Typography
-                        variant="h5"
-                        color="blue-gray"
-                        className="mt-1 mb-2"
-                      >
-                        {title}
-                      </Typography>
-                      <Typography
-                        variant="small"
-                        className="font-normal text-blue-gray-500"
-                      >
-                        {description}
-                      </Typography>
-                    </CardBody>
-                    <CardFooter className="mt-6 flex items-center justify-between py-0 px-1">
-                      <Link to={route}>
-                        <Button variant="outlined" size="sm">
-                          view project
-                        </Button>
-                      </Link>
-                      <div>
-                        {members.map(({ img, name }, key) => (
-                          <Tooltip key={name} content={name}>
-                            <Avatar
-                              src={img}
-                              alt={name}
-                              size="xs"
-                              variant="circular"
-                              className={`cursor-pointer border-2 border-white ${
-                                key === 0 ? "" : "-ml-2.5"
-                              }`}
-                            />
-                          </Tooltip>
-                        ))}
-                      </div>
-                    </CardFooter>
-                  </Card>
-                )
-              )}
+
+          {/* ── Projets ── */}
+          <div className="mt-10 border-t border-ink-100 pt-6">
+            <TitreSection
+              icone={HomeIcon}
+              titre="Projets"
+              sousTitre="Architects design houses"
+              ton="violet"
+            />
+            <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
+              {projectsData.map(({ img, title, description, tag, route, members }) => (
+                <Card key={title} className="lg-card-hover overflow-hidden">
+                  <div className="h-44 w-full overflow-hidden bg-ink-100 xl:h-36">
+                    <img
+                      src={img}
+                      alt={title}
+                      className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
+                    />
+                  </div>
+                  <CardBody className="p-4">
+                    <span className="lg-badge-brand">{tag}</span>
+                    <h3 className="mt-2 font-display text-base font-extrabold text-ink-900">
+                      {title}
+                    </h3>
+                    <p className="mt-1 text-[13px] text-ink-500 lg-clamp-2">{description}</p>
+                  </CardBody>
+                  <CardFooter className="flex items-center justify-between px-4 pb-4 pt-0">
+                    <Link to={route} className="lg-btn-neutral lg-btn-sm">
+                      view project
+                    </Link>
+                    <div className="flex items-center">
+                      {members.map(({ img, name }, key) => (
+                        <Tooltip key={name} content={name}>
+                          <Avatar
+                            src={img}
+                            alt={name}
+                            size="xs"
+                            variant="circular"
+                            className={`cursor-pointer border-2 border-white ${
+                              key === 0 ? "" : "-ml-2.5"
+                            }`}
+                          />
+                        </Tooltip>
+                      ))}
+                    </div>
+                  </CardFooter>
+                </Card>
+              ))}
             </div>
           </div>
         </CardBody>
       </Card>
-    </>
+    </div>
   );
 }
 

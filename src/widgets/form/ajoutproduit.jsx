@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import PriceUnitForm from "./priceunitform";
 
@@ -17,11 +17,11 @@ export function AjoutProduit({ handleformclick, handletoast }) {
     quantite_stock: "",
     description: "",
     acceptdoublons: 0,
+    image: "",
   });
 
   const [produitsExistants, setProduitsExistants] = useState([]);
   const [showModal, setShowModal] = useState(false);
-
 
   const [categorie, setcategorie] = useState([]);
 
@@ -32,9 +32,6 @@ export function AjoutProduit({ handleformclick, handletoast }) {
   const [filteredCategorie, setFilteredCategorie] = useState([]);
   const [selectedCategorie, setSelectedCategorie] = useState(null); // Stocke la categorie sélectionné
   const [isDropdownOpenCategorie, setIsDropdownOpenCategorie] = useState(false); // Contrôle l'ouverture de la liste déroulante
-
-
-
 
   // Fonction pour récupérer les categories
   const fetchunit = async () => {
@@ -59,15 +56,10 @@ export function AjoutProduit({ handleformclick, handletoast }) {
     }
   };
 
-
-
   // Appel de fetchcategories lors du chargement du composant
   useEffect(() => {
     fetchunit();
   }, []);
-
-
-
 
   // Appel de fetchcategories lors du chargement du composant
   useEffect(() => {
@@ -86,7 +78,7 @@ export function AjoutProduit({ handleformclick, handletoast }) {
         if (response.ok) {
           const data = await response.json();
           setcategorie(data);
-          setFilteredCategorie(data)
+          setFilteredCategorie(data);
         } else {
           console.error("Erreur lors de la récupération des categories:", response.status);
         }
@@ -96,8 +88,6 @@ export function AjoutProduit({ handleformclick, handletoast }) {
     };
     fetchcategories();
   }, []);
-
-
 
   // filtrred categorie
 
@@ -114,7 +104,8 @@ export function AjoutProduit({ handleformclick, handletoast }) {
       const filtered = categorie.filter(
         (categories) =>
           categories.nom.toLowerCase().includes(value.toLowerCase()) ||
-          (categories.code_barre && categories.code_barre.toLowerCase().includes(value.toLowerCase()))
+          (categories.code_barre &&
+            categories.code_barre.toLowerCase().includes(value.toLowerCase())),
       );
 
       setFilteredCategorie(filtered);
@@ -123,20 +114,15 @@ export function AjoutProduit({ handleformclick, handletoast }) {
     }
   };
 
-
   const handleCategorieSelect = (categorie) => {
     setSelectedCategorie(categorie); // Enregistrer le produit sélectionné
     setFormData((prev) => ({ ...prev, categorie_id: categorie.id })); // Enregistrer l'ID du produit
     setIsDropdownOpenCategorie(false); // Fermer la liste déroulante
   };
 
-
-
-
-
   // const handleInputChange = (e) => {
-  //   const { name, value } = e.target;
-  //   setFormData((prevData) => ({ ...prevData, [name]: value }));
+  // const { name, value } = e.target;
+  // setFormData((prevData) => ({ ...prevData, [name]: value }));
   // };
 
   const handleSubmit = async (e) => {
@@ -151,12 +137,10 @@ export function AjoutProduit({ handleformclick, handletoast }) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`, // Ajouter le token dans l'en-tête Authorization
+          Authorization: `Bearer ${token}`, // Ajouter le token dans l'en-tête Authorization
         },
         body: JSON.stringify(formData), // Données du formulaire à envoyer
       });
-
-
 
       if (response.ok) {
         const data = await response.json();
@@ -171,7 +155,8 @@ export function AjoutProduit({ handleformclick, handletoast }) {
         toast.success("Produit ajouté avec succès !", { autoClose: 600 });
         console.log("Produit ajouté:", data);
 
-        if (formData.quantite_stock) { // Vérifie si quantite_stock est renseigné
+        if (formData.quantite_stock) {
+          // Vérifie si quantite_stock est renseigné
           const stockData = {
             produit_id: data.id, // Associer le produit
             quantite_stock: formData.quantite_stock, // Ajouter la quantité de stock
@@ -184,7 +169,7 @@ export function AjoutProduit({ handleformclick, handletoast }) {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              "Authorization": `Bearer ${token}`,
+              Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify(stockData), // Envoie de l'objet stockData
           });
@@ -209,14 +194,17 @@ export function AjoutProduit({ handleformclick, handletoast }) {
             unit: item.unit,
           }));
           console.log(supplementData);
-          const supplementResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/supplement/create`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": `Bearer ${token}`,
+          const supplementResponse = await fetch(
+            `${import.meta.env.VITE_API_URL}/api/v1/supplement/create`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({ supplements: supplementData }),
             },
-            body: JSON.stringify({ supplements: supplementData }),
-          });
+          );
 
           if (supplementResponse.ok) {
             toast.success("Supplements enregistrés avec succès !", { autoClose: 600 });
@@ -225,8 +213,6 @@ export function AjoutProduit({ handleformclick, handletoast }) {
             toast.error("Erreur lors de l'enregistrement des supplements.");
             console.error("Erreur lors de l'enregistrement des supplements");
           }
-
-
         }
 
         // Réinitialiser le formulaire
@@ -240,16 +226,13 @@ export function AjoutProduit({ handleformclick, handletoast }) {
           dateexpi: "",
           quantite_stock: "",
           description: "",
-          acceptdoublons:"",
+          acceptdoublons: "",
+          image: "",
         });
-        setSelectedCategorie(null)
-        setFilteredCategorie(categorie)
+        setSelectedCategorie(null);
+        setFilteredCategorie(categorie);
         setPriceUnitFields([]); // Réinitialiser les champs du formulaire PriceUnitForm
-        setcharge(true)
-
-
-
-
+        setcharge(true);
       } else {
         toast.error("Échec de l'ajout du produit.Ce produit pourrait etre déja enregistré");
         console.error("Erreur:", response.statusText);
@@ -266,50 +249,49 @@ export function AjoutProduit({ handleformclick, handletoast }) {
     setFormData({ ...formData, code_barre: codeUnique });
   };
 
-
   //confirmer ajout
 
   const confirmerAjout = async () => {
     setShowModal(false);
     setFormData({ ...formData, acceptdoublons: 1 });
-  
+
     try {
       // Récupérer le token depuis le localStorage
       const token = localStorage.getItem("token");
-  
+
       // Étape 1: Enregistrement du produit
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/produit/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ ...formData, acceptdoublons: 1 }),
       });
-  
+
       if (response.ok) {
         const data = await response.json();
         const produitId = data.id; // Supposons que l'ID du produit est retourné
-  
+
         toast.success("Produit ajouté avec succès !", { autoClose: 600 });
         console.log("Produit ajouté:", data);
-  
+
         // Étape 2: Vérifier et enregistrer la quantité de stock
         if (formData.quantite_stock) {
           const stockData = {
             produit_id: produitId,
             quantite_stock: formData.quantite_stock,
           };
-  
+
           const stockResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/stock/create`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              "Authorization": `Bearer ${token}`,
+              Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify(stockData),
           });
-  
+
           if (stockResponse.ok) {
             toast.success("Stock enregistré avec succès !", { autoClose: 600 });
             console.log("Stock enregistré !");
@@ -320,7 +302,7 @@ export function AjoutProduit({ handleformclick, handletoast }) {
         } else {
           toast.warning("Veuillez renseigner la quantité en stock.");
         }
-  
+
         // Étape 3: Enregistrement des supplements (PriceUnitForm)
         if (priceUnitFields.length > 0) {
           const supplementData = priceUnitFields.map((item) => ({
@@ -328,16 +310,19 @@ export function AjoutProduit({ handleformclick, handletoast }) {
             prix: item.prix,
             unit: item.unit,
           }));
-  
-          const supplementResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/supplement/create`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": `Bearer ${token}`,
+
+          const supplementResponse = await fetch(
+            `${import.meta.env.VITE_API_URL}/api/v1/supplement/create`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({ supplements: supplementData }),
             },
-            body: JSON.stringify({ supplements: supplementData }),
-          });
-  
+          );
+
           if (supplementResponse.ok) {
             toast.success("Supplements enregistrés avec succès !", { autoClose: 600 });
             console.log("Supplements enregistrés !");
@@ -346,7 +331,7 @@ export function AjoutProduit({ handleformclick, handletoast }) {
             console.error("Erreur supplements:", supplementResponse.statusText);
           }
         }
-  
+
         // Réinitialiser le formulaire
         setFormData({
           code_barre: "",
@@ -359,6 +344,7 @@ export function AjoutProduit({ handleformclick, handletoast }) {
           quantite_stock: "",
           description: "",
           acceptdoublons: "",
+          image: "",
         });
         setSelectedCategorie(null);
         setFilteredCategorie(categorie);
@@ -374,221 +360,239 @@ export function AjoutProduit({ handleformclick, handletoast }) {
     }
   };
 
-
-
-  
-
+  const uploaderImage = async (e) => {
+    const fichier = e.target.files?.[0];
+    if (!fichier) return;
+    try {
+      const token = localStorage.getItem("token");
+      const fd = new FormData();
+      fd.append("image", fichier);
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/produit/upload-image`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: fd,
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.erreur || "Échec de l'upload");
+      setFormData((prev) => ({ ...prev, image: data.image }));
+      toast.success("Image téléversée !");
+    } catch (err) {
+      toast.error(err.message);
+    }
+  };
 
   return (
-    <div className=" w-full  mx-auto rounded-lg p-6  ">
-      <div className=" flex justify-end">
-        <button onClick={handleformclick} className="text-xl   rounded-full text-black w-6 h-6 bg-white-700 border-3 border-gray-900 "> <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-        </svg>
-        </button>
-      </div>
+    <div className=" w-full ">
       {/* <form className="w-full " onSubmit={handleSubmit}>
-        <ToastContainer position="top-right" autoClose={5000} />
 
-        <div className="border-b border-gray-200 pb-6">
-          <h2 className="text-2xl font-bold text-gray-800">Ajouter un Produit</h2>
-          <p className="mt-2 text-sm text-gray-500">Remplissez les détails du produit à ajouter.</p>
-        </div>
+ <div className="mb-5 flex items-start justify-between gap-4 border-b border-ink-100 pb-5"><div className="min-w-0">
+<h2 className="font-display text-xl font-extrabold tracking-tight text-ink-900">Ajouter un Produit</h2>
+ <p className="mt-1.5 text-[13px] text-ink-500">Remplissez les détails du produit à ajouter.</p>
+</div><button
+ type="button"
+ onClick={handleformclick}
+ aria-label="Fermer"
+ className="grid h-8 w-8 place-items-center rounded-lg text-ink-400 transition-colors hover:bg-ink-100 hover:text-ink-700"
+ >
+ <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.8" stroke="currentColor" className="h-5 w-5">
+ <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+ </svg>
+ </button></div>
 
-        <div className="mt-6 grid grid-cols-1 gap-6">
-          <div>
-            <label htmlFor="code_barre" className="block text-sm font-semibold text-gray-700">
-              Code barre
-            </label>
-            <input
-              required
-              type="text"
-              name="code_barre"
-              id="code_barre"
-              value={formData.code_barre}
-              onChange={handleInputChange}
-              className="mt-1 p-1 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
-              placeholder="Ex: 123456789"
-            />
-          </div>
+ <div className="mt-5 grid grid-cols-1 gap-4">
+ <div>
+ <label htmlFor="code_barre" className="lg-label">
+ Code barre
+ </label>
+ <input
+ required
+ type="text"
+ name="code_barre"
+ id="code_barre"
+ value={formData.code_barre}
+ onChange={handleInputChange}
+ className="lg-input"
+ placeholder="Ex: 123456789"
+ />
+ </div>
 
-          <div>
-            <label htmlFor="nom" className="block text-sm font-semibold text-gray-700">
-              Nom du Produit
-            </label>
-            <input
-              type="text"
-              name="nom"
-              required
-              id="nom"
-              value={formData.nom}
-              onChange={handleInputChange}
-              className="mt-1 p-1 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
-              placeholder="Ex: Jus d'orange"
-            />
-          </div>
+ <div>
+ <label htmlFor="nom" className="lg-label">
+ Nom du Produit
+ </label>
+ <input
+ type="text"
+ name="nom"
+ required
+ id="nom"
+ value={formData.nom}
+ onChange={handleInputChange}
+ className="lg-input"
+ placeholder="Ex: Jus d'orange"
+ />
+ </div>
 
-          <div>
-            <label htmlFor="categorie_id" className="block text-sm font-semibold text-gray-700">
-              Catégorie
-            </label>
-            <select
-              id="categorie_id"
-              name="categorie_id"
-              required
-              value={formData.categorie_id}
-              onChange={handleInputChange}
-              className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
-            >
-              <option value="">Sélectionnez une catégorie</option>
-              {categorie.map((categorie) => (
-                <option key={categorie.id} value={categorie.id}>
-                  {categorie.nom}
-                </option>
-              ))}
-            </select>
-          </div>
+ <div>
+ <label htmlFor="categorie_id" className="lg-label">
+ Catégorie
+ </label>
+ <select
+ id="categorie_id"
+ name="categorie_id"
+ required
+ value={formData.categorie_id}
+ onChange={handleInputChange}
+ className="lg-input"
+ >
+ <option value="">Sélectionnez une catégorie</option>
+ {categorie.map((categorie) => (
+ <option key={categorie.id} value={categorie.id}>
+ {categorie.nom}
+ </option>
+ ))}
+ </select>
+ </div>
 
 
-          <div>
-            <label htmlFor="price" className="block text-sm font-semibold text-gray-700">
-              Prix
-            </label>
-            <input
-              type="number"
-              name="prix"
-              required
-              id="prix"
-              value={formData.prix}
-              onChange={handleInputChange}
-              className="mt-1 p-1 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
-              placeholder="0.00"
-            />
-          </div>
+ <div>
+ <label htmlFor="price" className="lg-label">
+ Prix
+ </label>
+ <input
+ type="number"
+ name="prix"
+ required
+ id="prix"
+ value={formData.prix}
+ onChange={handleInputChange}
+ className="lg-input"
+ placeholder="0.00"
+ />
+ </div>
 
-          <div>
-            <label htmlFor="price" className="block text-sm font-semibold text-gray-700">
-              Prix Achat
-            </label>
-            <input
-              type="number"
-              name="prix_achat"
-              required
-              id="prix_achat"
-              value={formData.prix_achat}
-              onChange={handleInputChange}
-              className="mt-1 p-1 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
-              placeholder="0.00"
-            />
-          </div>
+ <div>
+ <label htmlFor="price" className="lg-label">
+ Prix Achat
+ </label>
+ <input
+ type="number"
+ name="prix_achat"
+ required
+ id="prix_achat"
+ value={formData.prix_achat}
+ onChange={handleInputChange}
+ className="lg-input"
+ placeholder="0.00"
+ />
+ </div>
 
-          <div>
-            <label htmlFor="categorie_id" className="block text-sm font-semibold text-gray-700">
-              Taxation
-            </label>
-            <select
-              id="taxation"
-              name="taxation"
-              required
-              value={formData.taxation}
-              onChange={(e) => setFormData({ ...formData, taxation: e.target.value })}
-              className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
-            >
-              <option value="">Sélectionnez une taxation</option>
-              <option>A</option>
-              <option>B</option>
-              <option>C</option>
-              <option>D</option>
-              <option>E</option>
-            </select>
-          </div>
+ <div>
+ <label htmlFor="categorie_id" className="lg-label">
+ Taxation
+ </label>
+ <select
+ id="taxation"
+ name="taxation"
+ required
+ value={formData.taxation}
+ onChange={(e) => setFormData({ ...formData, taxation: e.target.value })}
+ className="lg-input"
+ >
+ <option value="">Sélectionnez une taxation</option>
+ <option>A</option>
+ <option>B</option>
+ <option>C</option>
+ <option>D</option>
+ <option>E</option>
+ </select>
+ </div>
 
-          <div>
-            <label htmlFor="price" className="block text-sm font-semibold text-gray-700">
-              Quantité Stock
-            </label>
-            <input
-              type="number"
-              name="quantite_stock"
-              required
-              id="quantite_stock"
-              value={formData.quantite_stock}
-              onChange={handleInputChange}
-              className="mt-1 p-1 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
-              placeholder="100"
-            />
-          </div>
+ <div>
+ <label htmlFor="price" className="lg-label">
+ Quantité Stock
+ </label>
+ <input
+ type="number"
+ name="quantite_stock"
+ required
+ id="quantite_stock"
+ value={formData.quantite_stock}
+ onChange={handleInputChange}
+ className="lg-input"
+ placeholder="100"
+ />
+ </div>
 
-          <div>
-            <label className="text-black" htmlFor="">Date Expiration</label>
-            <input
-              type="date"
-              id="dateexpi"
-              name="dateexpi"
-              value={formData.dateexpi || ""}
-              onChange={handleInputChange}
-              placeholder="Date expiration"
-              className="mt-1 p-1 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
-            />
-          </div>
-          <PriceUnitForm onChange={setPriceUnitFields} charge={charge} />
-          <div>
-            <label htmlFor="description" className="block text-sm font-semibold text-gray-700">
-              Description
-            </label>
-            <textarea
-              name="description"
-              id="description"
-              required
-              rows="2"
-              value={formData.description}
-              onChange={handleInputChange}
-              className="mt-1 p-1 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
-              placeholder="Description"
-            />
-          </div>
-        </div>
+ <div>
+ <label className="text-ink-800" htmlFor="">Date Expiration</label>
+ <input
+ type="date"
+ id="dateexpi"
+ name="dateexpi"
+ value={formData.dateexpi || ""}
+ onChange={handleInputChange}
+ placeholder="Date expiration"
+ className="lg-input"
+ />
+ </div>
+ <PriceUnitForm onChange={setPriceUnitFields} charge={charge} />
+ <div>
+ <label htmlFor="description" className="lg-label">
+ Description
+ </label>
+ <textarea
+ name="description"
+ id="description"
+ required
+ rows="2"
+ value={formData.description}
+ onChange={handleInputChange}
+ className="lg-input"
+ placeholder="Description"
+ />
+ </div>
+ </div>
 
-        <div className="mt-6">
-          <button
-            type="submit"
-            className="w-full py-2 px-4 rounded-md bg-indigo-600 text-white font-semibold shadow-md hover:bg-indigo-500 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-300"
-          >
-            Ajouter le Produit
-          </button>
-        </div>
-      </form> */}
+ <div className="mt-6">
+ <button
+ type="submit"
+ className="lg-btn-primary lg-btn-lg w-full"
+ >
+ Ajouter le Produit
+ </button>
+ </div>
+ </form> */}
       <form className="w-full max-w-6xl mx-auto" onSubmit={handleSubmit}>
-        <ToastContainer position="top-right" autoClose={600} />
-
-        <div className="border-b border-gray-200 pb-6">
-          <h2 className="text-2xl font-bold text-gray-800">Ajouter un Produit</h2>
-          <p className="mt-2 text-sm text-gray-500">
+        <div className="border-b border-ink-100 pb-5">
+          <h2 className="font-display text-xl font-extrabold tracking-tight text-ink-900">
+            Ajouter un Produit
+          </h2>
+          <p className="mt-1.5 text-[13px] text-ink-500">
             Remplissez les détails du produit à ajouter.
           </p>
         </div>
 
         {/* Grid pour afficher 2 champs par ligne */}
-        <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+        <div className="mt-5 grid w-full grid-cols-1 gap-4 md:grid-cols-2">
           {/* <div>
-            <label htmlFor="code_barre" className="block text-sm font-semibold text-gray-700">
-              Code barre
-            </label>
-            <input
-              required
-              type="text"
-              name="code_barre"
-              id="code_barre"
-              value={formData.code_barre}
-              onChange={handleInputChange}
-              className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
-              placeholder="Ex: 123456789"
-            />
-          </div> */}
+ <label htmlFor="code_barre" className="lg-label">
+ Code barre
+ </label>
+ <input
+ required
+ type="text"
+ name="code_barre"
+ id="code_barre"
+ value={formData.code_barre}
+ onChange={handleInputChange}
+ className="lg-input"
+ placeholder="Ex: 123456789"
+ />
+ </div> */}
 
           <div className="flex items-center gap-2">
             <div className="w-full">
-              <label htmlFor="code_barre" className="block text-sm font-semibold text-gray-700">
+              <label htmlFor="code_barre" className="lg-label">
                 Code barre
               </label>
               <input
@@ -598,7 +602,7 @@ export function AjoutProduit({ handleformclick, handletoast }) {
                 id="code_barre"
                 value={formData.code_barre}
                 onChange={handleInputChange}
-                className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
+                className="lg-input"
                 placeholder="Ex: 123456789"
               />
             </div>
@@ -614,7 +618,7 @@ export function AjoutProduit({ handleformclick, handletoast }) {
           </div>
 
           <div>
-            <label htmlFor="nom" className="block text-sm font-semibold text-gray-700">
+            <label htmlFor="nom" className="lg-label">
               Nom du Produit
             </label>
             <input
@@ -624,33 +628,33 @@ export function AjoutProduit({ handleformclick, handletoast }) {
               id="nom"
               value={formData.nom}
               onChange={handleInputChange}
-              className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
+              className="lg-input"
               placeholder="Ex: Jus d'orange"
             />
           </div>
 
           {/* <div>
-            <label htmlFor="categorie_id" className="block text-sm font-semibold text-gray-700">
-              Catégorie
-            </label>
-            <select
-              id="categorie_id"
-              name="categorie_id"
-              required
-              value={formData.categorie_id}
-              onChange={handleInputChange}
-              className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
-            >
-              <option value="">Sélectionnez une catégorie</option>
-              {categorie.map((categorie) => (
-                <option key={categorie.id} value={categorie.id}>
-                  {categorie.nom}
-                </option>
-              ))}
-            </select>
-          </div> */}
+ <label htmlFor="categorie_id" className="lg-label">
+ Catégorie
+ </label>
+ <select
+ id="categorie_id"
+ name="categorie_id"
+ required
+ value={formData.categorie_id}
+ onChange={handleInputChange}
+ className="lg-input"
+ >
+ <option value="">Sélectionnez une catégorie</option>
+ {categorie.map((categorie) => (
+ <option key={categorie.id} value={categorie.id}>
+ {categorie.nom}
+ </option>
+ ))}
+ </select>
+ </div> */}
           <div>
-            <label htmlFor="produit_id" className="block text-sm font-semibold text-gray-700">
+            <label htmlFor="produit_id" className="lg-label">
               Categorie
             </label>
             <input
@@ -661,29 +665,28 @@ export function AjoutProduit({ handleformclick, handletoast }) {
               onChange={handleInputChange}
               onFocus={() => setIsDropdownOpenCategorie(true)} // Ouvrir la liste déroulante
               placeholder="Rechercher votre categorie"
-              className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
+              className="lg-input"
             />
             {isDropdownOpenCategorie && (
-              <ul className="mt-2 border border-gray-300 rounded-md max-h-40 overflow-auto bg-white">
+              <ul className="mt-2 max-h-40 overflow-auto rounded-xl border border-ink-200 bg-white p-2">
                 {filteredCategorie.map((categorie) => (
                   <li
                     key={categorie.id}
                     onClick={() => handleCategorieSelect(categorie)}
-                    className="p-2 cursor-pointer hover:bg-gray-100"
+                    className="lg-btn-neutral cursor-pointer"
                   >
                     {categorie.nom}
                   </li>
                 ))}
                 {filteredCategorie.length === 0 && (
-                  <li className="p-2 text-gray-500">Aucune categorie trouvé</li>
+                  <li className="text-[13px] text-ink-500">Aucune categorie trouvé</li>
                 )}
               </ul>
             )}
           </div>
 
-
           <div>
-            <label htmlFor="prix" className="block text-sm font-semibold text-gray-700">
+            <label htmlFor="prix" className="lg-label">
               Prix de l'unité
             </label>
             <input
@@ -693,16 +696,15 @@ export function AjoutProduit({ handleformclick, handletoast }) {
               id="prix"
               value={formData.prix}
               onChange={handleInputChange}
-              className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
+              className="lg-input"
               placeholder="0.00"
             />
           </div>
 
-
           <PriceUnitForm onChange={setPriceUnitFields} charge={charge} />
 
           <div>
-            <label htmlFor="prix_achat" className="block text-sm font-semibold text-gray-700">
+            <label htmlFor="prix_achat" className="lg-label">
               Prix Achat
             </label>
             <input
@@ -712,13 +714,13 @@ export function AjoutProduit({ handleformclick, handletoast }) {
               id="prix_achat"
               value={formData.prix_achat}
               onChange={handleInputChange}
-              className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
+              className="lg-input"
               placeholder="0.00"
             />
           </div>
 
           <div>
-            <label htmlFor="taxation" className="block text-sm font-semibold text-gray-700">
+            <label htmlFor="taxation" className="lg-label">
               Taxation
             </label>
             <select
@@ -727,7 +729,7 @@ export function AjoutProduit({ handleformclick, handletoast }) {
               required
               value={formData.taxation}
               onChange={(e) => setFormData({ ...formData, taxation: e.target.value })}
-              className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
+              className="lg-input"
             >
               <option value="">Sélectionnez une taxation</option>
               <option>A</option>
@@ -741,7 +743,7 @@ export function AjoutProduit({ handleformclick, handletoast }) {
           </div>
 
           <div>
-            <label htmlFor="quantite_stock" className="block text-sm font-semibold text-gray-700">
+            <label htmlFor="quantite_stock" className="lg-label">
               Quantité Stock
             </label>
             <input
@@ -751,13 +753,13 @@ export function AjoutProduit({ handleformclick, handletoast }) {
               id="quantite_stock"
               value={formData.quantite_stock}
               onChange={handleInputChange}
-              className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
+              className="lg-input"
               placeholder="100"
             />
           </div>
 
           <div>
-            <label className="text-black" htmlFor="dateexpi">
+            <label className="text-ink-800" htmlFor="dateexpi">
               Date Expiration
             </label>
             <input
@@ -767,12 +769,12 @@ export function AjoutProduit({ handleformclick, handletoast }) {
               value={formData.dateexpi || ""}
               onChange={handleInputChange}
               placeholder="Date expiration"
-              className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
+              className="lg-input"
             />
           </div>
 
           <div className="col-span-2">
-            <label htmlFor="description" className="block text-sm font-semibold text-gray-700">
+            <label htmlFor="description" className="lg-label">
               Description
             </label>
             <textarea
@@ -781,61 +783,74 @@ export function AjoutProduit({ handleformclick, handletoast }) {
               rows="2"
               value={formData.description}
               onChange={handleInputChange}
-              className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
+              className="lg-input"
               placeholder="Description"
             />
+          </div>
+
+          {/* Photo du produit */}
+          <div className="col-span-2">
+            <label className="lg-label">Photo du produit</label>
+            <div className="flex items-center gap-4">
+              {formData.image && (
+                <img
+                  src={`${import.meta.env.VITE_API_URL}/${formData.image}`}
+                  alt="Photo"
+                  className="mb-2 h-24 w-24 rounded-xl object-cover"
+                />
+              )}
+              <input type="file" accept="image/*" onChange={uploaderImage} className="lg-input" />
+            </div>
           </div>
         </div>
 
         <div className="mt-6">
-          <button
-            type="submit"
-            className="w-full py-2 px-4 rounded-md bg-indigo-600 text-white font-semibold shadow-md hover:bg-indigo-500 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-300"
-          >
+          <button type="submit" className="lg-btn-primary lg-btn-lg w-full">
             Ajouter le Produit
           </button>
         </div>
       </form>
 
-{/* Modal affiche */}
+      {/* Modal affiche */}
 
-
-{showModal && (
+      {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-lg shadow-lg p-6 max-w-lg w-full">
-            <h2 className="text-xl font-bold text-gray-800 mb-4">Produits existants</h2>
+          <div className="w-full max-w-lg">
+            <h2 className="text-xl font-bold text-ink-800 mb-4">Produits existants</h2>
 
-            <table className="w-full border-collapse border border-gray-200">
+            <table className="w-full border-collapse border border-ink-200">
               <thead>
-                <tr className="bg-gray-100">
-                  <th className="border p-2">Nom</th>
-                  <th className="border p-2">Prix</th>
-                  <th className="border p-2">Code Barre</th>
+                <tr className="bg-ink-100">
+                  <th className="rounded-xl border border-ink-200 p-2">Nom</th>
+                  <th className="rounded-xl border border-ink-200 p-2">Prix</th>
+                  <th className="rounded-xl border border-ink-200 p-2">Code Barre</th>
                 </tr>
               </thead>
               <tbody>
                 {produitsExistants.map((produit) => (
                   <tr key={produit.id}>
-                    <td className="border p-2">{produit.nom}</td>
-                    <td className="border p-2">{produit.prix} FCFA</td>
-                    <td className="border p-2">{produit.code_barre}</td>
+                    <td className="rounded-xl border border-ink-200 p-2">{produit.nom}</td>
+                    <td className="rounded-xl border border-ink-200 p-2">{produit.prix} FCFA</td>
+                    <td className="rounded-xl border border-ink-200 p-2">{produit.code_barre}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
 
             <div className="flex justify-end mt-4">
-              <button onClick={() => setShowModal(false)} className="mr-4 px-4 py-2 bg-gray-300 rounded-md">
+              <button onClick={() => setShowModal(false)} className="lg-btn-neutral mr-4">
                 Annuler
               </button>
-              <button onClick={confirmerAjout} className="px-4 py-2 bg-blue-600 text-white rounded-md">
+              <button
+                onClick={confirmerAjout}
+                className="px-4 py-2 bg-blue-600 text-white rounded-md"
+              >
                 Confirmer l'ajout
               </button>
             </div>
           </div>
         </div>
       )}
-
     </div>
   );
 }

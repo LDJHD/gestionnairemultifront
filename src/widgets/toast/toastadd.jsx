@@ -1,49 +1,44 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import PropTypes from "prop-types";
 import { TEToast } from "tw-elements-react";
+import { XMarkIcon } from "@heroicons/react/24/outline";
 
-export function Toastadd({affiche,reponse}) {
- 
+/* ===========================================================================
+   NOTIFICATION LÉGACY (« Toast »)
+   Composant historique : les pages l'utilisent encore via `{toast && <Toastadd
+   reponse={rep} />}`. Le retour utilisateur passe désormais par SweetAlert2
+   (voir `swalWithTailwindButtons`) et par le `ToastContainer` global de
+   `main.jsx` ; ce composant est conservé pour compatibilité.
+
+   ⚠️ Correction appliquée : le bouton de fermeture appelait `setOpen(false)`
+   alors que `setOpen` n'existait pas dans la portée → ReferenceError au clic.
+   =========================================================================== */
+export function Toastadd({ affiche, reponse }) {
+  const [ouvert, setOuvert] = useState(!!affiche);
 
   return (
-   
-    <div>
-      <TEToast open={affiche} autohide={true} delay={3000} setOpen={()=>{}}>
-        <div className="flex items-center justify-between rounded-t-lg border-b-2 border-neutral-100 border-opacity-100 bg-clip-padding px-4 pb-2 pt-2.5">
-          <p className="font-bold text-neutral-500 dark:text-neutral-200">
-           Notification
-          </p>
-          <div className="flex items-center">
-            <button
-              type="button"
-              className="ml-2 box-content rounded-none border-none opacity-80 hover:no-underline hover:opacity-75 focus:opacity-100 focus:shadow-none focus:outline-none"
-              onClick={() => setOpen(false)}
-              aria-label="Close"
-            >
-              <span className="w-[1em] focus:opacity-100 disabled:pointer-events-none disabled:select-none disabled:opacity-25 [&.disabled]:pointer-events-none [&.disabled]:select-none [&.disabled]:opacity-25">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  stroke="currentColor"
-                  className="h-6 w-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </span>
-            </button>
-          </div>
-        </div>
-        <div className="break-words rounded-b-lg px-4 py-4 text-black-700 xl dark:text-neutral-500">
-          {reponse}
-        </div>
-      </TEToast>
-    </div>
+    <TEToast open={ouvert} autohide delay={3200} setOpen={setOuvert}>
+      <div className="flex items-center justify-between rounded-t-2xl border-b border-ink-100 bg-white px-4 py-2.5">
+        <p className="text-[13px] font-bold text-ink-800">Notification</p>
+        <button
+          type="button"
+          onClick={() => setOuvert(false)}
+          aria-label="Fermer la notification"
+          className="grid h-7 w-7 place-items-center rounded-lg text-ink-400 transition-colors hover:bg-ink-100 hover:text-ink-700"
+        >
+          <XMarkIcon className="h-4 w-4" />
+        </button>
+      </div>
+      <div className="break-words rounded-b-2xl bg-white px-4 py-3.5 text-[13px] leading-relaxed text-ink-600">
+        {reponse}
+      </div>
+    </TEToast>
   );
 }
+
+Toastadd.propTypes = {
+  affiche: PropTypes.bool,
+  reponse: PropTypes.node,
+};
 
 export default Toastadd;

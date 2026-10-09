@@ -1,20 +1,32 @@
-import {
-    Card,
-    CardHeader,
-    CardBody,
-    Typography,
-} from "@material-tailwind/react";
 import { useEffect, useState } from "react";
 import Toastadd from "@/widgets/toast/toastadd";
 import Modaledituser from "@/widgets/modal/modaledituser";
 import Swal from 'sweetalert2';
 import Modaleditpassword from "@/widgets/modal/modaleditpassword";
+import {
+    TrashIcon,
+    UserGroupIcon,
+} from "@heroicons/react/24/outline";
+
+function estAdministrateurConnecte() {
+    try {
+        const token = localStorage.getItem("token");
+        const payload = token?.split(".")[1];
+        if (!payload) return false;
+        const base64 = payload.replace(/-/g, "+").replace(/_/g, "/");
+        const role = JSON.parse(atob(base64)).role || "";
+        return String(role).toLocaleLowerCase("fr-FR") === "admin";
+    } catch {
+        return false;
+    }
+}
 
 export function User() {
     const [users, setUsers] = useState([]);
     const [toast, setToast] = useState(false);
     const rep = "Enregistrement effectué avec succès";
     const [loading, setLoading] = useState(true);
+    const [estAdmin] = useState(estAdministrateurConnecte);
 
     const roles = ["user", "Admin", "Caissiere", "Gestionnaire", "Comptabilite"];
 
@@ -137,109 +149,143 @@ export function User() {
     
 
     return (
-        <div className="mt-12 mb-8 flex flex-col gap-12">
-            <Card>
-                <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
-                    <div className="flex justify-between items-center">
-                        <span className="font-bold">Utilisateurs</span>
+        <div className="mt-6 mb-10 flex flex-col gap-6 animate-fade-in">
+            {/* ══════════════ EN-TÊTE DE PAGE ══════════════ */}
+            <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                    <h1 className="lg-page-title">Utilisateurs</h1>
+                    <p className="lg-page-sub">
+                        Gérez les comptes, les rôles et les accès de votre équipe.
+                    </p>
+                </div>
+                <span className="lg-badge-brand tabular">
+                    {loading ? "…" : `${users.length} compte(s)`}
+                </span>
+            </header>
 
-                    </div>
-                </CardHeader>
-                <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
-                    {loading ? (
-                        <div className="flex flex-col items-center justify-center h-64">
-                            <img src="/image/loading.png" alt="Chargement..." className="w-24 h-24 animate-spin" />
+            {/* ══════════════ LISTE DES COMPTES ══════════════ */}
+            <div className="lg-card overflow-hidden">
+                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-ink-100 px-5 py-4">
+                    <div className="flex items-center gap-2.5">
+                        <span className="lg-icon-chip h-9 w-9 bg-brand-50 text-brand-600 ring-1 ring-inset ring-brand-100">
+                            <UserGroupIcon className="h-[18px] w-[18px]" />
+                        </span>
+                        <div>
+                            <p className="font-display text-base font-extrabold text-ink-900">
+                Comptes utilisateurs
+                            </p>
+                            <p className="text-[13px] text-ink-500">
+                                {estAdmin
+                                    ? "Droits administrateur : modification des rôles et suppression"
+                                    : "Consultation de la liste des comptes"}
+                            </p>
                         </div>
-                    ) : (
-                        <table className="w-full min-w-[1000px] table-auto">
+                    </div>
+                    <span className="lg-badge-neutral">Rôles : {roles.length}</span>
+                </div>
+
+                {loading ? (
+                    <div className="space-y-3 p-5">
+                        {[0, 1, 2, 3, 4, 5].map((i) => (
+                            <div key={i} className="lg-skeleton h-14 w-full" />
+                        ))}
+                    </div>
+                ) : !users || users.length === 0 ? (
+                    <div className="px-6 py-14 text-center">
+                        <div className="mx-auto grid h-12 w-12 place-items-center rounded-2xl bg-ink-100 text-ink-400">
+                            <UserGroupIcon className="h-6 w-6" />
+                        </div>
+                        <p className="mt-3 text-sm font-semibold text-ink-700">Aucun utilisateur</p>
+                        <p className="mt-1 text-[13px] text-ink-500">
+                            Aucun compte n'a encore été créé sur la plateforme.
+                        </p>
+                    </div>
+                ) : (
+                    <div className="lg-table-wrap">
+                        <table className="lg-table w-full min-w-[1100px]">
                             <thead>
                                 <tr>
                                     {["Nom", "Prénom", "Email", "Téléphone", "Adresse", "Statut", "Actif", "Date de création", "Options"].map((el) => (
-                                        <th key={el} className="border-b border-blue-gray-50 py-3 px-5 text-left">
-                                            <Typography variant="small" className="text-[11px] font-bold uppercase text-blue-gray-400">
-                                                {el}
-                                            </Typography>
-                                        </th>
+                                        <th key={el}>{el}</th>
                                     ))}
                                 </tr>
                             </thead>
                             <tbody>
-                                {users.map((user, key) => {
-                                    const className = `py-3 px-5 ${key === users.length - 1 ? "" : "border-b border-blue-gray-50"}`;
-                                    return (
-                                        <tr key={user.id}>
-                                            <td className={className}>{user.nom}</td>
-                                            <td className={className}>{user.prenom}</td>
-                                            <td className={className}>{user.email}</td>
-                                            <td className={className}>{user.whatsapp}</td>
-                                            <td className={className}>{user.pays}</td>
+                                {users.map((user) => (
+                                    <tr key={user.id}>
+                                        <td className="lg-td font-semibold text-ink-800">{user.nom}</td>
+                                        <td className="lg-td text-ink-700">{user.prenom}</td>
+                                        <td className="lg-td text-[13px] text-ink-500">{user.email}</td>
+                                        <td className="lg-td text-[13px] text-ink-500 tabular">{user.whatsapp}</td>
+                                        <td className="lg-td text-[13px] text-ink-500">{user.pays}</td>
 
-                                            <td className={className}>
-                                                <select value={user.status} onChange={(e) => handleRoleChange(user.id, e.target.value)} className="border border-gray-300 rounded px-2 py-1 text-sm">
-                                                    {roles.map(role => (
-                                                        <option key={role} value={role}>{role}</option>
-                                                    ))}
-                                                </select>
-                                            </td>
-
-                                            {/* <td className={className}>
-                                                <input type="checkbox" checked={user.actif === 1} onChange={() => toggleUserStatus(user.id, user.actif)} className="cursor-pointer" />
-                                            </td> */}
-<td className="px-4 py-2">
-    <button
-        onClick={() => {
-            toggleUserStatus(user.id, user.actif);
-        }}
-        className={`relative w-12 h-6 rounded-full transition-colors ${
-            user.actif === 1 ? "bg-green-500" : "bg-gray-400"
-        }`}
-    >
-        <span
-            className={`absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform ${
-                user.actif === 1 ? "translate-x-6" : ""
-            }`}
-        ></span>
-    </button>
-</td>
-
-
-                                            <td className={className}>{user.date}</td>
-
-                                            <td className={className}>
-                                                <div className="flex items-center gap-2">
-                                                    <Modaledituser userId={user.id} handletoast={() => setToast(true)} />
-                                                    {/* <button onClick={() => handleDeleteUser(user.id)} className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-700">Supprimer</button> */}
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => handleDeleteUser(user.id)}
-                                                        className="w-4 text-red-600 rounded-full flex items-center justify-center"
+                                        <td className="lg-td">
+                                            {estAdmin ? (
+                                                <div className="w-36">
+                                                    <select
+                                                        value={user.status}
+                                                        onChange={(e) => handleRoleChange(user.id, e.target.value)}
+                                                        className="lg-select py-1.5 text-[13px]"
                                                     >
-                                                        <svg
-                                                            xmlns="http://www.w3.org/2000/svg"
-                                                            fill="none"
-                                                            viewBox="0 0 24 24"
-                                                            strokeWidth="1.5"
-                                                            stroke="currentColor"
-                                                            className="text-sm"
-                                                        >
-                                                            <path
-                                                                strokeLinecap="round"
-                                                                strokeLinejoin="round"
-                                                                d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
-                                                            />
-                                                        </svg>
-                                                    </button>
-                                                    <Modaleditpassword userId={user.id} handletoast={() => setToast(true)} />
+                                                        {roles.map(role => (
+                                                            <option key={role} value={role}>{role}</option>
+                                                        ))}
+                                                    </select>
                                                 </div>
-                                            </td>
-                                        </tr>
-                                    );
-                                })}
+                                            ) : (
+                                                <span className="lg-badge-neutral">{user.status}</span>
+                                            )}
+                                        </td>
+
+                                        <td className="lg-td">
+                                            {estAdmin ? (
+                                                <button
+                                                    type="button"
+                                                    onClick={() => toggleUserStatus(user.id, user.actif)}
+                                                    aria-label={user.actif === 1 ? "Désactiver le compte" : "Activer le compte"}
+                                                    className={`relative h-6 w-12 shrink-0 rounded-full transition-colors duration-200 ${
+                                                        user.actif === 1
+                                                            ? "bg-accent-500"
+                                                            : "bg-ink-300"
+                                                    }`}
+                                                >
+                                                    <span
+                                                        className={`absolute left-1 top-1 h-4 w-4 rounded-full bg-white shadow-xs transition-transform duration-200 ${
+                                                            user.actif === 1 ? "translate-x-6" : ""
+                                                        }`}
+                                                    ></span>
+                                                </button>
+                                            ) : user.actif === 1 ? (
+                                                <span className="lg-badge-accent">Actif</span>
+                                            ) : (
+                                                <span className="lg-badge-danger">Inactif</span>
+                                            )}
+                                        </td>
+
+                                        <td className="lg-td text-[13px] text-ink-500 tabular">{user.date}</td>
+
+                                        <td className="lg-td">
+                                            <div className="flex items-center justify-end gap-2">
+                                                <Modaledituser userId={user.id} handletoast={() => setToast(true)} />
+                                                <Modaleditpassword userId={user.id} handletoast={() => setToast(true)} />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleDeleteUser(user.id)}
+                                                    className="lg-btn-danger lg-btn-sm"
+                                                    title="Supprimer l'utilisateur"
+                                                >
+                                                    <TrashIcon className="h-4 w-4" />
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
                             </tbody>
                         </table>
-                    )}
-                </CardBody>
-            </Card>
+                    </div>
+                )}
+            </div>
+
             {toast && <Toastadd reponse={rep} />}
         </div>
     );

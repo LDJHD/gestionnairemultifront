@@ -16,19 +16,55 @@ import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "@material-tailwind/react";
 import { MaterialTailwindControllerProvider } from "@/context";
 import "../public/css/tailwind.css";
-import { ToastContainer,Bounce } from "react-toastify";
+import { ToastContainer, Bounce, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker
-      .register("/service-worker.js")
-      .then((registration) => {
-        console.log("Service Worker enregistré avec succès", registration);
-      })
-      .catch((error) => {
-        console.log("Erreur d'enregistrement du Service Worker", error);
+
+/* ===========================================================================
+   SERVICE WORKER (PWA)
+   ⚠️ Ne JAMAIS enregistrer /service-worker.js à la main.
+   En développement, Vite ne génère pas ce fichier → l'enregistrement échouait.
+   Pire : un SW issu d'un ancien `npm run build` restait actif dans le
+   navigateur et interceptait TOUTES les requêtes en servant un cache périmé
+   → PAGE BLANCHE au chargement de http://localhost:5173.
+   virtual:pwa-register gère le cycle de vie correctement et, en dev, le
+   plugin VitePWA installe un SW « no-op » qui laisse passer le HMR.
+   =========================================================================== */
+if ("serviceWorker" in navigator && import.meta.env.PROD) {
+  import("virtual:pwa-register")
+    .then(({ registerSW }) => {
+      const updateSW = registerSW({
+        immediate: true,
+        onNeedRefresh() {
+          // Non bloquant : un `window.confirm` interrompait la saisie en cours.
+          // On propose le rechargement dans une notification persistante.
+          toast("Une nouvelle version de l'application est disponible.", {
+            autoClose: false,
+            closeOnClick: false,
+            draggable: false,
+            pauseOnHover: true,
+            button: {
+              label: "Recharger",
+              onClick: () => updateSW(true),
+            },
+          });
+        },
       });
-  });
+    })
+    .catch(() => {
+      /* PWA indisponible : l'application fonctionne quand même */
+    });
+} else if ("serviceWorker" in navigator) {
+  // Développement : on neutralise tout SW hérité d'une session de production.
+  navigator.serviceWorker
+    .getRegistrations()
+    .then((regs) => regs.forEach((r) => r.unregister()))
+    .catch(() => {});
+  if (window.caches) {
+    caches
+      .keys()
+      .then((keys) => Promise.all(keys.map((k) => caches.delete(k))))
+      .catch(() => {});
+  }
 }
 
 ReactDOM.createRoot(document.getElementById("root")).render(
@@ -38,7 +74,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         <MaterialTailwindControllerProvider>
         <ToastContainer
             position="top-right"
-            autoClose={1000}
+            autoClose={4000}
             hideProgressBar={false}
             newestOnTop={false}
             closeOnClick

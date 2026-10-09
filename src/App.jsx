@@ -6,11 +6,14 @@ import Detailproduit from "./pages/dashboard/detailproduit";
 import Detailvente from "./pages/dashboard/detailvente";
 import Vendre from "./pages/dashboard/vendre";
 import { SignUp } from "./pages/auth";
-
+import Boutique from "./pages/boutique";
+import SuiviCommande from "./pages/boutique/suivi";
+import PaiementRetour from "./pages/boutique/paiement-retour";
 
 function App() {
   return (
     <Routes>
+      {/* Espace gestion (socle conservé) */}
       <Route path="/dashboard/*" element={<Dashboard />} />
       <Route path="/detail/*" element={<Detail />} />
       <Route path="/operation" element={<Vendre />} />
@@ -18,6 +21,12 @@ function App() {
       <Route path="/detailvente/*" element={<Detailvente />} />
       <Route path="/auth/*" element={<Auth />} />
       <Route path="/auth/sign-up" element={<SignUp />} />
+
+      {/* Espace client public — boutique en ligne (nouveaux modules) */}
+      <Route path="/boutique/:slug" element={<Boutique />} />
+      <Route path="/commande/suivi" element={<SuiviCommande />} />
+      <Route path="/paiement/retour" element={<PaiementRetour />} />
+
       <Route path="*" element={<Navigate to="/dashboard/home" replace />} />
       <Route path="/" element={<Navigate to="/auth/sign-in" replace />} />
     </Routes>

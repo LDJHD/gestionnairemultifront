@@ -1,16 +1,16 @@
 // Composant Clients
-import {
-  Card,
-  CardHeader,
-  CardBody,
-  Typography,
-  Tabs,
-} from "@material-tailwind/react";
+import { Tabs } from "@material-tailwind/react";
 import { useEffect, useState } from "react";
 import Toastadd from "@/widgets/toast/toastadd";
 import Swal from 'sweetalert2'
 import { Link } from "react-router-dom";
 import { useventeStore } from "@/widgets/store/useventestore";
+import {
+  EyeIcon,
+  PlusIcon,
+  ReceiptPercentIcon,
+  TrashIcon,
+} from "@heroicons/react/24/outline";
 
 export function Vente() {
 
@@ -135,7 +135,6 @@ export function Vente() {
 
 
 
-
   // Appel de fetchventes lors du chargement du composant
   useEffect(() => {
     fetchventes();
@@ -148,113 +147,126 @@ export function Vente() {
 
 
   return (
-    <div className="mt-12 mb-8 flex flex-col gap-12">
-      <Card>
-        <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
-          <div className="flex justify-between items-center">
-            <span className="font-bold">vente</span>
-            <span className="font-bold text-lg ">{totalvente}</span>
-          </div>
-        </CardHeader>
-        <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
-           {/* Affichage de l'animation si les données sont en cours de chargement */}
-           {loading ? (
-            <div className="flex flex-col items-center justify-center h-64">
-              <img src=" /image/loading.png" alt="Chargement..." className="w-24 h-24 animate-spin" />
-              
+    <div className="mt-6 mb-10 flex flex-col gap-6 animate-fade-in">
+      {/* ══════════════ EN-TÊTE DE PAGE ══════════════ */}
+      <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h1 className="lg-page-title">Ventes</h1>
+          <p className="lg-page-sub">
+            Historique complet des ventes enregistrées dans votre boutique.
+          </p>
+        </div>
+        <Link to="/dashboard/vendre">
+          <button type="button" className="lg-btn-primary lg-btn-sm">
+            <PlusIcon className="h-[18px] w-[18px]" />
+            Nouvelle vente
+          </button>
+        </Link>
+      </header>
+
+      {/* ══════════════ JOURNAL DES VENTES ══════════════ */}
+      <div className="lg-card overflow-hidden">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-ink-100 px-5 py-4">
+          <div className="flex items-center gap-2.5">
+            <span className="lg-icon-chip h-9 w-9 bg-brand-50 text-brand-600 ring-1 ring-inset ring-brand-100">
+              <ReceiptPercentIcon className="h-[18px] w-[18px]" />
+            </span>
+            <div>
+              <p className="font-display text-base font-extrabold text-ink-900">
+                Journal des ventes
+              </p>
+              <p className="text-[13px] text-ink-500">
+                {loading
+                  ? "Chargement des opérations…"
+                  : `${displayventes.length} vente(s) au total`}
+              </p>
             </div>
-          ) : (
-          <table className="w-full min-w-[600px] table-auto">
-            <thead>
-              <tr>
-                {["", "Client", "Montant", "Date", "Option"].map((el) => (
-                  <th key={el} className="border-b border-blue-gray-50 py-3 px-5 text-left">
-                    <Typography variant="small" className="text-[11px] font-bold uppercase text-blue-gray-400">
-                      {el}
-                    </Typography>
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {displayventes.map((vente, key) => {
-                const className = `py-3 px-5 ${key === displayventes.length - 1 ? "" : "border-b border-blue-gray-50"}`;
-                return (
-                  <tr key={vente.code_barre} >
-                    <td className={className}>
-                      <span><Typography variant="small" color="blue-gray" className="font-bold">{key}</Typography></span></td>
-                    <td className={className}>
-                      <Link to={`/detailvente?id=${vente.id}`}>
-                        <span><Typography variant="small" color="blue-gray" className="font-bold">{vente.client}</Typography></span></Link></td>
-                    <td className={className}><Typography variant="small" color="blue-gray" className="font-bold">{vente.montant_total}</Typography></td>
-                    <td className={className}><Typography variant="small" color="blue-gray" className="font-bold"> {vente.date}</Typography></td>
-                    <td className={className}>
-                      <div class="flex gap-2">
-                        <button
-                          type="button"
-                          className="w-4 text-blue-600 rounded-full mx-1 flex items-center justify-center"
+          </div>
+          <span className="lg-badge-brand tabular">
+            {totalvente?.length ?? displayventes.length}
+          </span>
+        </div>
+
+        {loading ? (
+          <div className="space-y-3 p-5">
+            {[0, 1, 2, 3, 4].map((i) => (
+              <div key={i} className="lg-skeleton h-14 w-full" />
+            ))}
+          </div>
+        ) : !displayventes || displayventes.length === 0 ? (
+          <div className="px-6 py-14 text-center">
+            <div className="mx-auto grid h-12 w-12 place-items-center rounded-2xl bg-ink-100 text-ink-400">
+              <ReceiptPercentIcon className="h-6 w-6" />
+            </div>
+            <p className="mt-3 text-sm font-semibold text-ink-700">Aucune vente pour l'instant</p>
+            <p className="mt-1 text-[13px] text-ink-500">
+              Enregistrez votre première vente depuis la caisse.
+            </p>
+            <Link to="/dashboard/vendre" className="mt-4 inline-block">
+              <button type="button" className="lg-btn-primary lg-btn-sm">
+                <PlusIcon className="h-4 w-4" />
+                Ouvrir la caisse
+              </button>
+            </Link>
+          </div>
+        ) : (
+          <div className="lg-table-wrap">
+            <table className="lg-table w-full min-w-[720px]">
+              <thead>
+                <tr>
+                  <th className="w-16">N°</th>
+                  <th>Client</th>
+                  <th className="text-right">Montant</th>
+                  <th>Date</th>
+                  <th className="text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {displayventes.map((vente, key) => (
+                  <tr key={vente.id ?? key}>
+                    <td className="lg-td text-[13px] font-semibold text-ink-400 tabular">
+                      {String(key + 1).padStart(2, "0")}
+                    </td>
+                    <td className="lg-td">
+                      <Link
+                        to={`/detailvente?id=${vente.id}`}
+                        className="font-semibold text-ink-800 transition-colors hover:text-brand-700"
+                      >
+                        {vente.client}
+                      </Link>
+                    </td>
+                    <td className="lg-td text-right text-sm font-bold text-ink-900 tabular">
+                      {vente.montant_total}
+                    </td>
+                    <td className="lg-td text-[13px] text-ink-500">{vente.date}</td>
+                    <td className="lg-td">
+                      <div className="flex items-center justify-end gap-2">
+                        <Link
+                          to={`/detailvente?id=${vente.id}`}
+                          className="lg-btn-neutral lg-btn-sm"
+                          title="Voir le détail"
                         >
-                          <Link
-                            to={`/detailvente?id=${vente.id}`}
-                            className="inline-flex items-center p-2 text-blue-500 rounded"
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth="1.5"
-                              stroke="currentColor"
-                              className="w-5 h-5 mr-1"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                              />
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-.275 1.056-.698 2.059-1.24 3.007-.276.482-.605.933-.972 1.342-.772.865-1.71 1.563-2.77 2.038A9.931 9.931 0 0112 19a9.931 9.931 0 01-4.56-1.257c-1.06-.475-1.998-1.173-2.77-2.038a11.194 11.194 0 01-.972-1.342 15.951 15.951 0 01-1.24-3.007z"
-                              />
-                            </svg>
-                          </Link>
-
-
-
-                        </button>
+                          <EyeIcon className="h-4 w-4" />
+                          Détail
+                        </Link>
                         <button
                           type="button"
                           onClick={() => handleAlert(vente.id)}
-                          className="w-4 text-red-600 rounded-full mx-1 flex items-center justify-center"
+                          className="lg-btn-danger lg-btn-sm"
+                          title="Supprimer la vente"
                         >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth="1.5"
-                            stroke="currentColor"
-                            className="text-sm"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
-                            />
-                          </svg>
+                          <TrashIcon className="h-4 w-4" />
                         </button>
-
                       </div>
-
-
                     </td>
                   </tr>
-                );
-              })}
-            </tbody>
-          </table>
-          )}
-        </CardBody>
-      </Card>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+
       {toast && <Toastadd reponse={rep} />}
     </div>
   );

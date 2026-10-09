@@ -1,12 +1,11 @@
 // Composant fournisseur
-import {
-    Card,
-    CardHeader,
-    CardBody,
-    Typography,
-    Tabs,
-  } from "@material-tailwind/react";
+import { Tabs } from "@material-tailwind/react";
   import { useEffect, useState } from "react";
+  import {
+    BuildingStorefrontIcon,
+    TrashIcon,
+    TruckIcon,
+  } from "@heroicons/react/24/outline";
   import Toastadd from "@/widgets/toast/toastadd";
 
 
@@ -131,80 +130,108 @@ import Modaleditfournisseur from "@/widgets/modal/modaleditfournisseur";
       fetchfournisseurs();
     }, []);
   
+    const total = fournisseurs.length;
+
+    const boutonAjout = <Modaladdfournisseur handletoast={handletoast} />;
+
     return (
-      <div className="mt-12 mb-8 flex flex-col gap-12">
-        <Card>
-          <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
-            <div className="flex justify-between items-center">
-              <span className="font-bold">fournisseur</span>
-              <span><Modaladdfournisseur handletoast={handletoast} /></span>
+      <div className="mt-6 mb-10 flex flex-col gap-6 animate-fade-in">
+        {/* ══════════════ EN-TÊTE DE PAGE ══════════════ */}
+        <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <h1 className="lg-page-title">Fournisseurs</h1>
+            <p className="lg-page-sub">
+              Vos partenaires d&apos;approvisionnement et leurs coordonnées.
+            </p>
+          </div>
+          {boutonAjout}
+        </header>
+
+        {/* ══════════════ LISTE DES FOURNISSEURS ══════════════ */}
+        <section className="lg-card overflow-hidden">
+          <div className="flex flex-wrap items-center gap-3 border-b border-ink-100 px-5 py-4">
+            <span className="lg-icon-chip h-9 w-9 bg-accent-50 text-accent-600 ring-1 ring-inset ring-accent-100">
+              <TruckIcon className="h-[18px] w-[18px]" />
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-bold text-ink-900">Répertoire fournisseurs</p>
+              <p className="text-[13px] text-ink-500">Contact, adresse et date de référencement</p>
             </div>
-          </CardHeader>
-          <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
+            <span className="lg-badge-neutral tabular">
+              {total} fournisseur{total > 1 ? "s" : ""}
+            </span>
+          </div>
+
+          {/* Squelettes de chargement */}
           {loading ? (
-            <div className="flex flex-col items-center justify-center h-64">
-              <img src=" /image/loading.png" alt="Chargement..." className="w-24 h-24 animate-spin" />
-              
+            <div className="flex flex-col gap-2 p-5">
+              {[0, 1, 2, 3, 4].map((i) => (
+                <div key={i} className="lg-skeleton h-12 w-full" />
+              ))}
+            </div>
+          ) : total === 0 ? (
+            <div className="px-6 py-14 text-center">
+              <div className="mx-auto grid h-12 w-12 place-items-center rounded-2xl bg-ink-100 text-ink-400">
+                <BuildingStorefrontIcon className="h-6 w-6" />
+              </div>
+              <p className="mt-3 text-sm font-semibold text-ink-700">Aucun fournisseur enregistré</p>
+              <p className="mx-auto mt-1 max-w-sm text-[13px] text-ink-500">
+                Ajoutez vos partenaires d&apos;approvisionnement pour mieux suivre vos achats.
+              </p>
+              <div className="mt-4 flex justify-center">{boutonAjout}</div>
             </div>
           ) : (
-            <table className="w-full min-w-[600px] table-auto">
-              <thead>
-                <tr>
-                  {["Nom", "Contact", "Adresse","Date de création", "Option"].map((el) => (
-                    <th key={el} className="border-b border-blue-gray-50 py-3 px-5 text-left">
-                      <Typography variant="small" className="text-[11px] font-bold uppercase text-blue-gray-400">
-                        {el}
-                      </Typography>
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {fournisseurs.map((fournisseur, key) => {
-                  const className = `py-3 px-5 ${key === fournisseurs.length - 1 ? "" : "border-b border-blue-gray-50"}`;
-                  return (
+            <div className="lg-table-wrap">
+              <table className="lg-table w-full min-w-[720px]">
+                <thead>
+                  <tr>
+                    <th>Nom</th>
+                    <th>Contact</th>
+                    <th>Adresse</th>
+                    <th>Date de création</th>
+                    <th className="!text-right">Option</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {fournisseurs.map((fournisseur) => (
                     <tr key={fournisseur.id}>
-                      <td className={className}><Typography variant="small" color="blue-gray" className="font-bold">{fournisseur.nom}</Typography></td>
-                      <td className={className}><Typography variant="small" color="blue-gray" className="font-bold">{fournisseur.contact}</Typography></td>
-                      <td className={className}><Typography variant="small" color="blue-gray" className="font-bold">{fournisseur.adresse}</Typography></td>
-                      <td className={className}><Typography variant="small" color="blue-gray" className="font-bold">{fournisseur.date}</Typography></td>
-                      <td className={className}>
-                      <div class="flex gap-2">
-  
-  <Modaleditfournisseur fournisseurId={fournisseur.id} handletoast={handletoast} />
-  
-  
-  <button
-    type="button"
-    onClick={() => handleAlert(fournisseur.id)}
-    className="w-4 text-red-600 rounded-full flex items-center justify-center"
-  >
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      strokeWidth="1.5"
-      stroke="currentColor"
-      className="text-sm"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
-      />
-    </svg>
-  </button>
-  
-  </div>
+                      <td className="lg-td font-semibold text-ink-800">
+                        {fournisseur.nom || "—"}
+                      </td>
+                      <td className="lg-td text-[13px] tabular text-ink-600">
+                        {fournisseur.contact || "—"}
+                      </td>
+                      <td className="lg-td text-[13px] text-ink-600">
+                        <span className="lg-clamp-2 inline-block max-w-[260px] align-middle">
+                          {fournisseur.adresse || "—"}
+                        </span>
+                      </td>
+                      <td className="lg-td text-[13px] text-ink-500">{fournisseur.date || "—"}</td>
+                      <td className="lg-td">
+                        <div className="flex items-center justify-end gap-1">
+                          <Modaleditfournisseur
+                            fournisseurId={fournisseur.id}
+                            handletoast={handletoast}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => handleAlert(fournisseur.id)}
+                            title="Supprimer"
+                            aria-label="Supprimer"
+                            className="grid h-8 w-8 place-items-center rounded-lg text-ink-400 transition-colors hover:bg-red-50 hover:text-red-600"
+                          >
+                            <TrashIcon className="h-[18px] w-[18px]" />
+                          </button>
+                        </div>
                       </td>
                     </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
-          </CardBody>
-        </Card>
+        </section>
+
         {toast && <Toastadd reponse={rep} />}
       </div>
     );

@@ -1,5 +1,5 @@
 import { EllipsisVerticalIcon } from "@heroicons/react/24/solid";
-import { Typography } from "@material-tailwind/react";
+import { TrashIcon } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import Modaleditproduit from "../modal/modaleditproduit";
@@ -79,31 +79,41 @@ export function Droplist({ isOpen, handleClick, id, idp, onDelete,setMenuActif }
 
 
   return (
-    <div>
-      <div className="relative inline-block text-left">
-        <button
-          type="button"
-          onClick={() => handleClick(id)}
-          className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-        >
-          <Typography as="a" href="#" className="text-xs font-semibold text-blue-gray-600">
-            <EllipsisVerticalIcon strokeWidth={2} className="h-5 w-5 text-inherit" />
-          </Typography>
-        </button>
+    <div className="relative inline-block text-left">
+      <button
+        type="button"
+        onClick={() => handleClick(id)}
+        aria-haspopup="menu"
+        aria-expanded={isOpen}
+        aria-label="Actions sur le produit"
+        title="Actions"
+        className="lg-btn-neutral px-2.5"
+      >
+        <EllipsisVerticalIcon strokeWidth={2} className="h-5 w-5" />
+      </button>
 
-        {isOpen && (
-          <div className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5">
-            <div className="py-1">
-              <a href="#" className="block px-4 py-2 text-sm text-gray-700" onClick={() => handleAlert(idp)}>
-                Supprimer
-              </a>
-              <a href="#" className="block px-4 py-2 text-sm text-gray-700">
-                <Modaleditproduit ProductId={idp}  onClick={handletoast} setMenuActif={setMenuActif}/>
-              </a>
-            </div>
+      {isOpen && (
+        <div
+          role="menu"
+          className="absolute right-0 z-50 mt-2 min-w-[220px] origin-top-right rounded-2xl border border-ink-200 bg-white p-1.5 shadow-lift animate-slide-down"
+        >
+          <button
+            type="button"
+            role="menuitem"
+            onClick={() => handleAlert(idp)}
+            className="flex w-full items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-[13px] font-medium text-ink-700 transition-colors hover:bg-brand-50 hover:text-brand-800"
+          >
+            <TrashIcon className="h-4 w-4 shrink-0" />
+            Supprimer
+          </button>
+          <div
+            role="menuitem"
+            className="rounded-xl px-3.5 py-2.5 text-[13px] font-medium text-ink-700 transition-colors hover:bg-brand-50 hover:text-brand-800"
+          >
+            <Modaleditproduit ProductId={idp} onClick={handletoast} setMenuActif={setMenuActif} />
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

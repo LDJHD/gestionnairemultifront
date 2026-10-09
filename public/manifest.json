@@ -1,11 +1,11 @@
 {
-    "name": "ATON HELIOSTORE",
-    "short_name": "Atonheliostore",
+    "name": "Le Gestionnaire",
+    "short_name": "Gestionnaire",
     "start_url": "/",
     "display": "standalone",
     "background_color": "#ffffff",
-    "theme_color": "#000000",
-    "description": "Une application de gestion de vente web",
+    "theme_color": "#4f46e5",
+    "description": "Le Gestionnaire — plateforme de gestion universelle : caisse, stocks, facturation, commandes en ligne, livraison et paiements.",
     "icons": [
       {
         "src": "/image/logo.png",

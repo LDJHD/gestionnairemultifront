@@ -1,40 +1,33 @@
 import PropTypes from "prop-types";
-import { Typography } from "@material-tailwind/react";
 import { HeartIcon } from "@heroicons/react/24/solid";
 
-export function Footer({ brandName, brandLink, routes }) {
+/* ===========================================================================
+   « LE GESTIONNAIRE » — PIED DE PAGE
+   =========================================================================== */
+
+export function Footer({ brandName, brandLink }) {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="py-2">
-      <div className="flex w-full flex-wrap items-center justify-center gap-6 px-2 md:justify-between">
-        <Typography variant="small" className="font-normal text-inherit">
-          &copy; 2024, made with{" "}
-          <HeartIcon className="-mt-0.5 inline-block h-3.5 w-3.5 text-red-600" /> by{" "}
+    <footer className="border-t border-ink-200/70 py-6">
+      <div className="flex w-full flex-col items-center gap-2 px-2 text-center sm:flex-row sm:justify-between sm:text-left">
+        <p className="text-[13px] text-ink-500">
+          © {year} — <strong className="font-semibold text-ink-700">Le Gestionnaire</strong>
+          <span className="hidden sm:inline"> · Gestion &amp; boutique en ligne</span>
+        </p>
+        <p className="flex items-center gap-1.5 text-[13px] text-ink-400">
+          Conçu avec
+          <HeartIcon className="h-3.5 w-3.5 text-red-500" />
+          par
           <a
             href={brandLink}
             target="_blank"
-            className="transition-colors hover:text-blue-500 font-bold"
+            rel="noreferrer"
+            className="font-semibold text-brand-600 transition-colors hover:text-brand-800"
           >
-            TO-CONNECT
-          </a>{" "}
-          for a better web.
-        </Typography>
-        <ul className="flex items-center gap-4">
-          {routes.map(({ name, path }) => (
-            <li key={name}>
-              <Typography
-                as="a"
-                href={path}
-                target="_blank"
-                variant="small"
-                className="py-0.5 px-1 font-normal text-inherit transition-colors hover:text-blue-500"
-              >
-                {name}
-              </Typography>
-            </li>
-          ))}
-        </ul>
+            {brandName}
+          </a>
+        </p>
       </div>
     </footer>
   );
@@ -42,21 +35,12 @@ export function Footer({ brandName, brandLink, routes }) {
 
 Footer.defaultProps = {
   brandName: "TO CONNECT",
-  brandLink: "https://www.creative-tim.com",
-  routes: [
-    { name: "TOco", path: "https://www.toconnect-tim.com" },
-    { name: "About Us", path: "https://www.connn.com/presentation" },
-    { name: "Blog", path: "https://www.crbjj.com/blog" },
-    { name: "TO CONNECT", path: "https://www.creativhhhhe-tim.com/license" },
-  ],
+  brandLink: "https://www.to-connect.com",
 };
-
 Footer.propTypes = {
   brandName: PropTypes.string,
   brandLink: PropTypes.string,
-  routes: PropTypes.arrayOf(PropTypes.object),
 };
-
-Footer.displayName = "/src/widgets/layout/footer.jsx";
+Footer.displayName = "Footer";
 
 export default Footer;

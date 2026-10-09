@@ -1,27 +1,17 @@
 import PropTypes from "prop-types";
-import { Avatar, Typography } from "@material-tailwind/react";
 
 export function MessageCard({ img, name, message, action }) {
   return (
-    <div className="flex items-center justify-between gap-4">
-      <div className="flex items-center gap-4">
-        <Avatar
-          src={img}
-          alt={name}
-          variant="rounded"
-          className="shadow-lg shadow-blue-gray-500/25"
-        />
-        <div>
-          <Typography
-            variant="small"
-            color="blue-gray"
-            className="mb-1 font-semibold"
-          >
+    <div className="lg-card flex items-center justify-between gap-4 p-5">
+      <div className="flex min-w-0 items-center gap-3.5">
+        <span className="lg-icon-chip h-10 w-10 overflow-hidden bg-ink-100 text-ink-500 ring-1 ring-inset ring-ink-200">
+          <img src={img} alt={name} loading="lazy" className="h-full w-full object-cover" />
+        </span>
+        <div className="min-w-0">
+          <p className="font-display text-sm font-extrabold text-ink-900 lg-clamp-1">
             {name}
-          </Typography>
-          <Typography className="text-xs font-normal text-blue-gray-400">
-            {message}
-          </Typography>
+          </p>
+          <p className="text-[13px] leading-relaxed text-ink-600">{message}</p>
         </div>
       </div>
       {action}

@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
 import { PlusIcon, TrashIcon } from "@heroicons/react/24/solid";
 
-export default function PriceUnitForm({ onChange,charge }) {
+export default function PriceUnitForm({ onChange, charge }) {
   const [fields, setFields] = useState([]);
   const [unit, setunit] = useState([]);
-
 
   // Fonction pour récupérer les categories
   const fetchunit = async () => {
@@ -29,14 +28,12 @@ export default function PriceUnitForm({ onChange,charge }) {
     }
   };
 
-
-
   // Appel de fetchcategories lors du chargement du composant
   useEffect(() => {
     fetchunit();
   }, []);
 
-   useEffect(() => {
+  useEffect(() => {
     setFields([]); // Ferme les champs quand `resetTrigger` change
   }, [charge]);
 
@@ -58,47 +55,55 @@ export default function PriceUnitForm({ onChange,charge }) {
 
   return (
     <div className="p-4 border rounded-lg shadow-md bg-white">
-      <h3 className="text-lg font-semibold text-gray-700 mb-2">Informations sur les produits</h3>
+      <h3 className="mb-2 font-display text-base font-extrabold text-ink-900">
+        Informations sur les produits
+      </h3>
 
       {fields.length === 0 ? (
-        <p className="text-gray-500 text-sm mb-2">Aucun champ ajouté.</p>
+        <p className="mb-2 text-[13px] text-ink-500">Aucun champ ajouté.</p>
       ) : (
         fields.map((item) => (
           <div key={item.id} className="flex items-center gap-4 mb-2">
             <div className="w-1/2">
-              <label className="block text-sm font-semibold text-gray-700">Prix</label>
+              <label className="lg-label">Prix</label>
               <input
                 type="number"
                 value={item.prix}
                 onChange={(e) => handleInputChange(item.id, "prix", e.target.value)}
-                className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
+                className="lg-input"
                 placeholder="0.00"
               />
             </div>
             <div className="w-1/2">
-              <label className="block text-sm font-semibold text-gray-700">Unité</label>
+              <label className="lg-label">Unité</label>
               <select
                 value={item.unit}
                 onChange={(e) => handleInputChange(item.id, "unit", e.target.value)}
-                className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
+                className="lg-input"
               >
                 <option value="">Sélectionner</option>
                 {unit.map((unit) => (
-                <option key={unit.id} value={unit.id}>
-                  {unit.nom}
-                </option>
-              ))}
+                  <option key={unit.id} value={unit.id}>
+                    {unit.nom}
+                  </option>
+                ))}
               </select>
             </div>
-            <button onClick={() => handleRemoveField(item.id)} className="text-red-500 hover:text-red-700 transition">
-              <TrashIcon className="w-6 h-6" />
+            <button
+              onClick={() => handleRemoveField(item.id)}
+              className="text-red-500 hover:text-red-700 transition"
+            >
+              <TrashIcon className="h-6 w-6" />
             </button>
           </div>
         ))
       )}
 
-      <button onClick={handleAddField} className="mt-2 flex items-center gap-2 text-blue-600 font-semibold hover:text-blue-800 transition">
-        <PlusIcon className="w-6 h-6" />
+      <button
+        onClick={handleAddField}
+        className="mt-2 flex items-center gap-2 text-[13px] font-semibold text-brand-600 transition-colors hover:text-brand-800"
+      >
+        <PlusIcon className="h-6 w-6" />
         Ajouter un autre
       </button>
     </div>

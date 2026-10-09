@@ -1,67 +1,58 @@
-import { useState,useEffect } from "react";
-import { toast, ToastContainer } from "react-toastify";
+import { useState, useEffect } from "react";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import axios from 'axios';
+import axios from "axios";
 
-
-
-
-export function Modifieclient({ClientId,handleformclick}) {
-  
+export function Modifieclient({ ClientId, handleformclick }) {
   const [formData, setFormData] = useState({
     nom: "",
     prenom: "",
     email: "",
     telephone: "",
-    adresse:"",
-    ifu:""
+    adresse: "",
+    ifu: "",
   });
-console.log(ClientId)
+  console.log(ClientId);
 
+  // Fonction pour récupérer les détails du client
+  const fetchclientDetails = async (id) => {
+    try {
+      const token = localStorage.getItem("token"); // Assurez-vous que le jeton est bien stocké
 
-    // Fonction pour récupérer les détails du client
-    const fetchclientDetails = async (id) => {
-      try {
-          const token = localStorage.getItem("token"); // Assurez-vous que le jeton est bien stocké
-  
-          const response = await axios.post(
-              `${import.meta.env.VITE_API_URL}/api/v1/client/detailById`,
-              { id },
-              {
-                  headers: {
-                      Authorization: `Bearer ${token}`, // Transmettre le jeton dans les en-têtes
-                  },
-              }
-          );
-          
-          const client = response.data;
-          console.log(client);
-  
-          setFormData({
-              nom: client.nom || "",
-              prenom: client.prenom || "",
-              email: client.email || "",
-              telephone: client.telephone || "",
-              adresse: client.adresse || "",
-              ifu: client.ifu || "",
-          });
-      } catch (error) {
-          console.error("Erreur lors de la récupération des détails du client :", error);
-      }
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/v1/client/detailById`,
+        { id },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Transmettre le jeton dans les en-têtes
+          },
+        },
+      );
+
+      const client = response.data;
+      console.log(client);
+
+      setFormData({
+        nom: client.nom || "",
+        prenom: client.prenom || "",
+        email: client.email || "",
+        telephone: client.telephone || "",
+        adresse: client.adresse || "",
+        ifu: client.ifu || "",
+      });
+    } catch (error) {
+      console.error("Erreur lors de la récupération des détails du client :", error);
+    }
   };
-  
-    
-      useEffect(() => {
-        if (ClientId) {
-          fetchclientDetails(ClientId); // Charger les détails si l'ID du client est fourni
-          console.log(ClientId);
-        }else {
-          console.log('loose');
-        }
-      }, [ClientId]);
 
-
-
+  useEffect(() => {
+    if (ClientId) {
+      fetchclientDetails(ClientId); // Charger les détails si l'ID du client est fourni
+      console.log(ClientId);
+    } else {
+      console.log("loose");
+    }
+  }, [ClientId]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -70,162 +61,165 @@ console.log(ClientId)
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // Empêche le rechargement de la page lors de la soumission du formulaire
-  
+
     try {
-        // Récupérer le token depuis le localStorage
-        const token = localStorage.getItem("token");
-  
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/client/update`, {
-            method: "POST", // Utilisez la méthode POST pour la mise à jour
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`, // Ajouter le token dans l'en-tête Authorization
-            },
-            body: JSON.stringify({
-                ...formData,
-                id: ClientId, // Inclure l'ID du client dans les données envoyées
-            }),
-        });
-  
-        if (response.ok) {
-            const data = await response.json();
-            toast.success("client mis à jour avec succès !",{ autoClose: 600 });
-            console.log("Response data:", data);
-            
-        } else {
-            toast.error("Échec de la mise à jour du client.");
-            console.error("Error:", response.statusText);
-        }
+      // Récupérer le token depuis le localStorage
+      const token = localStorage.getItem("token");
+
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/client/update`, {
+        method: "POST", // Utilisez la méthode POST pour la mise à jour
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // Ajouter le token dans l'en-tête Authorization
+        },
+        body: JSON.stringify({
+          ...formData,
+          id: ClientId, // Inclure l'ID du client dans les données envoyées
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        toast.success("client mis à jour avec succès !", { autoClose: 600 });
+        console.log("Response data:", data);
+      } else {
+        toast.error("Échec de la mise à jour du client.");
+        console.error("Error:", response.statusText);
+      }
     } catch (error) {
-        toast.error("Erreur de connexion au serveur.");
-        console.error("Error:", error);
+      toast.error("Erreur de connexion au serveur.");
+      console.error("Error:", error);
     }
-};
-
-
-
+  };
 
   return (
-    <div className=" w-full  mx-auto rounded-lg p-6">
-      <div className=" flex justify-end">
-        <button onClick={handleformclick} className="text-xl   rounded-full text-black w-6 h-6 bg-white-700 border-3 border-gray-900 "> <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-</svg>
- </button>
-      </div>
+    <div className=" w-full ">
       <form className="w-full" onSubmit={handleSubmit}>
-      <ToastContainer position="top-right" autoClose={5000} />
-
-      <div className="border-b border-gray-200 pb-6">
-        <h2 className="text-2xl font-bold text-gray-800">Modifier un client</h2>
-        <p className="mt-2 text-sm text-gray-500">Mettez à jour les détails du client.</p>
-      </div>
-
-      <div className="mt-6 grid grid-cols-1 gap-6">
-        <div>
-          <label htmlFor="prenom" className="block text-sm font-semibold text-gray-700">
-            Nom
-          </label>
-          <input
-            type="text"
-            name="nom"
-            id="nom"
-            required
-            value={formData.nom}
-            onChange={handleInputChange}
-            className="mt-1 p-1 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
-            placeholder="Ex: 123456789"
-          />
+        <div className="mb-5 flex items-start justify-between gap-4 border-b border-ink-100 pb-5">
+          <div className="min-w-0">
+            <h2 className="font-display text-xl font-extrabold tracking-tight text-ink-900">
+              Modifier un client
+            </h2>
+            <p className="mt-1.5 text-[13px] text-ink-500">Mettez à jour les détails du client.</p>
+          </div>
+          <button
+            type="button"
+            onClick={handleformclick}
+            aria-label="Fermer"
+            className="grid h-8 w-8 place-items-center rounded-lg text-ink-400 transition-colors hover:bg-ink-100 hover:text-ink-700"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth="1.8"
+              stroke="currentColor"
+              className="h-5 w-5"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+            </svg>
+          </button>
         </div>
 
-        <div>
-          <label htmlFor="prenom" className="block text-sm font-semibold text-gray-700">
-            Prenom 
-          </label>
-          <input
-            type="text"
-            name="prenom"
-            id="prenom"
-            value={formData.prenom}
-            onChange={handleInputChange}
-            className="mt-1 p-1 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
-            placeholder="Ex: Jus d'orange"
-          />
+        <div className="mt-5 grid grid-cols-1 gap-4">
+          <div>
+            <label htmlFor="prenom" className="lg-label">
+              Nom
+            </label>
+            <input
+              type="text"
+              name="nom"
+              id="nom"
+              required
+              value={formData.nom}
+              onChange={handleInputChange}
+              className="lg-input"
+              placeholder="Ex: 123456789"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="prenom" className="lg-label">
+              Prenom
+            </label>
+            <input
+              type="text"
+              name="prenom"
+              id="prenom"
+              value={formData.prenom}
+              onChange={handleInputChange}
+              className="lg-input"
+              placeholder="Ex: Jus d'orange"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="prenom" className="lg-label">
+              Email
+            </label>
+            <input
+              type="email"
+              name="email"
+              id="email"
+              value={formData.email}
+              onChange={handleInputChange}
+              className="lg-input"
+              placeholder="Ex: Jus d'orange"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="telephone" className="lg-label">
+              telephone
+            </label>
+            <input
+              type="text"
+              name="telephone"
+              id="telephone"
+              value={formData.telephone}
+              onChange={handleInputChange}
+              className="lg-input"
+              placeholder="0.00"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="telephone" className="lg-label">
+              Adresse
+            </label>
+            <input
+              type="text"
+              name="adresse"
+              id="adresse"
+              value={formData.adresse}
+              onChange={handleInputChange}
+              className="lg-input"
+              placeholder="Vile,Quartier"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="telephone" className="lg-label">
+              Ifu
+            </label>
+            <input
+              type="text"
+              name="ifu"
+              id="ifu"
+              value={formData.ifu}
+              onChange={handleInputChange}
+              className="lg-input"
+              placeholder="0.00"
+            />
+          </div>
         </div>
 
-        <div>
-          <label htmlFor="prenom" className="block text-sm font-semibold text-gray-700">
-            Email 
-          </label>
-          <input
-            type="email"
-            name="email"
-            id="email"
-            value={formData.email}
-            onChange={handleInputChange}
-            className="mt-1 p-1 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
-            placeholder="Ex: Jus d'orange"
-          />
+        <div className="mt-6">
+          <button type="submit" className="lg-btn-primary lg-btn-lg w-full">
+            Enregistrer les Modifications
+          </button>
         </div>
-
-        <div>
-          <label htmlFor="telephone" className="block text-sm font-semibold text-gray-700">
-            telephone
-          </label>
-          <input
-            type="text"
-            name="telephone"
-            id="telephone"
-            value={formData.telephone}
-            onChange={handleInputChange}
-            className="mt-1 p-1 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
-            placeholder="0.00"
-          />
-        </div>
-
-        <div>
-          <label htmlFor="telephone" className="block text-sm font-semibold text-gray-700">
-            Adresse
-          </label>
-          <input
-            type="text"
-            name="adresse"
-            id="adresse"
-            value={formData.adresse}
-            onChange={handleInputChange}
-            className="mt-1 p-1 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
-            placeholder="Vile,Quartier"
-          />
-        </div>
-
-        <div>
-          <label htmlFor="telephone" className="block text-sm font-semibold text-gray-700">
-            Ifu
-          </label>
-          <input
-            type="text"
-            name="ifu"
-            id="ifu"
-            value={formData.ifu}
-            onChange={handleInputChange}
-            className="mt-1 p-1 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
-            placeholder="0.00"
-          />
-        </div>
-
-      </div>
-
-      <div className="mt-6">
-        <button
-          type="submit"
-          className="w-full py-2 px-4 rounded-md bg-indigo-600 text-white font-semibold shadow-md hover:bg-indigo-500 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-300"
-        >
-          Enregistrer les Modifications
-        </button>
-      </div>
-    </form>
-
-      
+      </form>
     </div>
   );
 }

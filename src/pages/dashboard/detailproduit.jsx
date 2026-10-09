@@ -1,23 +1,12 @@
 // Composant Clients
 import {
-    Card,
-    CardBody,
-    TabsHeader,
-    TabsBody,
-    Tab,
-    TabPanel,
-    Tabs,
-    CardHeader,
-    Button
-} from "@material-tailwind/react";
-import {
     Sidenav,
     DashboardNavbar,
     Configurator,
 } from "@/widgets/layout";
 import routes from "@/routes";
 import { useEffect } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Link } from "react-router-dom";
 import { Cog6ToothIcon } from "@heroicons/react/24/solid";
 import { IconButton } from "@material-tailwind/react";
 import { useMaterialTailwindController, setOpenConfigurator } from "@/context";
@@ -27,6 +16,44 @@ import axios from 'axios';
 
 import { useState } from "react";
 import Modaleditproduit from "@/widgets/modal/modaleditproduit";
+import {
+    ArrowLeftIcon,
+    ArrowTrendingUpIcon,
+    CubeIcon,
+    IdentificationIcon,
+    PlusCircleIcon,
+    TagIcon,
+} from "@heroicons/react/24/outline";
+
+/** Squelette de chargement des panneaux. */
+function Squelette() {
+    return (
+        <div className="lg-card p-5">
+            <div className="lg-skeleton h-5 w-1/3" />
+            <div className="mt-5 space-y-3">
+                <div className="lg-skeleton h-11 w-full" />
+                <div className="lg-skeleton h-11 w-full" />
+                <div className="lg-skeleton h-11 w-full" />
+            </div>
+        </div>
+    );
+}
+
+/** Ligne « libellé / valeur » du design system v2. */
+function Ligne({ label, children, mono = false }) {
+    return (
+        <div className="flex items-start justify-between gap-4 border-b border-ink-100 py-2.5 last:border-0">
+            <dt className="shrink-0 text-[13px] text-ink-500">{label}</dt>
+            <dd
+                className={`text-right text-[13px] font-semibold text-ink-900 ${
+                    mono ? "font-mono tabular" : "tabular"
+                }`}
+            >
+                {children ?? "—"}
+            </dd>
+        </div>
+    );
+}
 
 // Component for detailed view of HTML tab
 function HtmlTabContent({ product }) {
@@ -36,54 +63,99 @@ function HtmlTabContent({ product }) {
     };
 
     if (!product) {
-        return <div>Chargement des données du produit...</div>; // Display a loading state while product is null/undefined
+        return <Squelette />; // Display a loading state while product is null/undefined
     }
 
-    return (
-        <div className="w-full p-4">
-            <Card className="w-full max-w-screen ">
-                <CardHeader className="flex justify-between items-center p-4">
-                    <h2 className="text-xl font-bold">Produit</h2>
-                    <Button variant="gradient" color="red">
-                        <Modaleditproduit ProductId={product.id} handletoast={handletoast} />
-                    </Button>
-                </CardHeader>
-                <CardBody className="w-full">
-                    {/* Affichage des données */}
-                    <div className="flex items-center justify-end mb-4">
-                        <div className="text-green-500 text-right text-2xl">{product.code_barre}</div>
-                    </div>
-                    <div className="flex flex-col w-8/12 mx-auto text-center space-y-4">
-                        <p className="flex justify-between">
-                            <span className="font-bold">Nom</span>
-                            <span>{product.nom}</span>
-                        </p>
-                        <p className="flex justify-between">
-                            <span className="font-bold">Prix</span>
-                            <span>{product.prix}</span>
-                        </p>
-                        <p className="flex justify-between">
-                            <span className="font-bold">Catégorie</span>
-                            <span>{product.nom_categorie}</span>
-                        </p>
-                        <p className="flex justify-between">
-                            <span className="font-bold">Description</span>
-                            <span>{product.description}</span>
-                        </p>
-                        <div className="flex justify-end">
-                            
-                            <ul>
-                                {product.supplements.map((supplement) => (
-                                    <li className="font-bold" key={supplement.id}>
-                                        {supplement.unit} - {supplement.prix} Fcfa
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
+    const supplements = Array.isArray(product.supplements) ? product.supplements : [];
 
+    return (
+        <div className="grid gap-5 lg:grid-cols-3">
+            {/* Fiche produit */}
+            <div className="lg-card overflow-hidden lg:col-span-2">
+                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-ink-100 px-5 py-4">
+                    <div className="flex items-center gap-2.5">
+                        <span className="lg-icon-chip h-9 w-9 bg-brand-50 text-brand-600 ring-1 ring-inset ring-brand-100">
+                            <CubeIcon className="h-[18px] w-[18px]" />
+                        </span>
+                        <div>
+                            <p className="font-display text-base font-extrabold text-ink-900">Produit</p>
+                            <p className="text-[13px] text-ink-500">Informations générales de l'article</p>
+                        </div>
                     </div>
-                </CardBody>
-            </Card>
+                    <Modaleditproduit ProductId={product.id} handletoast={handletoast} />
+                </div>
+
+                <div className="p-5">
+                    <dl>
+                        <Ligne label="Nom">{product.nom}</Ligne>
+                        <Ligne label="Prix">{product.prix}</Ligne>
+                        <Ligne label="Catégorie">{product.nom_categorie}</Ligne>
+                        <Ligne label="Description">{product.description}</Ligne>
+                    </dl>
+                </div>
+            </div>
+
+            {/* Colonne latérale */}
+            <div className="flex flex-col gap-5">
+                <div className="lg-card p-5">
+                    <div className="flex items-center gap-2.5">
+                        <span className="lg-icon-chip h-9 w-9 bg-accent-50 text-accent-600 ring-1 ring-inset ring-accent-100">
+                            <IdentificationIcon className="h-[18px] w-[18px]" />
+                        </span>
+                        <p className="text-[13px] font-semibold text-ink-500">Code-barres</p>
+                    </div>
+                    <p className="mt-3 font-display text-2xl font-extrabold tracking-tight text-ink-900 tabular">
+                        {product.code_barre || "—"}
+                    </p>
+                </div>
+
+                <div className="lg-card p-5">
+                    <div className="flex items-center gap-2.5">
+                        <span className="lg-icon-chip h-9 w-9 bg-sky-50 text-sky-600 ring-1 ring-inset ring-sky-100">
+                            <TagIcon className="h-[18px] w-[18px]" />
+                        </span>
+                        <p className="text-[13px] font-semibold text-ink-500">Identifiant</p>
+                    </div>
+                    <p className="mt-3 font-mono text-lg font-bold text-ink-800 tabular">
+                        #{product.id}
+                    </p>
+                </div>
+
+                {/* Suppléments */}
+                <div className="lg-card p-5">
+                    <div className="flex items-center justify-between gap-3">
+                        <div className="flex items-center gap-2.5">
+                            <span className="lg-icon-chip h-9 w-9 bg-amber-50 text-amber-600 ring-1 ring-inset ring-amber-100">
+                                <PlusCircleIcon className="h-[18px] w-[18px]" />
+                            </span>
+                            <p className="text-[13px] font-semibold text-ink-500">Suppléments</p>
+                        </div>
+                        <span className="lg-badge-warn tabular">{supplements.length}</span>
+                    </div>
+
+                    {supplements.length === 0 ? (
+                        <p className="mt-4 text-[13px] text-ink-500">
+                            Aucun supplément associé à ce produit.
+                        </p>
+                    ) : (
+                        <ul className="mt-4 flex flex-col gap-2">
+                            {supplements.map((supplement) => (
+                                <li
+                                    key={supplement.id}
+                                    className="flex items-center justify-between gap-3 rounded-xl bg-ink-50 px-3 py-2.5 ring-1 ring-inset ring-ink-200/70"
+                                >
+                                    <span className="text-[13px] font-semibold text-ink-700">
+                                        {supplement.unit}
+                                    </span>
+                                    <span className="text-[13px] font-bold text-ink-900 tabular">
+                                        {supplement.prix} Fcfa
+                                    </span>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </div>
+            </div>
         </div>
     );
 }
@@ -92,32 +164,30 @@ function HtmlTabContent({ product }) {
 // Composant pour les données "En Stock"
 function StockTabContent({ product }) {
     if (!product) {
-        return <div>Chargement des données de stock...</div>;
+        return <Squelette />;
     }
 
     return (
-        <div className="w-full p-4">
-            <Card>
-                <CardHeader className="flex justify-between items-center p-4">
-                    <h2 className="text-xl font-bold">Stock</h2>
-                </CardHeader>
-                <CardBody className="gap col-span-6">
-                    <div className="flex  p-8">
-                        <span className="font-bold">Initial : </span>
-                        <span className="font-bold ml-5">{product.stock_quantite}</span>
+        <div className="grid gap-5 lg:grid-cols-2">
+            <div className="lg-card p-5">
+                <div className="flex items-center gap-2.5">
+                    <span className="lg-icon-chip h-9 w-9 bg-amber-50 text-amber-600 ring-1 ring-inset ring-amber-100">
+                        <CubeIcon className="h-[18px] w-[18px]" />
+                    </span>
+                    <div>
+                        <p className="font-display text-base font-extrabold text-ink-900">Stock</p>
+                        <p className="text-[13px] text-ink-500">Quantités du produit</p>
                     </div>
-
-                    <div className="flex p-8">
-                        <span className="font-bold">Disponible : </span>
-                        <span className="font-bold ml-5">
-                            {product.stock_quantite && product.total_ventes
-                                ? product.stock_quantite - product.total_ventes
-                                : "_"}
-                        </span>
-                    </div>
-
-                </CardBody>
-            </Card>
+                </div>
+                <dl className="mt-4">
+                    <Ligne label="Initial">{product.stock_quantite}</Ligne>
+                    <Ligne label="Disponible">
+                        {product.stock_quantite && product.total_ventes
+                            ? product.stock_quantite - product.total_ventes
+                            : "_"}
+                    </Ligne>
+                </dl>
+            </div>
         </div>
     );
 }
@@ -125,19 +195,26 @@ function StockTabContent({ product }) {
 // Composant pour les données "Vendu"
 function VenduTabContent({ product }) {
     if (!product) {
-        return <div>Chargement des données des produits vendus...</div>;
+        return <Squelette />;
     }
 
     return (
-        <div className="w-full p-4">
-            <Card>
-                <CardHeader className="flex justify-between items-center p-4">
-                    <h2 className="text-xl font-bold">Produits Vendus</h2>
-                </CardHeader>
-                <CardBody className="flex justify-center">
-                    <span className="font-bold p-8 text-9xl">{product.total_ventes}</span>
-                </CardBody>
-            </Card>
+        <div className="lg-card p-5">
+            <div className="flex items-center gap-2.5">
+                <span className="lg-icon-chip h-9 w-9 bg-accent-50 text-accent-600 ring-1 ring-inset ring-accent-100">
+                    <ArrowTrendingUpIcon className="h-[18px] w-[18px]" />
+                </span>
+                <div>
+                    <p className="font-display text-base font-extrabold text-ink-900">Produits vendus</p>
+                    <p className="text-[13px] text-ink-500">Volume cumulé pour cet article</p>
+                </div>
+            </div>
+            <div className="mt-6 flex items-end gap-2">
+                <span className="font-display text-5xl leading-none font-extrabold tracking-tight text-ink-900 tabular">
+                    {product.total_ventes ?? 0}
+                </span>
+                <span className="pb-1 text-sm font-semibold text-ink-400">unité(s)</span>
+            </div>
         </div>
     );
 }
@@ -159,7 +236,6 @@ export function Detailproduit() {
         { label: "En Stock", value: "stock" },
         { label: "Vendu", value: "vendu" },
     ];
-
 
 
 
@@ -188,7 +264,6 @@ export function Detailproduit() {
     //           console.error("Erreur lors de la récupération des détails du produit :", error);
     //       }
     //   };
-
 
     // Fonction pour récupérer les détails du produit
     const fetchProductDetails = async (id) => {
@@ -225,7 +300,6 @@ export function Detailproduit() {
 
 
 
-
     useEffect(() => {
         if (id) {
             fetchProductDetails(id); // Charger les détails si l'ID du produit est fourni
@@ -239,7 +313,7 @@ export function Detailproduit() {
 
 
     return (
-        <div className=" mb-8 flex flex-col gap-12">
+        <div className="mb-8 flex flex-col gap-12">
             <Sidenav
                 routes={routes}
                 brandImg={
@@ -251,8 +325,7 @@ export function Detailproduit() {
                 <Configurator />
                 <IconButton
                     size="lg"
-                    color="white"
-                    className="fixed bottom-8 right-8 z-40 rounded-full shadow-blue-gray-900/10"
+                    className="fixed bottom-8 right-8 z-40 rounded-full bg-white text-ink-600 shadow-ink-900/10 ring-1 ring-inset ring-ink-200"
                     ripple={false}
                     onClick={() => setOpenConfigurator(dispatch, true)}
                 >
@@ -267,38 +340,50 @@ export function Detailproduit() {
                             ))
                     )}
                 </Routes>
-                <Card className=" mt-10">
-                    <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
-                        <div className="flex justify-center items-center">
-                            <span className="font-bold text-xl">Detail produit</span>
 
+                <div className="mt-6 mb-10 flex flex-col gap-6 animate-fade-in">
+                    {/* ══════════════ EN-TÊTE DE PAGE ══════════════ */}
+                    <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+                        <div>
+                            <Link to="/dashboard/produit" className="mb-2 inline-flex items-center gap-1 text-[13px] font-semibold text-brand-600 transition-colors hover:text-brand-800">
+                                <ArrowLeftIcon className="h-4 w-4" />
+                                Retour aux produits
+                            </Link>
+                            <h1 className="lg-page-title">Détail du produit</h1>
+                            <p className="lg-page-sub">
+                                Fiche article, suppléments, stock et performance commerciale.
+                            </p>
                         </div>
-                    </CardHeader>
-                    <CardBody className="flex w-full  h-full justify-center  px-0 pt-0 pb-2">
-                        <Tabs className="w-full" value={activeTab} onChange={(value) => setActiveTab(value)}>
-                            <TabsHeader >
-                                {data.map(({ label, value }) => (
-                                    <Tab key={value} value={value}>
-                                        {label}
-                                    </Tab>
-                                ))}
-                            </TabsHeader>
-                            <TabsBody className="w-full mt-7">
+                        <span className="lg-badge-brand tabular">Réf. #{id || "—"}</span>
+                    </header>
 
-                                <TabPanel value="html">
-                                    <HtmlTabContent product={product} />
-                                </TabPanel>
-                                <TabPanel value="stock">
-                                    <StockTabContent product={product} />
-                                </TabPanel>
-                                <TabPanel value="vendu">
-                                    <VenduTabContent product={product} />
-                                </TabPanel>
+                    {/* ══════════════ ONGLETS ══════════════ */}
+                    <div className="flex w-fit flex-wrap gap-1 rounded-xl bg-ink-100 p-1">
+                        {data.map(({ label, value }) => (
+                            <button
+                                key={value}
+                                type="button"
+                                onClick={() => setActiveTab(value)}
+                                className={`rounded-lg px-4 py-2 text-[13px] font-semibold transition-all duration-200 ${
+                                    activeTab === value
+                                        ? "bg-white text-brand-700 shadow-xs"
+                                        : "text-ink-500 hover:text-ink-800"
+                                }`}
+                            >
+                                {label}
+                            </button>
+                        ))}
+                    </div>
 
-                            </TabsBody>
-                        </Tabs>
-                    </CardBody>
-                </Card>
+                    {/* ══════════════ PANNEAU ACTIF ══════════════ */}
+                    {activeTab === "html" ? (
+                        <HtmlTabContent product={product} />
+                    ) : activeTab === "stock" ? (
+                        <StockTabContent product={product} />
+                    ) : (
+                        <VenduTabContent product={product} />
+                    )}
+                </div>
             </div>
         </div>
     );

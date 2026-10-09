@@ -10,9 +10,11 @@ const ProductReminder = ({ products }) => {
   const [ignoredProducts, setIgnoredProducts] = useState(() => {
     const storedData = JSON.parse(localStorage.getItem("ignoredExpirations")) || [];
     const now = new Date().getTime();
-    const validData = storedData.filter(item => now - item.timestamp < EXPIRATION_DAYS * 24 * 60 * 60 * 1000); // Vérifier si la donnée est toujours valide (moins de 7 jours)
+    const validData = storedData.filter(
+      (item) => now - item.timestamp < EXPIRATION_DAYS * 24 * 60 * 60 * 1000,
+    ); // Vérifier si la donnée est toujours valide (moins de 7 jours)
     localStorage.setItem("ignoredExpirations", JSON.stringify(validData)); // Met à jour le stockage avec les données filtrées
-    return validData.map(item => item.nom);
+    return validData.map((item) => item.nom);
   });
 
   useEffect(() => {
@@ -31,11 +33,7 @@ const ProductReminder = ({ products }) => {
       const twoWeeksBefore = new Date(expirationDate);
       twoWeeksBefore.setDate(expirationDate.getDate() - 14);
 
-      return (
-        today >= twoMonthsBefore ||
-        today >= oneMonthBefore ||
-        today >= twoWeeksBefore
-      );
+      return today >= twoMonthsBefore || today >= oneMonthBefore || today >= twoWeeksBefore;
     });
 
     if (soonExpiring.length > 0) {
@@ -56,41 +54,70 @@ const ProductReminder = ({ products }) => {
       timestamp: new Date().getTime(), // Enregistrer le timestamp actuel
     }));
 
-    const updatedIgnoredList = [...JSON.parse(localStorage.getItem("ignoredExpirations") || "[]"), ...ignored];
+    const updatedIgnoredList = [
+      ...JSON.parse(localStorage.getItem("ignoredExpirations") || "[]"),
+      ...ignored,
+    ];
     localStorage.setItem("ignoredExpirations", JSON.stringify(updatedIgnoredList)); // Sauvegarder dans le localStorage
-    setIgnoredProducts(updatedIgnoredList.map(item => item.nom)); // Mettre à jour la liste des produits ignorés
+    setIgnoredProducts(updatedIgnoredList.map((item) => item.nom)); // Mettre à jour la liste des produits ignorés
     setShowModal(false);
   };
 
   return (
     <>
-      {/* Modal amélioré */}
-      <Dialog open={showModal} onClose={() => setShowModal(false)} className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 backdrop-blur-sm">
-        <div className="bg-white p-6 rounded-xl shadow-lg max-w-lg w-full transform transition-all duration-300 scale-100 animate-fadeIn">
-          <div className="flex items-center space-x-3">
-            <ExclamationTriangleIcon className="h-10 w-10 text-red-500" />
-            <h2 className="text-xl font-bold text-gray-900">⚠️ Produits bientôt expirés</h2>
+      {/* Alerte produits bientôt expirés */}
+      <Dialog
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        className="fixed inset-0 z-[70] grid place-items-center bg-ink-900/50 p-4 backdrop-blur-sm"
+      >
+        <div className="w-full max-w-lg animate-pop-in overflow-hidden rounded-2xl border border-ink-200/80 bg-white shadow-lift">
+          {/* Bandeau d'alerte */}
+          <div className="relative overflow-hidden bg-gradient-to-br from-amber-500 to-orange-600 px-6 py-6 text-white">
+            <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+              <div className="absolute -top-16 -right-12 h-48 w-48 rounded-full bg-white/15 blur-3xl" />
+            </div>
+            <div className="relative flex items-center gap-3.5">
+              <span className="grid h-12 w-12 flex-none place-items-center rounded-2xl bg-white/15 ring-1 ring-inset ring-white/25">
+                <ExclamationTriangleIcon className="h-6 w-6" />
+              </span>
+              <div>
+                <h2 className="font-display text-lg font-extrabold tracking-tight">
+                  Produits bientôt expirés
+                </h2>
+                <p className="mt-0.5 text-[13px] text-white/75">
+                  {expiringProducts.length} produit(s) à surveiller de près
+                </p>
+              </div>
+            </div>
           </div>
 
-          <ul className="mt-4 bg-gray-100 p-4 rounded-md max-h-40 overflow-y-auto">
+          {/* Liste */}
+          <ul className="max-h-64 divide-y divide-ink-100 overflow-y-auto">
             {expiringProducts.map((product, index) => (
-              <li key={index} className="text-red-600 font-medium">
-                {product.nom} - <span className="font-semibold">{new Date(product.dateexpi).toLocaleDateString()}</span>
+              <li
+                key={index}
+                className="flex items-center justify-between gap-4 px-5 py-3 transition-colors hover:bg-ink-50"
+              >
+                <span className="min-w-0 flex-1 truncate text-sm font-semibold text-ink-800">
+                  {product.nom}
+                </span>
+                <span className="shrink-0 text-[12px] font-bold text-amber-700 tabular">
+                  {new Date(product.dateexpi).toLocaleDateString("fr-FR")}
+                </span>
               </li>
             ))}
           </ul>
 
-          <div className="mt-6 flex justify-end space-x-3">
+          <div className="flex flex-col-reverse gap-2 border-t border-ink-100 bg-ink-50/60 p-4 sm:flex-row sm:justify-end">
             <button
+              type="button"
               onClick={() => setShowModal(false)}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-md transition-all"
+              className="lg-btn-neutral"
             >
               OK, compris
             </button>
-            <button
-              onClick={ignoreProducts}
-              className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg shadow-md transition-all"
-            >
+            <button type="button" onClick={ignoreProducts} className="lg-btn-primary">
               Rappel dans 7 jours
             </button>
           </div>

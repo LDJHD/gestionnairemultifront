@@ -1,23 +1,38 @@
 // Composant Produit
-import {
-  Card,
-  CardHeader,
-  CardBody,
-  Typography,
-  Tabs,
-} from "@material-tailwind/react";
+import { Tabs } from "@material-tailwind/react";
 import { useEffect, useState } from "react";
 import Modal from "@/widgets/modal/modal";
 import Toastadd from "@/widgets/toast/toastadd";
 import { Link } from "react-router-dom";
 import { useProductStore } from "@/widgets/store/useproductstore";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import FacturePreview from "@/widgets/facture/facturepreview"; // Composant de prévisualisation
-import { format } from "prettier";
 import axios from "axios";
 import FacturePrevieww from "@/widgets/facture/factureprevieww";
+import {
+  ArrowPathIcon,
+  BanknotesIcon,
+  CheckCircleIcon,
+  CubeIcon,
+  DocumentTextIcon,
+  MinusIcon,
+  PlusIcon,
+  ReceiptPercentIcon,
+  ShoppingCartIcon,
+  TrashIcon,
+  UserIcon,
+} from "@heroicons/react/24/outline";
+
+/** Montant formaté « 1 234 567 F » */
+function fcfa(v) {
+  const n = Number(v);
+  return Number.isFinite(n)
+    ? n.toLocaleString("fr-FR").replace(/[\u202f\u00a0,]/g, " ")
+    : v ?? "—";
+}
+
 export function Vendre() {
   const setProductsstore = useProductStore((state) => state.setProductsstore); // Récupération de la méthode `setProducts` du store
   const productsstore = useProductStore((state) => state.productsstore); // Récupération des produits du store
@@ -28,14 +43,28 @@ export function Vendre() {
 
   // Fonction pour ajouter un produit
   const handleAddProduct = (product) => {
-    // Ajouter seulement si le produit n'est pas déjà dans la liste
-    if (!selectedProducts.some((p) => p.code_barre === product.code_barre)) {
-      setSelectedProducts([...selectedProducts, { ...product, quantity: 1, unit: "Unité(s)" }]);
+    const dejaAuTicket = selectedProducts.some(
+      (p) => p.code_barre === product.code_barre
+    );
+    if (dejaAuTicket) {
+      // Déjà au ticket : on augmente la quantité plutôt que d'ajouter un doublon
+      setSelectedProducts((prev) =>
+        prev.map((p) =>
+          p.code_barre === product.code_barre
+            ? { ...p, quantity: (Number(p.quantity) || 0) + 1 }
+            : p
+        )
+      );
+      toast.info(`« ${product.nom} » est déjà au ticket — quantité augmentée.`);
+    } else {
+      setSelectedProducts([
+        ...selectedProducts,
+        { ...product, quantity: 1, unit: "Unité(s)" },
+      ]);
     }
     setProductsstore([]);
-  // Appeler fetchStockValue en passant l'ID du produit
-  console.log(product.id)
-  fetchStockValue(product.id);
+    // Appeler fetchStockValue en passant l'ID du produit
+    fetchStockValue(product.id);
   };
 
 
@@ -57,11 +86,11 @@ const fetchStockValue = async (id) => {
       const { quantite_stock, quantite_vendue, stock_restant } = response.data;
 
       if (stock_restant < -1) {
-        alert("Votre stock est épuisé, veuillez recharger avant de vendre.");
+        toast.error("Stock épuisé — rechargez ce produit avant de poursuivre la vente.");
       }
       // Si le stock est positif mais inférieur à 6
       else if (stock_restant > 0 && stock_restant < 6) {
-        alert(`Votre stock est presque épuisé. Il vous reste ${stock_restant} en stock.`);
+        toast.warning(`Stock faible — il vous reste ${stock_restant} en stock.`);
       }
       // Si le stock est suffisant (> 6), pas de message
 
@@ -92,11 +121,11 @@ const fetchStockValue = async (id) => {
         if (product.code_barre === codeBarre) {
           console.log("Produit sélectionné :", product);
           console.log("Supplements disponibles :", product.supplements);
-  
+   
           if (field === 'unit') {
             const selectedSupplement = product.supplements.find(supp => supp.unit === value);
             console.log("Supplement sélectionné :", selectedSupplement);
-  
+   
             const updatedPrice = selectedSupplement ? selectedSupplement.prix : product.prix;
             return { ...product, unit: value, prix: updatedPrice }; 
           } else {
@@ -111,14 +140,16 @@ const fetchStockValue = async (id) => {
   useEffect(() => {
     console.log("Produits mis à jour :", selectedProducts);
   }, [selectedProducts]);
-  
-  
+   
 
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [isPreviewOpen2, setIsPreviewOpen2] = useState(false);
   const [products, setProducts] = useState([]);
   const [menuActif, setMenuActif] = useState(null);
-  const [toast, setToast] = useState(false);
+  // ⚠️ Ne pas renommer en `toast` : ce nom est réservé à l'API `toast` de
+  // react-toastify importée plus haut (les deux cohabitaient, ce qui faisait
+  // échouer tous les `toast.success()` / `toast.error()` de cette page).
+  const [toastOuvert, setToastOuvert] = useState(false);
   const rep = "Enregistrement effectué avec succès";
 
   const [formData, setFormData] = useState({
@@ -202,7 +233,7 @@ const fetchStockValue = async (id) => {
   };
 
   const handletoast = () => {
-    setToast(true);
+    setToastOuvert(true);
   };
 
   const handletabs = (id) => {
@@ -265,7 +296,6 @@ const fetchStockValue = async (id) => {
       if (response.ok) {
         const data = await response.json();
         setProducts(data);
-        console.log(productrecherche);
       } else {
         console.error("Erreur lors de la récupération des produits:", response.status);
       }
@@ -316,96 +346,320 @@ const fetchStockValue = async (id) => {
 
   const displayproducts = productsstore.length > 0 ? productsstore : products;
 
+  /* Total du ticket courant (simple sommation pour le panneau récapitulatif) */
+  const totalTicket = selectedProducts.reduce(
+    (acc, p) => acc + (Number(p.quantity) || 0) * (Number(p.prix) || 0),
+    0
+  );
+  const nbArticles = selectedProducts.reduce(
+    (acc, p) => acc + (Number(p.quantity) || 0),
+    0
+  );
 
   return (
-    <div className="mt-12 mb-8 sm:flex justify-between ">
-        <ToastContainer position="top-right" autoClose={5000} />
-      <div className="w-full  bg-blue-gray-50 rounded-xl sm:w-7/12">
-        <Card className="h-[800px] m-4">
-          <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
-            <div className="flex justify-between items-center">
-              <span className="font-bold">Produit</span>
-              <span><Modal handletoast={handletoast} /></span>
+    <div className="mt-6 mb-10 flex flex-col gap-6 animate-fade-in">
+      <ToastContainer position="top-right" autoClose={5000} />
+
+      {/* ══════════════════ EN-TÊTE DE PAGE ══════════════════ */}
+      <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className="text-[13px] font-semibold text-brand-600">Caisse</p>
+          <h1 className="lg-page-title">Opération de vente</h1>
+          <p className="lg-page-sub">
+            Composez le ticket, vérifiez le récapitulatif puis encaissez.
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-2.5">
+          <button type="button" onClick={handlePreview2} className="lg-btn-neutral">
+            <DocumentTextIcon className="h-[18px] w-[18px]" />
+            Détails de la facture
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              window.location.reload();
+            }}
+            className="lg-btn-primary"
+          >
+            <ArrowPathIcon className="h-[18px] w-[18px]" />
+            Nouvelle vente
+          </button>
+        </div>
+      </header>
+
+      <div className="grid gap-6 xl:grid-cols-12">
+        {/* ══════════════ COLONNE GAUCHE : PRODUITS + TICKET ══════════════ */}
+        <div className="flex flex-col gap-6 xl:col-span-7 2xl:col-span-8">
+          {/* ── Catalogue ── */}
+          <section className="lg-card overflow-hidden">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-ink-100 px-5 py-4">
+              <div className="flex items-center gap-2.5">
+                <span className="lg-icon-chip h-9 w-9 bg-brand-50 text-brand-600 ring-1 ring-inset ring-brand-100">
+                  <CubeIcon className="h-[18px] w-[18px]" />
+                </span>
+                <div>
+                  <p className="font-display text-base font-extrabold text-ink-900">
+                    Catalogue produits
+                  </p>
+                  <p className="text-[13px] text-ink-500">
+                    Ajoutez une ligne au ticket avec le bouton « + ».
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <span className="lg-badge-brand tabular">
+                  {displayproducts.length} produit(s)
+                </span>
+                <div className="flex items-center gap-2 rounded-xl bg-brand-50 py-1.5 pl-3 pr-1.5 ring-1 ring-inset ring-brand-100">
+                  <span className="text-[13px] font-semibold text-brand-700">
+                    Ajouter
+                  </span>
+                  <Modal handletoast={handletoast} />
+                </div>
+              </div>
             </div>
-          </CardHeader>
-          <CardBody className="overflow-x-auto  overflow-y-auto px-0 pt-0 pb-2">
-            {/* Tableau des produits disponibles */}
-             {/* Affichage de l'animation si les données sont en cours de chargement */}
-          {loading ? (
-            <div className="flex flex-col items-center justify-center h-64">
-              <img src=" /image/loading.png" alt="Chargement..." className="w-24 h-24 animate-spin" />
-              
-            </div>
-          ) : (
-            <table className="w-full min-w-[500px] table-auto mb-8">
-              <thead>
-                <tr>
-                  {["Nom", "Prix", "Code Barre", "Ajouter"].map((el) => (
-                    <th key={el} className="border-b border-blue-gray-50 py-3 px-5 text-left">
-                      <Typography variant="small" className="text-[11px] font-bold uppercase text-black">
-                        {el}
-                      </Typography>
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {displayproducts.map((product, key) => {
-                  const className = `py-3 px-5 ${key === displayproducts.length - 1 ? "" : "border-b  border-blue-gray-50"
-                    }`;
-                  return (
-                    <tr key={product.code_barre}>
-                      <td className={className}>
-                        <Link to={`/detailproduit?id=${product.id}`}>
-                          <Typography variant="small" color="blue-gray">
-                            {product.nom}
-                          </Typography>
-                        </Link>
-                      </td>
-                      <td className={className}>
-                        <Typography variant="small" color="blue-gray">{product.prix}</Typography>
-                      </td>
-                      <td className={className}>
-                        <Typography variant="small" color="blue-gray">{product.code_barre}</Typography>
-                      </td>
-                      <td className={className}>
-                        <button
-                          type="button"
-                          onClick={() => handleAddProduct(product)}
-                          className="w-[30px] h-[30px] bg-blue-700 text-white rounded-md flex items-center justify-center"
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth="4"
-                            stroke="currentColor"
-                            className="size-3 fo"
-                          >
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                          </svg>
-                        </button>
-                      </td>
+
+            {loading ? (
+              <div className="space-y-3 p-5">
+                {[0, 1, 2, 3, 4].map((i) => (
+                  <div key={i} className="lg-skeleton h-[52px] w-full" />
+                ))}
+              </div>
+            ) : displayproducts.length ? (
+              <div className="lg-table-wrap max-h-[420px] overflow-y-auto">
+                <table className="lg-table w-full min-w-[560px]">
+                  <thead>
+                    <tr>
+                      {["Produit", "Prix", "Code-barres", ""].map((el) => (
+                        <th key={el} className={el === "Prix" ? "text-right" : ""}>
+                          {el}
+                        </th>
+                      ))}
                     </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+                  </thead>
+                  <tbody>
+                    {displayproducts.map((product, i) => {
+                      const ligneTicket = selectedProducts.find(
+                        (p) => p.code_barre === product.code_barre
+                      );
+                      return (
+                      <tr key={product.id ?? product.code_barre ?? i}>
+                        <td className="lg-td">
+                          <Link
+                            to={`/detailproduit?id=${product.id}`}
+                            className="font-semibold text-ink-800 transition-colors hover:text-brand-700"
+                          >
+                            {product.nom}
+                          </Link>
+                          {ligneTicket && (
+                            <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-forest-50 px-2 py-0.5 text-[11px] font-bold text-forest-700 ring-1 ring-inset ring-forest-200">
+                              <CheckCircleIcon className="h-3 w-3" />
+                              Au ticket ×{ligneTicket.quantity}
+                            </span>
+                          )}
+                        </td>
+                        <td className="lg-td text-right font-semibold text-ink-900 tabular">
+                          {fcfa(product.prix)} F
+                        </td>
+                        <td className="lg-td font-mono text-[13px] text-ink-500">
+                          {product.code_barre}
+                        </td>
+                        <td className="lg-td text-right">
+                          <button
+                            type="button"
+                            onClick={() => handleAddProduct(product)}
+                            title={
+                              ligneTicket
+                                ? "Déjà au ticket — cliquer pour augmenter la quantité"
+                                : "Ajouter au ticket"
+                            }
+                            aria-label={`Ajouter ${product.nom} au ticket`}
+                            className={`lg-icon-chip h-8 w-8 ring-1 ring-inset transition-all duration-200 ${
+                              ligneTicket
+                                ? "bg-forest-50 text-forest-700 ring-forest-200 hover:bg-forest-100"
+                                : "bg-brand-50 text-brand-700 ring-brand-100 hover:bg-brand-100 hover:text-brand-800"
+                            }`}
+                          >
+                            {ligneTicket ? (
+                              <span className="text-[11px] font-extrabold">
+                                +{ligneTicket.quantity}
+                              </span>
+                            ) : (
+                              <PlusIcon className="h-4 w-4" strokeWidth={2.5} />
+                            )}
+                          </button>
+                        </td>
+                      </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <div className="px-5 py-14 text-center">
+                <div className="mx-auto grid h-12 w-12 place-items-center rounded-2xl bg-ink-100 text-ink-400">
+                  <CubeIcon className="h-6 w-6" />
+                </div>
+                <p className="mt-3 text-sm font-semibold text-ink-700">
+                  Aucun produit disponible
+                </p>
+                <p className="mt-1 text-[13px] text-ink-500">
+                  Ajoutez un article au catalogue pour pouvoir encaisser.
+                </p>
+              </div>
             )}
-          </CardBody>
-        </Card>
-      </div>
-      <div className="w-full p-3 mt-10 sm:w-5/12">
-        <Card className="max-h-[600px]">
-          <div>
-            <form className="w-full p-8 " onSubmit={handleSubmit}>
+          </section>
+
+          {/* ── Ticket de vente ── */}
+          <section className="lg-card overflow-hidden">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-ink-100 px-5 py-4">
+              <div className="flex items-center gap-2.5">
+                <span className="lg-icon-chip h-9 w-9 bg-accent-50 text-accent-600 ring-1 ring-inset ring-accent-100">
+                  <ShoppingCartIcon className="h-[18px] w-[18px]" />
+                </span>
+                <div>
+                  <p className="font-display text-base font-extrabold text-ink-900">
+                    Ticket de vente
+                  </p>
+                  <p className="text-[13px] text-ink-500">
+                    {selectedProducts.length} ligne(s) · {nbArticles} article(s)
+                  </p>
+                </div>
+              </div>
+              <span className="lg-badge-accent tabular">{fcfa(totalTicket)} F</span>
+            </div>
+
+            {selectedProducts.length ? (
+              <ul>
+                {selectedProducts.map((product, i) => (
+                  <li
+                    key={`${product.id ?? product.produit_id ?? "p"}-${i}`}
+                    className="flex flex-wrap items-center gap-4 border-b border-ink-100 px-5 py-4 last:border-b-0"
+                  >
+                    <div className="min-w-[180px] flex-1">
+                      <p className="text-sm font-semibold text-ink-900 lg-clamp-1">
+                        {product.nom}
+                      </p>
+                      <p className="mt-0.5 text-[13px] text-ink-500 tabular">
+                        {fcfa(product.prix)} F / {product.unit}
+                      </p>
+                    </div>
+
+                    {/* Quantité : pastille avec boutons − / + */}
+                    <div className="flex items-center gap-1 rounded-xl bg-ink-100 p-1">
+                      <button
+                        type="button"
+                        aria-label="Diminuer la quantité"
+                        onClick={() =>
+                          handleUpdateProduct(
+                            product.code_barre,
+                            "quantity",
+                            Math.max(1, (Number(product.quantity) || 1) - 1)
+                          )
+                        }
+                        className="grid h-7 w-7 place-items-center rounded-lg bg-white text-ink-600 shadow-xs transition-colors duration-200 hover:bg-brand-50 hover:text-brand-700"
+                      >
+                        <MinusIcon className="h-3.5 w-3.5" strokeWidth={2.5} />
+                      </button>
+                      <input
+                        type="number"
+                        min="1"
+                        value={product.quantity}
+                        onChange={(e) =>
+                          handleUpdateProduct(product.code_barre, "quantity", e.target.value)
+                        }
+                        aria-label={`Quantité pour ${product.nom}`}
+                        className="h-7 w-12 rounded-lg bg-transparent text-center text-sm font-semibold text-ink-800 tabular outline-none focus:bg-white"
+                        placeholder="1"
+                      />
+                      <button
+                        type="button"
+                        aria-label="Augmenter la quantité"
+                        onClick={() =>
+                          handleUpdateProduct(
+                            product.code_barre,
+                            "quantity",
+                            (Number(product.quantity) || 0) + 1
+                          )
+                        }
+                        className="grid h-7 w-7 place-items-center rounded-lg bg-white text-ink-600 shadow-xs transition-colors duration-200 hover:bg-brand-50 hover:text-brand-700"
+                      >
+                        <PlusIcon className="h-3.5 w-3.5" strokeWidth={2.5} />
+                      </button>
+                    </div>
+
+                    {/* Unité / conditionnement */}
+                    <div className="w-[150px] shrink-0">
+                      <select
+                        value={product.unit}
+                        onChange={(e) =>
+                          handleUpdateProduct(product.code_barre, "unit", e.target.value)
+                        }
+                        aria-label={`Conditionnement pour ${product.nom}`}
+                        className="lg-select h-9 py-0 text-[13px]"
+                      >
+                        <option value="">Unité(s)</option>
+                        {product.supplements.map((supplement) => (
+                          <option key={supplement.id} value={supplement.unit}>
+                            {supplement.unit}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* Ligne */}
+                    <p className="min-w-[110px] text-right text-sm font-bold text-ink-900 tabular">
+                      {fcfa((Number(product.quantity) || 0) * (Number(product.prix) || 0))} F
+                    </p>
+
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveProduct(product.code_barre)}
+                      title="Retirer la ligne"
+                      aria-label={`Retirer ${product.nom} du ticket`}
+                      className="lg-icon-chip h-8 w-8 bg-red-50 text-red-600 ring-1 ring-inset ring-red-100 transition-all duration-200 hover:bg-red-100"
+                    >
+                      <TrashIcon className="h-4 w-4" />
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div className="px-5 py-14 text-center">
+                <div className="mx-auto grid h-12 w-12 place-items-center rounded-2xl bg-ink-100 text-ink-400">
+                  <ShoppingCartIcon className="h-6 w-6" />
+                </div>
+                <p className="mt-3 text-sm font-semibold text-ink-700">Ticket vide</p>
+                <p className="mt-1 text-[13px] text-ink-500">
+                  Sélectionnez un produit dans le catalogue pour démarrer la vente.
+                </p>
+              </div>
+            )}
+          </section>
+        </div>
+
+        {/* ══════════════ COLONNE DROITE : RÉCAPITULATIF ══════════════ */}
+        <div className="xl:col-span-5 2xl:col-span-4">
+          <form onSubmit={handleSubmit} className="sticky top-24 flex flex-col gap-5">
+            <div className="lg-card p-5">
               <ToastContainer position="top-right" autoClose={5000} />
 
-
-              <div className="mt-6 grid grid-cols-2 gap-6">
-
+              <div className="flex items-center gap-2.5">
+                <span className="lg-icon-chip h-9 w-9 bg-amber-50 text-amber-600 ring-1 ring-inset ring-amber-100">
+                  <UserIcon className="h-[18px] w-[18px]" />
+                </span>
                 <div>
-                  <label htmlFor="client" className="block text-sm font-semibold text-gray-700">
+                  <p className="font-display text-base font-extrabold text-ink-900">
+                    Informations
+                  </p>
+                  <p className="text-[13px] text-ink-500">Client, remise et format</p>
+                </div>
+              </div>
+
+              <div className="mt-5 flex flex-col gap-4">
+                {/* Client */}
+                <div className="relative">
+                  <label htmlFor="client" className="lg-label">
                     Client
                   </label>
                   <input
@@ -416,278 +670,177 @@ const fetchStockValue = async (id) => {
                     onChange={handleInputChange}
                     onFocus={() => setIsDropdownOpen(true)} // Ouvrir la liste déroulante
                     placeholder="Rechercher un client"
-                    className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
+                    autoComplete="off"
+                    className="lg-input"
                   />
                   {isDropdownOpen && (
-                    <ul className="mt-2 border border-gray-300 rounded-md max-h-40 overflow-auto bg-white">
+                    <ul className="absolute left-0 right-0 z-30 mt-1.5 max-h-52 overflow-auto rounded-xl border border-ink-200 bg-white p-1.5 shadow-lift animate-slide-down">
                       {filteredclient.map((client) => (
                         <li
                           key={client.id}
                           onClick={() => handleclientSelect(client)}
-                          className="p-2 cursor-pointer hover:bg-gray-100"
+                          className="cursor-pointer rounded-lg px-3 py-2 text-[13px] font-medium text-ink-700 transition-colors hover:bg-brand-50 hover:text-brand-800"
                         >
                           {client.nom}
                         </li>
                       ))}
                       {filteredclient.length === 0 && (
-                        <li className="p-2 text-gray-500">Aucun client trouvé</li>
+                        <li className="px-3 py-2 text-[13px] text-ink-500">
+                          Aucun client trouvé
+                        </li>
                       )}
                     </ul>
                   )}
                 </div>
 
-                <div>
-                  <label htmlFor="remise" className="block text-sm font-semibold text-gray-700">
-                    Remise
-                  </label>
-                  <input
-                    type="text"
-                    name="remise"
-                    required
-                    id="remise"
-                    value={formData.remise}
-                    onChange={handleInputChange}
-                    className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
-                    placeholder="0.00"
-                  />
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <label htmlFor="remise" className="lg-label">
+                      Remise
+                    </label>
+                    <input
+                      type="text"
+                      name="remise"
+                      required
+                      id="remise"
+                      value={formData.remise}
+                      onChange={handleInputChange}
+                      className="lg-input tabular"
+                      placeholder="0.00"
+                    />
+                  </div>
+
+                  <div>
+                    <label htmlFor="format" className="lg-label">
+                      Format
+                    </label>
+                    <select
+                      id="format"
+                      name="format"
+                      required
+                      value={formData.format}
+                      onChange={handleInputChange}
+                      className="lg-select"
+                    >
+                      <option>Ticket</option>
+                      <option>A4</option>
+                      <option>A3</option>
+                    </select>
+                  </div>
+
+                  <div className="sm:col-span-2">
+                    <label htmlFor="aib" className="lg-label">
+                      AIB
+                    </label>
+                    <select
+                      id="aib"
+                      name="aib"
+                      required
+                      value={formData.aib}
+                      onChange={handleInputChange}
+                      className="lg-select"
+                    >
+                      <option value=" ">N/A</option>
+                      <option value="A">1%</option>
+                      <option value="B">5%</option>
+                    </select>
+                  </div>
                 </div>
+              </div>
+            </div>
 
-
+            {/* Récapitulatif */}
+            <section className="lg-card overflow-hidden">
+              <div className="flex items-center gap-2.5 border-b border-ink-100 px-5 py-4">
+                <span className="lg-icon-chip h-9 w-9 bg-brand-50 text-brand-600 ring-1 ring-inset ring-brand-100">
+                  <ReceiptPercentIcon className="h-[18px] w-[18px]" />
+                </span>
                 <div>
-                  <label htmlFor="format" className="block text-sm font-semibold text-gray-700">
-                    Format
-                  </label>
-                  <select
-                    id="format"
-                    name="format"
-                    required
-                    value={formData.format}
-                    onChange={handleInputChange}
-                    className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
-                  >
-                    <option>Ticket</option>
-                    <option>A4</option>
-                    <option>A3</option>
-                  </select>
+                  <p className="font-display text-base font-extrabold text-ink-900">
+                    Récapitulatif
+                  </p>
+                  <p className="text-[13px] text-ink-500">Montants du ticket courant</p>
                 </div>
-
-
-                <div>
-                  <label htmlFor="aib" className="block text-sm font-semibold text-gray-700">
-                    AIB
-                  </label>
-                  <select
-                    id="aib"
-                    name="aib"
-                    required
-                    value={formData.aib}
-                    onChange={handleInputChange}
-                    className="mt-1 p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
-                  >
-                    <option value=" ">N/A</option>
-                    <option value="A">1%</option>
-                    <option value="B" >5%</option>
-                  </select>
-                </div>
-
               </div>
 
-            </form>
-          </div>
-          <CardBody className="overflow-x-auto  overflow-y-auto px-0 pt-0 pb-2">
-            {/* Tableau des produits ajoutés */}
-            <table className="w-full min-w-[500px] table-auto">
-              <thead>
-                <tr>
-                  {["", "Nom", "Prix", "Quantité", "Unités", ""].map((el) => (
-                    <th key={el} className="border-b border-blue-gray-50 py-3 px-5 text-left">
-                      <Typography variant="small" className="text-[11px] font-bold uppercase text-blue-gray-400">
-                        {el}
-                      </Typography>
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {selectedProducts.map((product, key) => {
-                  const className = `py-3 px-5 ${key === selectedProducts.length - 1 ? "" : "border-b border-blue-gray-50"
-                    }`;
-                  return (
-                    <tr key={product.code_barre}>
-                      <td className={className}>
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveProduct(product.code_barre)}
-                          className="w-4 text-blue-600 rounded-full flex items-center justify-center"
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth="1.5"
-                            stroke="currentColor"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M16.862 4.487l1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931ZM16.862 4.487 19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
-                            />
-                          </svg>
-                        </button>
-                      </td>
-                      <td className={className}>
-                        <Typography variant="small" color="blue-gray" className="font-bold">{product.nom}</Typography>
-                      </td>
-                      <td className={className}>
-                        <Typography variant="small" color="blue-gray" className="font-bold">{product.prix}</Typography>
-                      </td>
-                      <td className={className}>
-                        <input
-                          type="number"
-                          value={product.quantity}
-                          onChange={(e) =>
-                            handleUpdateProduct(product.code_barre, "quantity", e.target.value)
-                          }
-                          className="mt-1 text-center p-2 block h-8 w-14 rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300"
-                          placeholder="1"
-                        />
-                      </td>
-                      <td className={className}>
-                        <select
-                          value={product.unit}
-                          onChange={(e) =>
-                            handleUpdateProduct(product.code_barre, "unit", e.target.value)
-                          }
-                          className="mt-1 w-15 p-2 block rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300 w-min-[100px]"
-                        >
-                          <option value="">Unité(s)</option>
-                          {product.supplements.map((supplement) => (
-                            <option key={supplement.id} value={supplement.unit}>
-                              {supplement.unit}
-                            </option>
-                          ))}
-                        </select>
-                      </td>
+              <div className="space-y-3 px-5 py-4">
+                <div className="flex items-center justify-between text-[13px]">
+                  <span className="text-ink-500">Lignes</span>
+                  <span className="font-semibold text-ink-800 tabular">
+                    {selectedProducts.length}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between text-[13px]">
+                  <span className="text-ink-500">Articles</span>
+                  <span className="font-semibold text-ink-800 tabular">{nbArticles}</span>
+                </div>
+                <div className="flex items-center justify-between text-[13px]">
+                  <span className="text-ink-500">Remise</span>
+                  <span className="font-semibold text-ink-800 tabular">
+                    {formData.remise || "0"}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between text-[13px]">
+                  <span className="text-ink-500">Format</span>
+                  <span className="lg-badge-neutral">{formData.format}</span>
+                </div>
+              </div>
 
-                      <td className={className}>
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveProduct(product.code_barre)} // Suppression basée sur le code_barre
-                          className="w-4 text-red-600 rounded-full flex items-center justify-center"
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth="1.5"
-                            stroke="currentColor"
-                            className="text-sm"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
-                            />
-                          </svg>
-                        </button>
-                      </td>
+              <div className="flex items-center justify-between gap-3 border-t border-ink-100 bg-ink-50/70 px-5 py-4">
+                <span className="text-sm font-semibold text-ink-600">Total à payer</span>
+                <span className="font-display text-2xl font-extrabold text-ink-900 tabular">
+                  {fcfa(totalTicket)} <span className="text-base font-bold">F</span>
+                </span>
+              </div>
 
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </CardBody>
-          <div className="flex justify-between items-center">
-            {/* Bouton gauche */}
-            {/* <button
-              type="button"
-              onClick={handlePreview}
-              className="flex items-center space-x-2 m-2 p-2 bg-blue-600 text-white font-bold rounded-md"
-            >
-              <span>Details Facture</span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                className="w-5 h-5"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 0 1-2.25 2.25M16.5 7.5V18a2.25 2.25 0 0 0 2.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 0 0 2.25 2.25h13.5M6 7.5h3v3H6v-3Z"
-                />
-              </svg>
-            </button> */}
-
-            <button
-              type="button"
-              onClick={handlePreview2}
-              className="flex items-center space-x-2 m-2 p-2 bg-orange-600 text-white font-bold rounded-md"
-            >
-              <span>Details Facture(S)</span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                className="w-5 h-5"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 0 1-2.25 2.25M16.5 7.5V18a2.25 2.25 0 0 0 2.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 0 0 2.25 2.25h13.5M6 7.5h3v3H6v-3Z"
-                />
-              </svg>
-            </button>
-
-            {/* Prévisualisation de la facture */}
-            {isPreviewOpen && (
-              <FacturePreview
-                formData={formData}
-                selectedProducts={selectedProducts}
-                onClose={() => setIsPreviewOpen(false)}
-              />
-            )}
-            {isPreviewOpen2 && (
-              <FacturePrevieww
-                formData={formData}
-                selectedProducts={selectedProducts}
-                onClose={() => setIsPreviewOpen2(false)}
-              />
-            )}
-
-            {/* Bouton droit */}
-            <button
-              type="button"
-              onClick={() => { window.location.reload() }}
-              className="flex items-center space-x-2 m-2 p-2 bg-red-600 text-white font-bold rounded-md"
-            >
-              <span>Rafraichir</span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                className="w-5 h-5"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 0 1-2.25 2.25M16.5 7.5V18a2.25 2.25 0 0 0 2.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 0 0 2.25 2.25h13.5M6 7.5h3v3H6v-3Z"
-                />
-              </svg>
-            </button>
-          </div>
-
-
-        </Card>
+              <div className="flex flex-col gap-2.5 p-4">
+                <button type="submit" className="lg-btn-accent w-full lg-btn-lg">
+                  <BanknotesIcon className="h-5 w-5" />
+                  Encaisser la vente
+                </button>
+                <div className="grid gap-2.5 sm:grid-cols-2">
+                  <button
+                    type="button"
+                    onClick={handlePreview2}
+                    className="lg-btn-neutral w-full"
+                  >
+                    <DocumentTextIcon className="h-[18px] w-[18px]" />
+                    Détails facture
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      window.location.reload();
+                    }}
+                    className="lg-btn-soft w-full"
+                  >
+                    <ArrowPathIcon className="h-[18px] w-[18px]" />
+                    Rafraîchir
+                  </button>
+                </div>
+              </div>
+            </section>
+          </form>
+        </div>
       </div>
-      {toast && <Toastadd reponse={rep} />}
+
+      {/* Prévisualisation de la facture */}
+      {isPreviewOpen && (
+        <FacturePreview
+          formData={formData}
+          selectedProducts={selectedProducts}
+          onClose={() => setIsPreviewOpen(false)}
+        />
+      )}
+      {isPreviewOpen2 && (
+        <FacturePrevieww
+          formData={formData}
+          selectedProducts={selectedProducts}
+          onClose={() => setIsPreviewOpen2(false)}
+        />
+      )}
+
+      {toastOuvert && <Toastadd reponse={rep} />}
     </div>
   );
 }

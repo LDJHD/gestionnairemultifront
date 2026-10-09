@@ -1,0 +1,46 @@
+# ═══════════════════════════════════════════════════════════════
+# « LE GESTIONNAIRE » — Déploiement Netlify (front React/Vite)
+# ═══════════════════════════════════════════════════════════════
+
+[build]
+  # Commande de build (Vite + vite-plugin-pwa)
+  command = "npm run build"
+  # Répertoire publié par Netlify
+  publish = "dist"
+
+# Variables d'environnement À DÉFINIR dans
+# Netlify → Site configuration → Environment variables :
+#   VITE_API_URL = https://api.votre-domaine.com   (URL du backend sur le VPS)
+# ⚠️ VITE_API_URL est injectée À LA BUILD : après chaque modification,
+#    il faut redéclencher un deploy (Netlify le fait automatiquement
+#    quand la variable est changée).
+
+# ── SPA : toutes les routes (dashboard, boutique…) → index.html ──
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# ── En-têtes de sécurité ──
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# ── Cache long pour les assets hachés, aucun pour le SW ──
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+[[headers]]
+  for = "/manifest.webmanifest"
+  [headers.values]
+    Cache-Control = "no-cache"

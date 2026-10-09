@@ -1,16 +1,12 @@
 // Composant Clients
-import {
-    Card,
-    CardHeader,
-    CardBody,
-    Typography,
-    Tabs,
-  } from "@material-tailwind/react";
+import { Tabs } from "@material-tailwind/react";
   import { useEffect, useState } from "react";
-  import Modal from "@/widgets/modal/modal";
+  import {
+    FolderPlusIcon,
+    TagIcon,
+    TrashIcon,
+  } from "@heroicons/react/24/outline";
   import Toastadd from "@/widgets/toast/toastadd";
-  import Droplist from "@/widgets/button/droplist";
-  import { Link } from "react-router-dom";
   import Modaleditcategorie from "@/widgets/modal/modaleditcategorie";
   import Swal from 'sweetalert2'
   import Modaladdcategorie from "@/widgets/modal/modaladdcategorie";
@@ -136,83 +132,98 @@ import {
       fetchcategories();
     }, []);
   
+    const total = categorie.length;
+
+    const boutonAjout = <Modaladdcategorie handletoast={handletoast} />;
+
     return (
-      <div className="mt-12 mb-8 flex flex-col gap-12">
-        <Card>
-          <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
-            <div className="flex justify-between items-center">
-              <span className="font-bold">categorie</span>
-              <span><Modaladdcategorie handletoast={handletoast} /></span>
+      <div className="mt-6 mb-10 flex flex-col gap-6 animate-fade-in">
+        {/* ══════════════ EN-TÊTE DE PAGE ══════════════ */}
+        <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <h1 className="lg-page-title">Catégories</h1>
+            <p className="lg-page-sub">
+              Organisez votre catalogue en familles de produits faciles à retrouver.
+            </p>
+          </div>
+          {boutonAjout}
+        </header>
+
+        {/* ══════════════ LISTE DES CATÉGORIES ══════════════ */}
+        <section className="lg-card overflow-hidden">
+          <div className="flex flex-wrap items-center gap-3 border-b border-ink-100 px-5 py-4">
+            <span className="lg-icon-chip h-9 w-9 bg-deep-purple-50 text-deep-purple-600 ring-1 ring-inset ring-deep-purple-100">
+              <TagIcon className="h-[18px] w-[18px]" />
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-bold text-ink-900">Répertoire des catégories</p>
+              <p className="text-[13px] text-ink-500">Familles utilisées par vos produits</p>
             </div>
-          </CardHeader>
-          <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
-             {/* Affichage de l'animation si les données sont en cours de chargement */}
+            <span className="lg-badge-neutral tabular">
+              {total} catégorie{total > 1 ? "s" : ""}
+            </span>
+          </div>
+
+          {/* Squelettes de chargement */}
           {loading ? (
-            <div className="flex flex-col items-center justify-center h-64">
-              <img src=" /image/loading.png" alt="Chargement..." className="w-24 h-24 animate-spin" />
-              
+            <div className="flex flex-col gap-2 p-5">
+              {[0, 1, 2, 3, 4].map((i) => (
+                <div key={i} className="lg-skeleton h-12 w-full" />
+              ))}
+            </div>
+          ) : total === 0 ? (
+            <div className="px-6 py-14 text-center">
+              <div className="mx-auto grid h-12 w-12 place-items-center rounded-2xl bg-ink-100 text-ink-400">
+                <FolderPlusIcon className="h-6 w-6" />
+              </div>
+              <p className="mt-3 text-sm font-semibold text-ink-700">Aucune catégorie créée</p>
+              <p className="mx-auto mt-1 max-w-sm text-[13px] text-ink-500">
+                Créez une première catégorie pour classer vos produits.
+              </p>
+              <div className="mt-4 flex justify-center">{boutonAjout}</div>
             </div>
           ) : (
-            <table className="w-full table-auto">
-              <thead>
-                <tr>
-                  {[ "Categorie", "Date d'ajout", "Option"].map((el) => (
-                    <th key={el} className="border-b border-blue-gray-50 py-3 px-5 text-left">
-                      <Typography variant="small" className="text-[11px] font-bold uppercase text-blue-gray-400">
-                        {el}
-                      </Typography>
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {categorie.map((categorie, key) => {
-                  const className = `py-3 px-5 ${key === categorie.length - 1 ? "" : "border-b border-blue-gray-50"}`;
-                  return (
+            <div className="lg-table-wrap">
+              <table className="lg-table w-full min-w-[520px]">
+                <thead>
+                  <tr>
+                    <th>Catégorie</th>
+                    <th>Date d&apos;ajout</th>
+                    <th className="!text-right">Option</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {categorie.map((categorie) => (
                     <tr key={categorie.nom}>
-                      <td className={className}>
-                        <span><Typography variant="small" color="blue-gray" className="font-bold">{categorie.nom}</Typography></span></td>
-                    
-                      <td className={className}><Typography variant="small" color="blue-gray" className="font-bold">{categorie.date_creation}</Typography></td>
-                      <td className={className}>
-                        <div class="flex gap-2">
-  
-                          <Modaleditcategorie categorieId={categorie.id} handletoast={handletoast} />
-  
-  
+                      <td className="lg-td font-semibold text-ink-800">{categorie.nom || "—"}</td>
+                      <td className="lg-td text-[13px] text-ink-500">
+                        {categorie.date_creation || "—"}
+                      </td>
+                      <td className="lg-td">
+                        <div className="flex items-center justify-end gap-1">
+                          <Modaleditcategorie
+                            categorieId={categorie.id}
+                            handletoast={handletoast}
+                          />
                           <button
                             type="button"
                             onClick={() => handleAlert(categorie.id)}
-                            className="w-4 text-red-600 rounded-full flex items-center justify-center"
+                            title="Supprimer"
+                            aria-label="Supprimer"
+                            className="grid h-8 w-8 place-items-center rounded-lg text-ink-400 transition-colors hover:bg-red-50 hover:text-red-600"
                           >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth="1.5"
-                              stroke="currentColor"
-                              className="text-sm"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
-                              />
-                            </svg>
+                            <TrashIcon className="h-[18px] w-[18px]" />
                           </button>
-  
                         </div>
-  
-  
                       </td>
                     </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-            )}
-          </CardBody>
-        </Card>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </section>
+
         {toast && <Toastadd reponse={rep} />}
       </div>
     );

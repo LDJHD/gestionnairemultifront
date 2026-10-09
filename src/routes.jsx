@@ -1,18 +1,20 @@
 import {
   HomeIcon,
   UserCircleIcon,
-  TableCellsIcon,
   InformationCircleIcon,
   ServerStackIcon,
   RectangleStackIcon,
   ShoppingCartIcon,
   TruckIcon,
   ArchiveBoxIcon,
-  ChartBarIcon, // Ajouté pour Statistique/Comptabilité
-  CubeIcon, // Ajouté pour Produit
-  FolderIcon, // Ajouté pour Catégorie
+  ChartBarIcon, // Statistique/Comptabilité
+  CubeIcon, // Produit
+  FolderIcon, // Catégorie
   ReceiptPercentIcon,
-  Squares2X2Icon, // Ajouté pour Vente
+  Squares2X2Icon, // Vente
+  InboxStackIcon, // Commandes en ligne
+  BanknotesIcon, // Paiements
+  Cog6ToothIcon, // Paramètres boutique
 } from "@heroicons/react/24/solid";
 
 import { Home, Profile, Tables, Client } from "@/pages/dashboard";
@@ -29,11 +31,15 @@ import AuthGuard from "./pages/dashboard/authguard";
 import Unit from "./pages/dashboard/unit";
 import Notifications from "./pages/dashboard/notifications";
 import User from "./pages/dashboard/user";
+import CommandesEnLigne from "./pages/dashboard/commandes";
+import Livraisons from "./pages/dashboard/livraisons";
+import Paiements from "./pages/dashboard/paiements";
+import ParametresBoutique from "./pages/dashboard/parametres";
 
 const icon = {
   className: "w-5 h-5 text-inherit",
 };
-const notificationsCount = parseInt(localStorage.getItem('notificationsCount'), 10) || 0;
+const notificationsCount = parseInt(localStorage.getItem("notificationsCount"), 10) || 0;
 
 export const routes = [
   {
@@ -51,6 +57,32 @@ export const routes = [
         path: "/operation",
         element: <Vendre />,
       },
+      // ─── Boutique en ligne (nouveaux modules — socle conservé) ───
+      {
+        icon: <InboxStackIcon {...icon} />,
+        name: "Commandes en ligne",
+        path: "/commandes",
+        element: <CommandesEnLigne />,
+      },
+      {
+        icon: <TruckIcon {...icon} />,
+        name: "Livraisons",
+        path: "/livraisons",
+        element: <Livraisons />,
+      },
+      {
+        icon: <BanknotesIcon {...icon} />,
+        name: "Paiements",
+        path: "/paiements",
+        element: <Paiements />,
+      },
+      {
+        icon: <Cog6ToothIcon {...icon} />,
+        name: "Paramètres boutique",
+        path: "/parametres",
+        element: <ParametresBoutique />,
+      },
+      // ─── Gestion (socle conservé) ───
       {
         icon: <UserCircleIcon {...icon} />,
         name: "Client",
@@ -70,7 +102,7 @@ export const routes = [
         element: <Categorie />,
       },
       {
-        icon: <Squares2X2Icon {...icon} />, // Icône représentant des unités en lot ou paquet
+        icon: <Squares2X2Icon {...icon} />,
         name: "Unité",
         path: "/unite",
         element: <Unit />,
@@ -101,7 +133,7 @@ export const routes = [
       },
       {
         icon: <InformationCircleIcon {...icon} />,
-        name:  `Notifications (${notificationsCount})`,
+        name: `Notifications (${notificationsCount})`,
         path: "/notifications",
         element: <Notifications />,
       },

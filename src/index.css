@@ -1,3 +1,254 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ==========================================================================
+   « LE GESTIONNAIRE » — DESIGN SYSTEM v2
+   Charte : indigo premium + émeraude, surfaces « elevated », typographie
+   Plus Jakarta Sans, coins doux, animations signatures.
+   ========================================================================== */
+
+:root {
+  --brand-50: #eef2ff;
+  --brand-100: #e0e7ff;
+  --brand-200: #c7d2fe;
+  --brand-300: #a5b4fc;
+  --brand-400: #818cf8;
+  --brand-500: #6366f1;
+  --brand-600: #4f46e5;
+  --brand-700: #4338ca;
+  --brand-800: #3730a3;
+  --brand-900: #312e81;
+  --brand-950: #1e1b4b;
+
+  --accent-500: #10b981;
+  --accent-600: #059669;
+
+  --ink-50: #f8fafc;
+  --ink-100: #f1f5f9;
+  --ink-200: #e2e8f0;
+  --ink-300: #cbd5e1;
+  --ink-400: #94a3b8;
+  --ink-500: #64748b;
+  --ink-600: #475569;
+  --ink-700: #334155;
+  --ink-800: #1e293b;
+  --ink-900: #0f172a;
+
+  --surface: #f6f7fb;
+  --radius-card: 1.125rem;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  @apply font-sans text-ink-700 antialiased;
+  background-color: var(--surface);
+  background-image: radial-gradient(1100px 560px at 88% -12%, rgb(99 102 241 / 0.12), transparent 62%),
+    radial-gradient(820px 480px at -12% 108%, rgb(16 185 129 / 0.10), transparent 58%);
+  background-attachment: fixed;
+}
+
+/* Titres : rendu « display » plus dense et moderne ---------------------- */
+h1, h2, h3, h4, h5, h6, .font-display {
+  font-family: theme("fontFamily.display");
+  letter-spacing: -0.022em;
+  color: var(--ink-900);
+}
+
+/* Chiffres : toujours tabulaires pour éviter les sauts de layout --------- */
+.tabular, table td, table th, .font-mono {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Scrollbars discrètes et modernes ---------- */
+* { scrollbar-width: thin; scrollbar-color: var(--ink-300) transparent; }
+*::-webkit-scrollbar { width: 9px; height: 9px; }
+*::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--ink-300), var(--ink-400));
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+*::-webkit-scrollbar-thumb:hover { background: var(--ink-400); background-clip: padding-box; }
+*::-webkit-scrollbar-track { background: transparent; }
+
+/* ==========================================================================
+   PRIMITIVES
+   ========================================================================== */
+@layer components {
+  /* ---------- Cartes ---------- */
+  .lg-card {
+    @apply rounded-2xl border border-ink-200/80 bg-white shadow-card transition-all duration-300;
+  }
+  .lg-card-hover {
+    @apply lg-card hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-lift;
+  }
+
+  /* ---------- En-tête de carte ---------- */
+  .lg-header-gradient {
+    @apply rounded-2xl bg-brand-gradient text-white shadow-glow;
+  }
+  .lg-header-deep {
+    @apply rounded-2xl bg-brand-deep text-white shadow-lift;
+  }
+
+  /* ---------- Badges ---------- */
+  .lg-badge {
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-semibold leading-none;
+  }
+  .lg-badge-brand { @apply lg-badge bg-brand-50 text-brand-700 ring-1 ring-inset ring-brand-100; }
+  .lg-badge-accent { @apply lg-badge bg-accent-50 text-accent-700 ring-1 ring-inset ring-accent-100; }
+  .lg-badge-neutral { @apply lg-badge bg-ink-100 text-ink-600 ring-1 ring-inset ring-ink-200; }
+  .lg-badge-danger { @apply lg-badge bg-red-50 text-red-700 ring-1 ring-inset ring-red-100; }
+  .lg-badge-warn { @apply lg-badge bg-amber-50 text-amber-700 ring-1 ring-inset ring-amber-100; }
+
+  /* ---------- Formulaires ---------- */
+  .lg-label {
+    @apply mb-1.5 block text-[13px] font-semibold text-ink-700;
+  }
+  .lg-input {
+    @apply w-full rounded-xl border border-ink-200 bg-white px-3.5 py-2.5 text-sm text-ink-800
+      shadow-xs outline-none transition-all duration-200 placeholder:text-ink-400
+      focus:border-brand-400 focus:ring-4 focus:ring-brand-500/[0.12];
+  }
+  .lg-input:disabled { @apply cursor-not-allowed bg-ink-50 text-ink-400; }
+  .lg-input-error { @apply border-red-300 focus:border-red-400 focus:ring-red-500/[0.12]; }
+
+  .lg-select {
+    @apply lg-input appearance-none bg-[length:1.1rem] bg-[right_0.75rem_center] bg-no-repeat pr-10;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2364748b' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.6' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  }
+
+  .lg-checkbox {
+    @apply h-[18px] w-[18px] shrink-0 cursor-pointer rounded-md border-2 border-ink-300 bg-white
+      text-brand-600 transition-all duration-150
+      focus:ring-4 focus:ring-brand-500/[0.15] focus:outline-none;
+  }
+
+  /* ---------- Boutons ---------- */
+  .lg-btn {
+    @apply inline-flex select-none items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm
+      font-semibold whitespace-nowrap transition-all duration-200 active:scale-[.97]
+      disabled:pointer-events-none disabled:opacity-50;
+  }
+  .lg-btn-primary {
+    @apply lg-btn bg-brand-gradient text-white shadow-glow hover:brightness-[1.07] hover:shadow-lift;
+  }
+  .lg-btn-accent {
+    @apply lg-btn bg-accent-gradient text-white shadow-glow-accent hover:brightness-[1.07];
+  }
+  .lg-btn-soft {
+    @apply lg-btn bg-brand-50 text-brand-700 hover:bg-brand-100 hover:text-brand-800;
+  }
+  .lg-btn-neutral {
+    @apply lg-btn bg-white text-ink-700 ring-1 ring-inset ring-ink-200 shadow-xs hover:bg-ink-50;
+  }
+  .lg-btn-danger {
+    @apply lg-btn bg-red-50 text-red-700 ring-1 ring-inset ring-red-100 hover:bg-red-100;
+  }
+  .lg-btn-ghost {
+    @apply lg-btn text-ink-600 hover:bg-ink-100 hover:text-ink-900;
+  }
+  .lg-btn-sm { @apply px-3 py-1.5 text-[13px]; }
+  .lg-btn-lg { @apply px-6 py-3 text-[15px]; }
+
+  /* ---------- Tableaux ---------- */
+  .lg-table-wrap {
+    @apply w-full overflow-x-auto overscroll-x-contain [-webkit-overflow-scrolling:touch];
+  }
+  /* En-têtes de colonnes.
+     `:where()` est volontaire : il annule la contribution de `thead th` à la
+     spécificité, qui passe de (0,1,2) à (0,1,0). Sans cela, le `text-left`
+     ci-dessous bat une utilitaire `text-right` sur la même colonne numérique
+     (les utilitaires Tailwind font (0,1,0)) et l'en-tête se désaligne du corps
+     de tableau. */
+  .lg-table :where(thead th) {
+    @apply sticky top-0 z-10 border-b border-ink-200 bg-ink-50/95 px-5 py-3.5 text-left
+      text-[11px] font-bold tracking-wider text-ink-500 uppercase backdrop-blur-sm;
+  }
+  .lg-table tbody tr {
+    @apply border-b border-ink-100 transition-colors duration-150 hover:bg-brand-50/35;
+  }
+  .lg-table tbody tr:last-child { @apply border-b-0; }
+  .lg-td { @apply px-5 py-3.5 align-middle; }
+  /* Cellule d'en-tête autonome : même rendu que l'en-tête de `.lg-table`, mais
+     applicable hors contexte <thead> (modales de facture, panneaux
+     dépliables, récapitulatifs). */
+  .lg-th {
+    @apply border-b border-ink-200 bg-ink-50/95 px-5 py-3.5 text-left
+      text-[11px] font-bold tracking-wider text-ink-500 uppercase;
+  }
+
+  /* ---------- États ---------- */
+  .lg-skeleton {
+    @apply animate-shimmer rounded-lg bg-gradient-to-r from-ink-100 via-ink-50 to-ink-100;
+    background-size: 800px 100%;
+  }
+
+  /* ---------- Titre de section de page ---------- */
+  .lg-page-title {
+    @apply font-display text-2xl font-extrabold tracking-tight text-ink-900 sm:text-[28px];
+  }
+  .lg-page-sub {
+    @apply mt-1 text-sm font-normal text-ink-500;
+  }
+
+  /* ---------- Icône dans une pastille ---------- */
+  .lg-icon-chip {
+    @apply grid shrink-0 place-items-center rounded-xl;
+  }
+
+  /* ---------- Lien de navigation latérale ---------- */
+  .lg-nav-item {
+    @apply relative flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium
+      transition-all duration-200;
+  }
+}
+
+/* ==========================================================================
+   UTILITAIRES
+   ========================================================================== */
+.lg-clamp-1 {
+  display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;
+}
+.lg-clamp-2 {
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.lg-clamp-3 {
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+}
+
+/* Adoucir les headers Material Tailwind existants */
+.mt-header-gradient > div { border-radius: 1.125rem; }
+
+/* Focus visible pour l'accessibilité */
+:focus-visible {
+  outline: 2px solid var(--brand-500);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Respect de la préférence « mouvement réduit » */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Impression (reçus / bons de livraison) */
+@media print {
+  aside, nav, footer, .no-print { display: none !important; }
+  main, .lg-card {
+    box-shadow: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+  }
+  body { background: #fff !important; background-image: none !important; }
+}

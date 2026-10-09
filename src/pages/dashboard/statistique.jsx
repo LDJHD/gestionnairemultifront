@@ -1,20 +1,47 @@
 // Composant Clients
-import {
-  Card,
-  CardBody,
-  TabsHeader,
-  TabsBody,
-  Tab,
-  TabPanel,
-  Tabs,
-  CardHeader,
-  Button,
-  Typography
-} from "@material-tailwind/react";
 import { useEffect, useRef } from "react";
 import axios from 'axios';
 import { useState } from "react";
+import {
+  ArrowDownTrayIcon,
+  BanknotesIcon,
+  CalendarDaysIcon,
+  ChartBarIcon,
+  CubeIcon,
+  MagnifyingGlassIcon,
+  ShoppingCartIcon,
+} from "@heroicons/react/24/outline";
 
+/** Montant formaté « 1 234 567 » */
+function fcfa(v) {
+  const n = Number(v);
+  return Number.isFinite(n)
+    ? n.toLocaleString("fr-FR").replace(/[\u202f\u00a0,]/g, " ")
+    : v ?? "—";
+}
+
+/** Petite carte KPI réutilisable (rendu uniquement) */
+function KpiCard({ icon: Icone, ton, label, value, suffixe, hint }) {
+  return (
+    <div className="lg-card p-5">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className="text-[13px] font-semibold text-ink-500">{label}</p>
+          <p className="mt-2 font-display text-[26px] font-extrabold leading-none text-ink-900 tabular">
+            {fcfa(value)}
+            {suffixe ? (
+              <span className="ml-1 text-base font-bold text-ink-500">{suffixe}</span>
+            ) : null}
+          </p>
+          {hint ? <p className="mt-2 text-[13px] text-ink-500">{hint}</p> : null}
+        </div>
+        <span className={`lg-icon-chip h-11 w-11 ring-1 ring-inset ${ton}`}>
+          <Icone className="h-[22px] w-[22px]" />
+        </span>
+      </div>
+    </div>
+  );
+}
 
 // Component for detailed view of vente tab
 function VenteTabContent({ ventesnombre, totalMontant, totalProduit }) {
@@ -25,71 +52,51 @@ function VenteTabContent({ ventesnombre, totalMontant, totalProduit }) {
 
 
   return (
-    <div className="w-full p-4">
-      <div className="w-full max-w-screen ">
-        <div className="w-full overflow-x-auto md:overflow-x-visible px-0 pt-0 pb-2">
-          <table className="w-full min-w-[600px] table-auto">
+    <div className="w-full">
+      <div className="w-full">
+        <div className="lg-table-wrap">
+          <table className="lg-table w-full min-w-[720px]">
             <thead>
               <tr>
-                {["Numerotation", "Nombre de vente", "Total produit", "TOTAL DES VENTES"].map((el) => (
-                  <th
-                    key={el}
-                    className="border-b border-blue-gray-50 py-3 px-5 text-left"
-                  >
-                    <Typography
-                      variant="small"
-                      className="text-[11px] font-bold uppercase text-blue-gray-400"
-                    >
-                      {el}
-                    </Typography>
-                  </th>
-                ))}
+                <th>Numérotation</th>
+                <th className="text-right">Nombre de vente</th>
+                <th className="text-right">Total produit</th>
+                <th className="text-right">Total des ventes</th>
               </tr>
             </thead>
             <tbody>
-
               <tr>
-                <td className="py-3 px-5 border-b border-blue-gray-50">
-                  <Typography variant="small" color="blue-gray" className="font-bold">
-                    #
-                  </Typography>
+                <td className="lg-td">
+                  <span className="lg-badge-neutral">#</span>
                 </td>
-                <td className="py-3 px-5 border-b border-blue-gray-50">
-                  <Typography variant="small" color="blue-gray" className="font-bold">
-                    {ventesnombre}
-                  </Typography>
+                <td className="lg-td text-right font-semibold text-ink-800 tabular">
+                  {ventesnombre}
                 </td>
-                <td className="py-3 px-5 border-b border-blue-gray-50">
-                  <Typography variant="small" color="blue-gray" className="font-bold">
-                    {totalProduit}
-                  </Typography>
+                <td className="lg-td text-right font-semibold text-ink-800 tabular">
+                  {totalProduit}
                 </td>
-                <td className="py-3 px-5 border-b border-blue-gray-50">
-                  <Typography variant="small" color="blue-gray" className="font-bold">
-                    {totalMontant}
-                  </Typography>
+                <td className="lg-td text-right font-bold text-ink-900 tabular">
+                  {fcfa(totalMontant)} F
                 </td>
               </tr>
-
             </tbody>
             <tfoot>
-              <tr>
-                <td colSpan={3} className="py-3 px-5 text-right font-bold text-blue-gray-600">
+              <tr className="border-t border-ink-200 bg-ink-50/70">
+                <td colSpan={3} className="lg-td text-right text-[13px] font-semibold text-ink-600">
                   Total :
                 </td>
-                <td colSpan={3} className="py-3 px-5 text-left font-bold text-blue-gray-800">
-                  {totalMontant}
+                <td className="lg-td text-right font-display text-base font-extrabold text-ink-900 tabular">
+                  {fcfa(totalMontant)} F
                 </td>
               </tr>
             </tfoot>
           </table>
-
         </div>
-
       </div>
     </div>
   );
 }
+
 
 
 function FactureTabContent({ ceJour, septJour, trenteDerniersJours, totalEnregistrementDefaut, totalMontantDefaut }) {
@@ -149,112 +156,144 @@ function FactureTabContent({ ceJour, septJour, trenteDerniersJours, totalEnregis
 
 
 
-
   return (
-    <div className="w-full p-4">
-      <Card>
-        <CardBody className="p-10">
-          <div className="grid grid-cols-2 gap-4">
-            {/* Tableau 1: Statistiques par type de facture */}
-            <div>
-              <h3 className="text-lg font-semibold mb-2">Statistiques par type de facture</h3>
-              <table className="w-full border border-gray-900 text-sm">
-                <thead>
-                  <tr className="bg-gray-200">
-                    <th className="border p-2 text-black font-bold">#</th>
-                    <th className="border p-2 text-black font-bold">Catégorie</th>
-                    <th className="border p-2 text-black font-bold">FV</th>
-                    <th className="border p-2 text-black font-bold">FA</th>
-                    <th className="border p-2 text-black font-bold">EV</th>
-                    <th className="border p-2 text-black font-bold">EA</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="border">
-                    <td className="border p-2 text-black font-bold">1</td>
-                    <td className="border p-2 text-black font-bold">Nombre des factures</td>
-                    <td className="border p-2 text-black font-bold">{totalEnregistrementDefaut}</td>
-                    <td className="border p-2 text-black font-bold">0</td>
-                    <td className="border p-2 text-black font-bold">0</td>
-                    <td className="border p-2 text-black font-bold">0</td>
-                  </tr>
-                  <tr className="border">
-                    <td className="border p-2 text-black font-bold">2</td>
-                    <td className="border p-2 text-black font-bold">Exonérés</td>
-                    <td className="border p-2 text-black font-bold">{totalMontantDefaut}</td>
-                    <td className="border p-2 text-black font-bold">0</td>
-                    <td className="border p-2 text-black font-bold">0</td>
-                    <td className="border p-2 text-black font-bold">0</td>
-                  </tr>
-                  <tr className="border">
-                    <td className="border p-2 text-black font-bold">8</td>
-                    <td className="border p-2 text-black font-bold">Total</td>
-                    <td className="border p-2 text-black font-bold">{totalMontantDefaut}</td>
-                    <td className="border p-2 text-black font-bold">0</td>
-                    <td className="border p-2 text-black font-bold">0</td>
-                    <td className="border p-2 text-black font-bold">0</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-            {/* Tableau 2: Montants */}
-            <div>
-              <h3 className="text-lg font-semibold mb-2">Montants</h3>
-              <table className="w-full border border-gray-300 text-sm">
-                <thead>
-                  <tr className="bg-gray-200">
-                    <th className="border p-2 text-black font-bold">Catégorie</th>
-                    <th className="border p-2 text-black font-bold">Montant à l'intérieur</th>
-                    <th className="border p-2 text-black font-bold">Montant à l'exportation</th>
-                    <th className="border p-2 text-black font-bold">Montant Total</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="border">
-                    <td className="border p-2 text-black font-bold">Exonérés</td>
-                    <td className="border text-black font-bold p-2">{totalMontantDefaut}</td>
-                    <td className="border p-2 text-black font-bold">0</td>
-                    <td className="border p-2 text-black font-bold">{totalMontantDefaut}</td>
-                  </tr>
-                  <tr className="border">
-                    <td className="border p-2 text-black font-bold">Aujourd'hui</td>
-                    <td className="border p-2 text-black font-bold">{ceJour}</td>
-                    <td className="border p-2 text-black font-bold">0</td>
-                    <td className="border p-2 text-black font-bold">{ceJour}</td>
-                  </tr>
-                  <tr className="border">
-                    <td className="border p-2 text-black font-bold">7 derniers jours</td>
-                    <td className="border p-2 text-black font-bold">{septJour}</td>
-                    <td className="border p-2 text-black font-bold">0</td>
-                    <td className="border p-2 text-black font-bold">{septJour}</td>
-                  </tr>
-                  <tr className="border">
-                    <td className="border p-2 text-black font-bold">30 derniers jours</td>
-                    <td className="border p-2 text-black font-bold">{trenteDerniersJours}</td>
-                    <td className="border p-2 text-black font-bold">0</td>
-                    <td className="border p-2 text-black font-bold">{trenteDerniersJours}</td>
-                  </tr>
-                  <tr className="border">
-                    <td className="border p-2 text-black font-bold">Sous total</td>
-                    <td className="border p-2 text-black font-bold">{totalMontantDefaut}</td>
-                    <td className="border p-2 text-black font-bold">0</td>
-                    <td className="border p-2 text-black font-bold">{totalMontantDefaut}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+    <div className="flex flex-col gap-5">
+      <div className="grid gap-5 xl:grid-cols-2">
+        {/* Tableau 1: Statistiques par type de facture */}
+        <section className="lg-card overflow-hidden">
+          <div className="flex items-center justify-between gap-3 border-b border-ink-100 px-5 py-4">
+            <h3 className="font-display text-base font-extrabold text-ink-900">
+              Statistiques par type de facture
+            </h3>
+            <span className="lg-badge-neutral">4 colonnes</span>
           </div>
-        </CardBody>
-        <div className="flex justify-end p-2">
-          <button
-            className="p-4 font-bold rounded-md text-white bg-blue-800 mt-4"
-            onClick={handleGeneratePDF}
-          >
-            Télécharger le PDF
-          </button>
-        </div>
-      </Card>
+          <div className="lg-table-wrap">
+            <table className="lg-table w-full min-w-[560px]">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Catégorie</th>
+                  <th className="text-right">FV</th>
+                  <th className="text-right">FA</th>
+                  <th className="text-right">EV</th>
+                  <th className="text-right">EA</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td className="lg-td text-ink-500 tabular">1</td>
+                  <td className="lg-td font-semibold text-ink-800">Nombre des factures</td>
+                  <td className="lg-td text-right font-semibold text-ink-900 tabular">
+                    {totalEnregistrementDefaut}
+                  </td>
+                  <td className="lg-td text-right text-ink-500 tabular">0</td>
+                  <td className="lg-td text-right text-ink-500 tabular">0</td>
+                  <td className="lg-td text-right text-ink-500 tabular">0</td>
+                </tr>
+                <tr>
+                  <td className="lg-td text-ink-500 tabular">2</td>
+                  <td className="lg-td font-semibold text-ink-800">Exonérés</td>
+                  <td className="lg-td text-right font-semibold text-ink-900 tabular">
+                    {fcfa(totalMontantDefaut)}
+                  </td>
+                  <td className="lg-td text-right text-ink-500 tabular">0</td>
+                  <td className="lg-td text-right text-ink-500 tabular">0</td>
+                  <td className="lg-td text-right text-ink-500 tabular">0</td>
+                </tr>
+                <tr>
+                  <td className="lg-td text-ink-500 tabular">8</td>
+                  <td className="lg-td font-semibold text-ink-800">Total</td>
+                  <td className="lg-td text-right font-bold text-ink-900 tabular">
+                    {fcfa(totalMontantDefaut)}
+                  </td>
+                  <td className="lg-td text-right text-ink-500 tabular">0</td>
+                  <td className="lg-td text-right text-ink-500 tabular">0</td>
+                  <td className="lg-td text-right text-ink-500 tabular">0</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        {/* Tableau 2: Montants */}
+        <section className="lg-card overflow-hidden">
+          <div className="flex items-center justify-between gap-3 border-b border-ink-100 px-5 py-4">
+            <h3 className="font-display text-base font-extrabold text-ink-900">Montants</h3>
+            <span className="lg-badge-brand">FCFA</span>
+          </div>
+          <div className="lg-table-wrap">
+            <table className="lg-table w-full min-w-[560px]">
+              <thead>
+                <tr>
+                  <th>Catégorie</th>
+                  <th className="text-right">Montant à l'intérieur</th>
+                  <th className="text-right">Montant à l'exportation</th>
+                  <th className="text-right">Montant total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td className="lg-td font-semibold text-ink-800">Exonérés</td>
+                  <td className="lg-td text-right font-semibold text-ink-900 tabular">
+                    {fcfa(totalMontantDefaut)}
+                  </td>
+                  <td className="lg-td text-right text-ink-500 tabular">0</td>
+                  <td className="lg-td text-right font-bold text-ink-900 tabular">
+                    {fcfa(totalMontantDefaut)}
+                  </td>
+                </tr>
+                <tr>
+                  <td className="lg-td font-semibold text-ink-800">Aujourd'hui</td>
+                  <td className="lg-td text-right font-semibold text-ink-900 tabular">
+                    {fcfa(ceJour)}
+                  </td>
+                  <td className="lg-td text-right text-ink-500 tabular">0</td>
+                  <td className="lg-td text-right font-bold text-ink-900 tabular">
+                    {fcfa(ceJour)}
+                  </td>
+                </tr>
+                <tr>
+                  <td className="lg-td font-semibold text-ink-800">7 derniers jours</td>
+                  <td className="lg-td text-right font-semibold text-ink-900 tabular">
+                    {fcfa(septJour)}
+                  </td>
+                  <td className="lg-td text-right text-ink-500 tabular">0</td>
+                  <td className="lg-td text-right font-bold text-ink-900 tabular">
+                    {fcfa(septJour)}
+                  </td>
+                </tr>
+                <tr>
+                  <td className="lg-td font-semibold text-ink-800">30 derniers jours</td>
+                  <td className="lg-td text-right font-semibold text-ink-900 tabular">
+                    {fcfa(trenteDerniersJours)}
+                  </td>
+                  <td className="lg-td text-right text-ink-500 tabular">0</td>
+                  <td className="lg-td text-right font-bold text-ink-900 tabular">
+                    {fcfa(trenteDerniersJours)}
+                  </td>
+                </tr>
+                <tr>
+                  <td className="lg-td font-semibold text-ink-800">Sous-total</td>
+                  <td className="lg-td text-right font-semibold text-ink-900 tabular">
+                    {fcfa(totalMontantDefaut)}
+                  </td>
+                  <td className="lg-td text-right text-ink-500 tabular">0</td>
+                  <td className="lg-td text-right font-bold text-ink-900 tabular">
+                    {fcfa(totalMontantDefaut)}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      <div className="flex justify-end">
+        <button type="button" className="lg-btn-primary" onClick={handleGeneratePDF}>
+          <ArrowDownTrayIcon className="h-[18px] w-[18px]" />
+          Télécharger le PDF
+        </button>
+      </div>
     </div>
   );
 }
@@ -271,6 +310,7 @@ export function Statistique() {
     { label: "Avancé", value: "vente" },
     { label: "Global", value: "produit" }
   ];
+
 
 
 
@@ -425,6 +465,7 @@ export function Statistique() {
 
 
 
+
   const handleclientSelect = (client) => {
     setSelectedclient(client); // Enregistrer le client sélectionné
     setFormData((prev) => ({ ...prev, client_id: client.nom })); // Enregistrer l'ID du client
@@ -482,7 +523,6 @@ export function Statistique() {
       fetchventeselectvente(formData.client_id, formData.dateDebut, formData.dateFin, formData.produit_id);
     }
   };
-
 
 
 
@@ -550,6 +590,7 @@ export function Statistique() {
 
 
 
+
   useEffect(() => {
     const fetchVentes = async () => {
       const clientId = formData.client_id?.trim(); // Supprimer les espaces inutiles
@@ -579,132 +620,257 @@ export function Statistique() {
 
 
 
+
   return (
-    <div className=" mb-8 flex flex-col gap-12">
+    <div className="mt-6 mb-10 flex flex-col gap-6 animate-fade-in">
 
+      {/* ══════════════════ EN-TÊTE DE PAGE ══════════════════ */}
+      <header>
+        <p className="text-[13px] font-semibold text-brand-600">Pilotage</p>
+        <h1 className="lg-page-title">Statistiques &amp; comptabilité</h1>
+        <p className="lg-page-sub">
+          Filtrez par client, produit ou période pour analyser vos performances.
+        </p>
+      </header>
 
-      <Card className="mt-10">
-        <CardHeader variant="gradient" color="gray" className="mb-8 p-6 h-[300px]">
+      {/* ══════════════════ FILTRES ══════════════════ */}
+      <section className="lg-card p-5">
+        <div className="flex items-center gap-2.5">
+          <span className="lg-icon-chip h-9 w-9 bg-brand-50 text-brand-600 ring-1 ring-inset ring-brand-100">
+            <MagnifyingGlassIcon className="h-[18px] w-[18px]" />
+          </span>
+          <div>
+            <p className="font-display text-base font-extrabold text-ink-900">
+              Filtres de recherche
+            </p>
+            <p className="text-[13px] text-ink-500">Les résultats se mettent à jour automatiquement</p>
+          </div>
+        </div>
 
-          <div className="flex items-center space-x-4 m-2">
-            {/* Input pour recherche de vente */}
-            <div className="relative w-full">
-              <label className="text-white text-lg" htmlFor="">Nom/Ifu</label>
-              <input
-                type="text"
-                id="client_id"
-                name="client_id"
-                value={selectedclient ? selectedclient.nom : formData.client_id}
-                onChange={handleInputChangeclient}
-                onFocus={() => setIsDropdownOpenclient(true)} // Ouvrir la liste déroulante
-                placeholder="Rechercher le vente"
-                className="p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300 text-black"
-              />
-              {isDropdownOpenclient && (
-                <ul className="absolute left-0 right-0 mt-2 border border-gray-300 rounded-md max-h-40 overflow-auto bg-white z-70">
-                  {filteredclient.map((client) => (
-                    <li
-                      key={client.id}
-                      onClick={() => handleclientSelect(client)}
-                      className="p-2 cursor-pointer hover:bg-gray-100 text-black"
-                    >
-                      {client.nom} {client.prenom}
-                    </li>
-                  ))}
-                  {filteredclient.length === 0 && (
-                    <li className="p-2 text-gray-500">Aucun client trouvée</li>
-                  )}
-                </ul>
-              )}
-            </div>
-
-            {/* Input pour la date de début */}
-            <div className="relative w-full">
-              <label className="text-white text-lg" htmlFor="">Debut</label>
-              <input
-                type="date"
-                id="dateDebut"
-                name="dateDebut"
-                value={formData.dateDebut || ""}
-                onChange={handleInputChangeclient}
-                placeholder="Date de début"
-                className="p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300 text-black"
-              />
-            </div>
-
-            {/* Input pour la date de fin */}
-            <div className="relative w-full">
-              <label className="text-white text-lg" htmlFor="">Fin</label>
-              <input
-                type="date"
-                id="dateFin"
-                name="dateFin"
-                value={formData.dateFin || ""}
-                onChange={handleInputChangeclient}
-                placeholder="Date de fin"
-                className="p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300 text-black"
-              />
-            </div>
-            <div className="relative w-full">
-              <label className="text-white text-lg" htmlFor="">Produit</label>
-              <input
-                type="text"
-                id="produit_id"
-                name="produit_id"
-                value={selectedProduct ? selectedProduct.nom : formData.produit_id}
-                onChange={handleInputChange}
-                onFocus={() => setIsDropdownOpen(true)} // Ouvrir la liste déroulante
-                placeholder="Rechercher le produit"
-                className="p-2 block w-full rounded-md ring-1 ring-black border-gray-300 shadow-sm transition duration-300 text-black"
-              />
-              {isDropdownOpen && (
-                <ul className="absolute left-0 right-0 mt-2 border border-gray-300 rounded-md max-h-40 overflow-auto bg-white z-70">
-                  {filteredProducts.map((product) => (
-                    <li
-                      key={product.id}
-                      onClick={() => handleProductSelect(product)}
-                      className="p-2 cursor-pointer hover:bg-gray-100 text-black"
-                    >
-                      {product.nom}
-                    </li>
-                  ))}
-                  {filteredProducts.length === 0 && (
-                    <li className="p-2 text-gray-500">Aucun produit trouvé</li>
-                  )}
-                </ul>
-              )}
-            </div>
+        <div className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          {/* Input pour recherche de vente */}
+          <div className="relative">
+            <label className="lg-label" htmlFor="client_id">
+              Nom / IFU
+            </label>
+            <input
+              type="text"
+              id="client_id"
+              name="client_id"
+              value={selectedclient ? selectedclient.nom : formData.client_id}
+              onChange={handleInputChangeclient}
+              onFocus={() => setIsDropdownOpenclient(true)} // Ouvrir la liste déroulante
+              placeholder="Rechercher un client"
+              autoComplete="off"
+              className="lg-input"
+            />
+            {isDropdownOpenclient && (
+              <ul className="absolute left-0 right-0 z-30 mt-1.5 max-h-52 overflow-auto rounded-xl border border-ink-200 bg-white p-1.5 shadow-lift animate-slide-down">
+                {filteredclient.map((client) => (
+                  <li
+                    key={client.id}
+                    onClick={() => handleclientSelect(client)}
+                    className="cursor-pointer rounded-lg px-3 py-2 text-[13px] font-medium text-ink-700 transition-colors hover:bg-brand-50 hover:text-brand-800"
+                  >
+                    {client.nom} {client.prenom}
+                  </li>
+                ))}
+                {filteredclient.length === 0 && (
+                  <li className="px-3 py-2 text-[13px] text-ink-500">Aucun client trouvée</li>
+                )}
+              </ul>
+            )}
           </div>
 
-        </CardHeader>
-        <CardBody className="flex w-full  h-full justify-center  px-0 pt-0 pb-2">
-          {loading ? (
-            <div className="flex flex-col items-center justify-center h-64">
-              <img src=" /image/loading.png" alt="Chargement..." className="w-24 h-24 animate-spin" />
+          {/* Input pour la date de début */}
+          <div>
+            <label className="lg-label" htmlFor="dateDebut">
+              Début
+            </label>
+            <input
+              type="date"
+              id="dateDebut"
+              name="dateDebut"
+              value={formData.dateDebut || ""}
+              onChange={handleInputChangeclient}
+              placeholder="Date de début"
+              className="lg-input tabular"
+            />
+          </div>
 
+          {/* Input pour la date de fin */}
+          <div>
+            <label className="lg-label" htmlFor="dateFin">
+              Fin
+            </label>
+            <input
+              type="date"
+              id="dateFin"
+              name="dateFin"
+              value={formData.dateFin || ""}
+              onChange={handleInputChangeclient}
+              placeholder="Date de fin"
+              className="lg-input tabular"
+            />
+          </div>
+
+          {/* Input pour le produit */}
+          <div className="relative">
+            <label className="lg-label" htmlFor="produit_id">
+              Produit
+            </label>
+            <input
+              type="text"
+              id="produit_id"
+              name="produit_id"
+              value={selectedProduct ? selectedProduct.nom : formData.produit_id}
+              onChange={handleInputChange}
+              onFocus={() => setIsDropdownOpen(true)} // Ouvrir la liste déroulante
+              placeholder="Rechercher le produit"
+              autoComplete="off"
+              className="lg-input"
+            />
+            {isDropdownOpen && (
+              <ul className="absolute left-0 right-0 z-30 mt-1.5 max-h-52 overflow-auto rounded-xl border border-ink-200 bg-white p-1.5 shadow-lift animate-slide-down">
+                {filteredProducts.map((product) => (
+                  <li
+                    key={product.id}
+                    onClick={() => handleProductSelect(product)}
+                    className="cursor-pointer rounded-lg px-3 py-2 text-[13px] font-medium text-ink-700 transition-colors hover:bg-brand-50 hover:text-brand-800"
+                  >
+                    {product.nom}
+                  </li>
+                ))}
+                {filteredProducts.length === 0 && (
+                  <li className="px-3 py-2 text-[13px] text-ink-500">Aucun produit trouvé</li>
+                )}
+              </ul>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════ KPI ══════════════════ */}
+      <section className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+        {loading ? (
+          [0, 1, 2, 3].map((i) => (
+            <div key={i} className="lg-card h-[142px] p-5">
+              <div className="lg-skeleton h-3.5 w-2/3" />
+              <div className="lg-skeleton mt-5 h-8 w-1/2" />
+              <div className="lg-skeleton mt-4 h-3 w-1/3" />
+            </div>
+          ))
+        ) : (
+          <>
+            <KpiCard
+              icon={ShoppingCartIcon}
+              ton="bg-brand-50 text-brand-600 ring-brand-100"
+              label="Nombre de ventes"
+              value={ventesnombre}
+              hint="Transactions sur la période"
+            />
+            <KpiCard
+              icon={BanknotesIcon}
+              ton="bg-accent-50 text-accent-600 ring-accent-100"
+              label="Chiffre d'affaires"
+              value={totalMontant}
+              suffixe="F"
+              hint="Montant total encaissé"
+            />
+            <KpiCard
+              icon={CubeIcon}
+              ton="bg-sky-50 text-sky-600 ring-sky-100"
+              label="Produits vendus"
+              value={totalProduit}
+              hint="Quantités cumulées"
+            />
+            <KpiCard
+              icon={ChartBarIcon}
+              ton="bg-violet-50 text-violet-600 ring-violet-100"
+              label="Recette du jour"
+              value={ceJour}
+              suffixe="F"
+              hint={`7 derniers jours : ${fcfa(septJour)} F`}
+            />
+          </>
+        )}
+      </section>
+
+      {/* ══════════════════ RÉSULTATS ══════════════════ */}
+      <section className="lg-card overflow-hidden">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-ink-100 px-5 py-4">
+          <div className="flex items-center gap-2.5">
+            <span className="lg-icon-chip h-9 w-9 bg-violet-50 text-violet-600 ring-1 ring-inset ring-violet-100">
+              <ChartBarIcon className="h-[18px] w-[18px]" />
+            </span>
+            <div>
+              <p className="font-display text-base font-extrabold text-ink-900">
+                Résultats détaillés
+              </p>
+              <p className="text-[13px] text-ink-500">
+                Synthèse des ventes par période et par catégorie
+              </p>
+            </div>
+          </div>
+          <span className="lg-badge-neutral">
+            <CalendarDaysIcon className="h-3.5 w-3.5" />
+            {formData.dateDebut} au {formData.dateFin}
+          </span>
+        </div>
+
+        {/* Onglets */}
+        <div
+          role="tablist"
+          aria-label="Type de statistiques"
+          className="flex items-center gap-1.5 border-b border-ink-100 bg-ink-50/70 p-2"
+        >
+          {data.map(({ label, value }) => (
+            <button
+              key={value}
+              type="button"
+              role="tab"
+              aria-selected={activeTab === value}
+              onClick={() => setActiveTab(value)}
+              className={`rounded-xl px-4 py-2 text-[13px] font-semibold transition-all duration-200 ${
+                activeTab === value
+                  ? "bg-white text-brand-700 shadow-soft ring-1 ring-inset ring-brand-100"
+                  : "text-ink-500 hover:bg-white/70 hover:text-ink-800"
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+
+        <div className="p-5">
+          {loading ? (
+            <div className="space-y-3">
+              {[0, 1, 2, 3, 4].map((i) => (
+                <div key={i} className="lg-skeleton h-[48px] w-full" />
+              ))}
             </div>
           ) : (
-            <Tabs className="w-full" value={activeTab} onChange={(value) => setActiveTab(value)}>
-              <TabsHeader >
-                {data.map(({ label, value }) => (
-                  <Tab key={value} value={value}>
-                    {label}
-                  </Tab>
-                ))}
-              </TabsHeader>
-              <TabsBody className="w-full mt-7">
-                <TabPanel value="vente">
-                  <VenteTabContent ventesnombre={ventesnombre} totalMontant={totalMontant} totalProduit={totalProduit} />
-                </TabPanel>
-                <TabPanel value="produit">
-                  <FactureTabContent ceJour={ceJour} septJour={septJour} trenteDerniersJours={trenteDerniersJours} totalEnregistrementDefaut={totalEnregistrementDefaut} totalMontantDefaut={totalMontantDefaut} />
-                </TabPanel>
-              </TabsBody>
-            </Tabs>
+            <>
+              {activeTab === "vente" && (
+                <VenteTabContent
+                  ventesnombre={ventesnombre}
+                  totalMontant={totalMontant}
+                  totalProduit={totalProduit}
+                />
+              )}
+              {activeTab === "produit" && (
+                <FactureTabContent
+                  ceJour={ceJour}
+                  septJour={septJour}
+                  trenteDerniersJours={trenteDerniersJours}
+                  totalEnregistrementDefaut={totalEnregistrementDefaut}
+                  totalMontantDefaut={totalMontantDefaut}
+                />
+              )}
+            </>
           )}
-        </CardBody>
-      </Card>
-
+        </div>
+      </section>
     </div>
   );
 }

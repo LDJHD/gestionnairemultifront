@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 
@@ -47,30 +47,37 @@ export function Modifiepassword({ userId, handleformclick }) {
       <div className="flex justify-end">
         <button
           onClick={handleformclick}
-          className="text-xl rounded-full text-black w-8 h-8 bg-gray-200 flex items-center justify-center"
+          className="text-xl rounded-full text-ink-800 w-8 h-8 bg-gray-200 flex items-center justify-center"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth="1.5"
+            stroke="currentColor"
+            className="h-6 w-6"
+          >
             <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
       </div>
 
       <form className="w-full" onSubmit={handleSubmit}>
-        <ToastContainer position="top-right" autoClose={600} />
-
-        <div className="border-b border-gray-200 pb-6">
-          <h2 className="text-2xl font-bold text-gray-800">Modifier le mot de passe</h2>
-          <p className="mt-2 text-sm text-gray-500">Mettez à jour votre mot de passe.</p>
+        <div className="border-b border-ink-100 pb-5">
+          <h2 className="font-display text-xl font-extrabold tracking-tight text-ink-900">
+            Modifier le mot de passe
+          </h2>
+          <p className="mt-1.5 text-[13px] text-ink-500">Mettez à jour votre mot de passe.</p>
         </div>
 
         <div className="mt-6 space-y-4">
           {/* Champ Nouveau Mot de Passe */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700">Nouveau mot de passe</label>
+            <label className="lg-label">Nouveau mot de passe</label>
             <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
-                className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="lg-input"
                 placeholder="********"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -78,20 +85,24 @@ export function Modifiepassword({ userId, handleformclick }) {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600"
+                className="absolute top-1/2 right-3 -translate-y-1/2 text-ink-400"
               >
-                {showPassword ? <EyeIcon className="h-6 w-6" /> : <EyeSlashIcon className="h-6 w-6" />}
+                {showPassword ? (
+                  <EyeIcon className="h-6 w-6" />
+                ) : (
+                  <EyeSlashIcon className="h-6 w-6" />
+                )}
               </button>
             </div>
           </div>
 
           {/* Champ Confirmation du Mot de Passe */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700">Confirmer le mot de passe</label>
+            <label className="lg-label">Confirmer le mot de passe</label>
             <div className="relative">
               <input
                 type={showConfirmPassword ? "text" : "password"}
-                className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="lg-input"
                 placeholder="********"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
@@ -99,19 +110,20 @@ export function Modifiepassword({ userId, handleformclick }) {
               <button
                 type="button"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600"
+                className="absolute top-1/2 right-3 -translate-y-1/2 text-ink-400"
               >
-                {showConfirmPassword ? <EyeIcon className="h-6 w-6" /> : <EyeSlashIcon className="h-6 w-6" />}
+                {showConfirmPassword ? (
+                  <EyeIcon className="h-6 w-6" />
+                ) : (
+                  <EyeSlashIcon className="h-6 w-6" />
+                )}
               </button>
             </div>
           </div>
         </div>
 
         <div className="mt-6">
-          <button
-            type="submit"
-            className="w-full py-2 px-4 rounded-md bg-indigo-600 text-white font-semibold shadow-md hover:bg-indigo-500 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-300"
-          >
+          <button type="submit" className="lg-btn-primary lg-btn-lg w-full">
             Enregistrer les modifications
           </button>
         </div>

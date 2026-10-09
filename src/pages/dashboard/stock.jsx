@@ -1,16 +1,13 @@
 // Composant Clients
-import {
-  Card,
-  CardHeader,
-  CardBody,
-  Typography,
-  Tabs,
-} from "@material-tailwind/react";
+import { Tabs } from "@material-tailwind/react";
 import { useEffect, useState } from "react";
-import Modal from "@/widgets/modal/modal";
+import {
+  ArchiveBoxIcon,
+  CubeIcon,
+  ExclamationTriangleIcon,
+  TrashIcon,
+} from "@heroicons/react/24/outline";
 import Toastadd from "@/widgets/toast/toastadd";
-import Droplist from "@/widgets/button/droplist";
-import { Link } from "react-router-dom";
 import ModaleditStock from "@/widgets/modal/modaleditstock";
 import Swal from 'sweetalert2'
 import Modaladdstock from "@/widgets/modal/modaladdstock";
@@ -140,88 +137,122 @@ export function Stock() {
     fetchstocks();
   }, []);
 
+  const total = stock.length;
+  const enAlerte = stock.filter(
+    (s) =>
+      s.quantite_stock != null &&
+      Number(s.quantite_stock) - Number(s.vendu || 0) <= 0,
+  ).length;
+
+  const boutonAjout = <Modaladdstock handletoast={handletoast} />;
+
   return (
-    <div className="mt-12 mb-8 flex flex-col gap-12">
-      <Card>
-        <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
-          <div className="flex justify-between items-center">
-            <span className="font-bold">Stock</span>
-            <span><Modaladdstock handletoast={handletoast} /></span>
+    <div className="mt-6 mb-10 flex flex-col gap-6 animate-fade-in">
+      {/* ══════════════ EN-TÊTE DE PAGE ══════════════ */}
+      <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h1 className="lg-page-title">Stock</h1>
+          <p className="lg-page-sub">
+            Suivez les quantités initiales et disponibles de chaque produit.
+          </p>
+        </div>
+        {boutonAjout}
+      </header>
+
+      {/* ══════════════ LISTE DES STOCKS ══════════════ */}
+      <section className="lg-card overflow-hidden">
+        <div className="flex flex-wrap items-center gap-3 border-b border-ink-100 px-5 py-4">
+          <span className="lg-icon-chip h-9 w-9 bg-amber-50 text-amber-600 ring-1 ring-inset ring-amber-100">
+            <ArchiveBoxIcon className="h-[18px] w-[18px]" />
+          </span>
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-bold text-ink-900">État des stocks</p>
+            <p className="text-[13px] text-ink-500">Quantités en stock et déjà vendues</p>
           </div>
-        </CardHeader>
-        <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
-           {/* Affichage de l'animation si les données sont en cours de chargement */}
-           {loading ? (
-            <div className="flex flex-col items-center justify-center h-64">
-              <img src=" /image/loading.png" alt="Chargement..." className="w-24 h-24 animate-spin" />
-              
+          <span className="lg-badge-neutral tabular">
+            {total} ligne{total > 1 ? "s" : ""} de stock
+          </span>
+          {enAlerte > 0 && (
+            <span className="lg-badge-warn">
+              <ExclamationTriangleIcon className="h-3.5 w-3.5" />
+              {enAlerte} épuisé{enAlerte > 1 ? "s" : ""}
+            </span>
+          )}
+        </div>
+
+        {/* Squelettes de chargement */}
+        {loading ? (
+          <div className="flex flex-col gap-2 p-5">
+            {[0, 1, 2, 3, 4].map((i) => (
+              <div key={i} className="lg-skeleton h-12 w-full" />
+            ))}
+          </div>
+        ) : total === 0 ? (
+          <div className="px-6 py-14 text-center">
+            <div className="mx-auto grid h-12 w-12 place-items-center rounded-2xl bg-ink-100 text-ink-400">
+              <CubeIcon className="h-6 w-6" />
             </div>
-          ) : (
-          <table className="w-full min-w-[1000px] table-auto">
-            <thead>
-              <tr>
-                {["Nom du produit", "Categorie", "quantite initial", "quantite disponible", "Date d'ajout", "Option"].map((el) => (
-                  <th key={el} className="border-b border-blue-gray-50 py-3 px-5 text-left">
-                    <Typography variant="small" className="text-[11px] font-bold uppercase text-blue-gray-400">
-                      {el}
-                    </Typography>
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {stock.map((stock, key) => {
-                const className = `py-3 px-5 ${key === stock.length - 1 ? "" : "border-b border-blue-gray-50"}`;
-                return (
-                  <tr key={stock.code_barre}>
-                    <td className={className}>
-                      <span><Typography variant="small" color="blue-gray" className="font-bold">{stock.nom_produit}</Typography></span></td>
-                    <td className={className}>
-                      <span><Typography variant="small" color="blue-gray" className="font-bold">{stock.categorie}</Typography></span></td>
-                    <td className={className}><Typography variant="small" color="blue-gray" className="font-bold">{stock.quantite_stock}</Typography></td>
-                    <td className={className}><Typography variant="small" color="blue-gray" className="font-bold"> {stock.quantite_stock && stock.vendu
-                      ? stock.quantite_stock - stock.vendu
-                      : "_"}</Typography></td>
-                    <td className={className}><Typography variant="small" color="blue-gray" className="font-bold">{stock.date_creation}</Typography></td>
-                    <td className={className}>
-                      <div class="flex gap-2">
-
+            <p className="mt-3 text-sm font-semibold text-ink-700">Aucune ligne de stock</p>
+            <p className="mx-auto mt-1 max-w-sm text-[13px] text-ink-500">
+              Enregistrez un stock pour suivre les quantités disponibles de vos produits.
+            </p>
+            <div className="mt-4 flex justify-center">{boutonAjout}</div>
+          </div>
+        ) : (
+          <div className="lg-table-wrap">
+            <table className="lg-table w-full min-w-[1000px]">
+              <thead>
+                <tr>
+                  <th>Nom du produit</th>
+                  <th>Catégorie</th>
+                  <th className="!text-right">Quantité initiale</th>
+                  <th className="!text-right">Quantité disponible</th>
+                  <th>Date d&apos;ajout</th>
+                  <th className="!text-right">Option</th>
+                </tr>
+              </thead>
+              <tbody>
+                {stock.map((stock, i) => (
+                  <tr key={stock.id ?? stock.code_barre ?? i}>
+                    <td className="lg-td font-semibold text-ink-800">
+                      {stock.nom_produit || "—"}
+                    </td>
+                    <td className="lg-td">
+                      <span className="lg-badge-neutral">{stock.categorie || "Non classé"}</span>
+                    </td>
+                    <td className="lg-td text-right font-semibold tabular text-ink-800">
+                      {stock.quantite_stock ?? "—"}
+                    </td>
+                    <td className="lg-td text-right font-semibold tabular text-ink-800">
+                      {stock.quantite_stock && stock.vendu
+                        ? stock.quantite_stock - stock.vendu
+                        : "_"}
+                    </td>
+                    <td className="lg-td text-[13px] text-ink-500">
+                      {stock.date_creation || "—"}
+                    </td>
+                    <td className="lg-td">
+                      <div className="flex items-center justify-end gap-1">
                         <ModaleditStock StockId={stock.id} handletoast={handletoast} />
-
-
                         <button
                           type="button"
                           onClick={() => handleAlert(stock.id)}
-                          className="w-4 text-red-600 rounded-full flex items-center justify-center"
+                          title="Supprimer"
+                          aria-label="Supprimer"
+                          className="grid h-8 w-8 place-items-center rounded-lg text-ink-400 transition-colors hover:bg-red-50 hover:text-red-600"
                         >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth="1.5"
-                            stroke="currentColor"
-                            className="text-sm"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
-                            />
-                          </svg>
+                          <TrashIcon className="h-[18px] w-[18px]" />
                         </button>
-
                       </div>
-
-
                     </td>
                   </tr>
-                );
-              })}
-            </tbody>
-          </table>
-          )}
-        </CardBody>
-      </Card>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
+
       {toast && <Toastadd reponse={rep} />}
     </div>
   );
