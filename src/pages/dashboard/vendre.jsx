@@ -150,6 +150,7 @@ const fetchStockValue = async (id) => {
   // react-toastify importée plus haut (les deux cohabitaient, ce qui faisait
   // échouer tous les `toast.success()` / `toast.error()` de cette page).
   const [toastOuvert, setToastOuvert] = useState(false);
+  const [encaissement, setEncaissement] = useState(false);
   const rep = "Enregistrement effectué avec succès";
 
   const [formData, setFormData] = useState({
@@ -190,38 +191,139 @@ const fetchStockValue = async (id) => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Empêche le rechargement de la page lors de la soumission du formulaire
+    e.preventDefault();
+
+    // ── Validations ──
+    if (!formData.client) {
+      toast.warning("Sélectionnez un client avant d'encaisser la vente.");
+      return;
+    }
+    if (selectedProducts.length === 0) {
+      toast.warning("Ajoutez au moins un produit au ticket.");
+      return;
+    }
 
     try {
       // Récupérer le token depuis le localStorage
       const token = localStorage.getItem("token");
 
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/stock/create`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`, // Ajouter le token dans l'en-tête Authorization
+      // ── Totaux (mêmes règles que l'aperçu de facture) ──
+      const prixNb = (p) => Number(p.prix || 0);
+      const quantiteNb = (p) => Number(p.quantity || 0);
+      const tauxTVA = (p) =>
+        p.taxation === "B" || p.taxation === "D"
+          ? 0.18
+          : p.taxation === "AIBA"
+          ? 0.01
+          : p.taxation === "AIBB"
+          ? 0.05
+          : 0;
+      const totalHT = selectedProducts.reduce((acc, p) => acc + prixNb(p) * quantiteNb(p), 0);
+      const tva = selectedProducts.reduce(
+        (acc, p) => acc + prixNb(p) * quantiteNb(p) * tauxTVA(p),
+        0
+      );
+      const aib = selectedProducts.reduce((acc, p) => {
+        if (!["B", "D"].includes(p.taxation) && formData.aib !== "N/A") {
+          const tauxAib = formData.aib === "A" ? 0.01 : formData.aib === "B" ? 0.05 : 0;
+          return acc + prixNb(p) * quantiteNb(p) * tauxAib;
+        }
+        return acc;
+      }, 0);
+      const totalTTC = totalHT + tva + aib;
+      const totalApresRemise = Math.round(
+        totalTTC - totalTTC * (Number(formData.remise || 0) / 100)
+      );
+
+      // ── Étape 1 : créer la facture (format ticket = facture simple) ──
+      const invoiceData = {
+        cAIB: aib,
+        cHT: totalHT,
+        cTTC: totalApresRemise,
+        cTVA: tva,
+        format: formData.format,
+        ifu: selectedclient?.ifu || "",
+        aib: formData.aib,
+        type: "FV",
+        client: {
+          contact: selectedclient?.telephone || "",
+          ifu: selectedclient?.ifu || "",
+          name: selectedclient?.nom || "",
+          address: selectedclient?.adresse || "",
         },
-        body: JSON.stringify(formData), // Données du formulaire à envoyer
-      });
+        items: selectedProducts.map((p) => ({
+          reference: p.code_barre,
+          name: p.nom,
+          price: p.prix,
+          quantity: p.quantity,
+          unit: p.unit,
+          taxGroup: p.taxation || "A",
+        })),
+        operator: { name: "" },
+        payment: { total: totalApresRemise, method: "Espèces" },
+      };
 
-      if (response.ok) {
-        const data = await response.json();
-        toast.success("stock ajouté avec succès !");
-        console.log("Response data:", data);
-        // Réinitialise les champs du formulaire après la soumission
-        setFormData({
-          client: "",
-          remise: ""
-        });
+      const invoiceResponse = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/v1/invoice/createsimple`,
+        invoiceData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const { datee } = invoiceResponse.data;
+      const filesavePathsimple = `/invoices/invoice_${datee}.pdf`;
 
-      } else {
-        toast.error("Échec de l'ajout du stock.");
-        console.error("Error:", response.statusText);
-      }
+      // ── Étape 2 : enregistrer la vente avec la facture ──
+      const venteData = {
+        montant_total: totalApresRemise,
+        tva,
+        montant_total_ttc: totalTTC,
+        client_id: formData.client,
+        items: selectedProducts.map((p) => ({
+          produit_id: p.id,
+          prix_unitaire: p.prix,
+          quantite: p.quantity,
+        })),
+        facture: {
+          montant_total: totalApresRemise,
+          tva,
+          remise: formData.remise,
+          montant_paye: totalApresRemise,
+          montant_restant: 0,
+          mode_paiement: "Espèces",
+          client_id: formData.client,
+        },
+        pdf: "ras.pdf",
+        pdf2: filesavePathsimple,
+      };
+
+      await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/v1/vente/transaction`,
+        venteData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      // ── Succès : vider le ticket ──
+      toast.success(`Vente encaissée — ${fcfa(totalApresRemise)}`);
+      setSelectedProducts([]);
+      setSelectedclient(null);
+      setFormData({ client: "", remise: "", format: "Ticket", aib: "N/A" });
+      setToastOuvert(true);
     } catch (error) {
-      toast.error("Erreur de connexion au serveur.");
-      console.error("Error:", error);
+      console.error("Erreur d'encaissement :", error.response?.data || error.message);
+      toast.error(
+        error.response?.data?.message || "Erreur lors de l'encaissement de la vente."
+      );
+    } finally {
+      setEncaissement(false);
     }
   };
 
@@ -370,9 +472,13 @@ const fetchStockValue = async (id) => {
           </p>
         </div>
         <div className="flex flex-wrap gap-2.5">
-          <button type="button" onClick={handlePreview2} className="lg-btn-neutral">
+          <button type="button" onClick={handlePreview} className="lg-btn-neutral">
             <DocumentTextIcon className="h-[18px] w-[18px]" />
             Détails de la facture
+          </button>
+          <button type="button" onClick={handlePreview2} className="lg-btn-soft">
+            <DocumentTextIcon className="h-[18px] w-[18px]" />
+            Facture simple
           </button>
           <button
             type="button"
@@ -701,7 +807,6 @@ const fetchStockValue = async (id) => {
                     <input
                       type="text"
                       name="remise"
-                      required
                       id="remise"
                       value={formData.remise}
                       onChange={handleInputChange}
@@ -794,14 +899,18 @@ const fetchStockValue = async (id) => {
               </div>
 
               <div className="flex flex-col gap-2.5 p-4">
-                <button type="submit" className="lg-btn-accent w-full lg-btn-lg">
-                  <BanknotesIcon className="h-5 w-5" />
-                  Encaisser la vente
+                <button type="submit" disabled={encaissement} className="lg-btn-accent w-full lg-btn-lg">
+                  {encaissement ? (
+                    <span className="h-5 w-5 animate-spin rounded-full border-2 border-white/40 border-t-white" />
+                  ) : (
+                    <BanknotesIcon className="h-5 w-5" />
+                  )}
+                  {encaissement ? "Encaissement…" : "Encaisser la vente"}
                 </button>
-                <div className="grid gap-2.5 sm:grid-cols-2">
+                <div className="grid gap-2.5 sm:grid-cols-3">
                   <button
                     type="button"
-                    onClick={handlePreview2}
+                    onClick={handlePreview}
                     className="lg-btn-neutral w-full"
                   >
                     <DocumentTextIcon className="h-[18px] w-[18px]" />
@@ -809,10 +918,18 @@ const fetchStockValue = async (id) => {
                   </button>
                   <button
                     type="button"
+                    onClick={handlePreview2}
+                    className="lg-btn-soft w-full"
+                  >
+                    <DocumentTextIcon className="h-[18px] w-[18px]" />
+                    Facture simple
+                  </button>
+                  <button
+                    type="button"
                     onClick={() => {
                       window.location.reload();
                     }}
-                    className="lg-btn-soft w-full"
+                    className="lg-btn-ghost w-full"
                   >
                     <ArrowPathIcon className="h-[18px] w-[18px]" />
                     Rafraîchir

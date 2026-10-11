@@ -95,3 +95,248 @@ Instead of [36m/public/css/tailwind.css[33m, use [36m/css/tailwind.css[33m.
 Instead of [36m/public/css/tailwind.css[33m, use [36m/css/tailwind.css[33m.[39m
 [33mfiles in the public directory are served at the root path.
 Instead of [36m/public/css/tailwind.css[33m, use [36m/css/tailwind.css[33m.[39m
+[33mfiles in the public directory are served at the root path.
+Instead of [36m/public/css/tailwind.css[33m, use [36m/css/tailwind.css[33m.[39m
+[33mfiles in the public directory are served at the root path.
+Instead of [36m/public/css/tailwind.css[33m, use [36m/css/tailwind.css[33m.[39m
+[33mfiles in the public directory are served at the root path.
+Instead of [36m/public/css/tailwind.css[33m, use [36m/css/tailwind.css[33m.[39m
+[33mfiles in the public directory are served at the root path.
+Instead of [36m/public/css/tailwind.css[33m, use [36m/css/tailwind.css[33m.[39m
+[33mfiles in the public directory are served at the root path.
+Instead of [36m/public/css/tailwind.css[33m, use [36m/css/tailwind.css[33m.[39m
+[33mfiles in the public directory are served at the root path.
+Instead of [36m/public/css/tailwind.css[33m, use [36m/css/tailwind.css[33m.[39m
+[33mfiles in the public directory are served at the root path.
+Instead of [36m/public/css/tailwind.css[33m, use [36m/css/tailwind.css[33m.[39m
+[2m18:21:52[22m [31m[1m[vite][22m[39m [31mInternal server error: C:\Users\hp\Desktop\topzen\front\src\pages\dashboard\vendre.jsx: Missing semicolon. (204:24)
+
+[0m [90m 202 |[31m       setEncaissement([36mtrue[31m)[33m;[31m
+ [90m 203 |[31m         headers[33m:[31m {
+[31m[1m>[22m[31m[90m 204 |[31m           [32m"Content-Type"[31m[33m:[31m [32m"application/json"[31m[33m,[31m
+ [90m     |[31m                         [31m[1m^[22m[31m
+ [90m 205 |[31m           [32m"Authorization"[31m[33m:[31m [32m`Bearer ${token}`[31m[33m,[31m [90m// Ajouter le token dans l'en-tête Authorization[31m
+ [90m 206 |[31m         }[33m,[31m
+ [90m 207 |[31m         body[33m:[31m [33mJSON[31m[33m.[31mstringify(formData)[33m,[31m [90m// Données du formulaire à envoyer[31m[0m[39m
+  Plugin: [35mvite:react-babel[39m
+  File: [36mC:/Users/hp/Desktop/topzen/front/src/pages/dashboard/vendre.jsx[39m:204:24
+[33m  202|        setEncaissement(true);
+  203|          headers: {
+  204|            "Content-Type": "application/json",
+     |                          ^
+  205|            "Authorization": `Bearer ${token}`, // Ajouter le token dans l'en-tête Authorization
+  206|          },[39m
+      at constructor (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:360:19)
+      at JSXParserMixin.raise (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:3327:19)
+      at JSXParserMixin.semicolon (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:3653:10)
+      at JSXParserMixin.parseExpressionStatement (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12929:10)
+      at JSXParserMixin.parseStatementContent (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12543:19)
+      at JSXParserMixin.parseStatementLike (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12406:17)
+      at JSXParserMixin.parseStatementListItem (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12386:17)
+      at JSXParserMixin.parseBlockOrModuleBlockBody (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12960:61)
+      at JSXParserMixin.parseBlockBody (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12953:10)
+      at JSXParserMixin.parseBlock (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12941:10)
+      at JSXParserMixin.parseStatementContent (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12496:21)
+      at JSXParserMixin.parseStatementLike (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12406:17)
+      at JSXParserMixin.parseStatement (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12399:17)
+      at JSXParserMixin.parseLabeledStatement (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12922:95)
+      at JSXParserMixin.parseStatementContent (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12541:19)
+      at JSXParserMixin.parseStatementLike (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12406:17)
+      at JSXParserMixin.parseStatementListItem (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12386:17)
+      at JSXParserMixin.parseBlockOrModuleBlockBody (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12960:61)
+      at JSXParserMixin.parseBlockBody (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12953:10)
+      at JSXParserMixin.parseBlock (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12941:10)
+      at JSXParserMixin.parseTryStatement (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12849:23)
+      at JSXParserMixin.parseStatementContent (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12443:21)
+      at JSXParserMixin.parseStatementLike (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12406:17)
+      at JSXParserMixin.parseStatementListItem (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12386:17)
+      at JSXParserMixin.parseBlockOrModuleBlockBody (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12960:61)
+      at JSXParserMixin.parseBlockBody (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12953:10)
+      at JSXParserMixin.parseBlock (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12941:10)
+      at JSXParserMixin.parseFunctionBody (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:11783:24)
+      at JSXParserMixin.parseArrowExpression (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:11758:10)
+      at JSXParserMixin.parseAsyncArrowFromCallExpression (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:10939:10)
+      at JSXParserMixin.parseCoverCallAndAsyncArrowHead (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:10869:27)
+      at JSXParserMixin.parseSubscript (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:10798:19)
+      at JSXParserMixin.parseSubscripts (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:10771:19)
+      at JSXParserMixin.parseExprSubscripts (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:10762:17)
+      at JSXParserMixin.parseUpdate (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:10743:21)
+      at JSXParserMixin.parseMaybeUnary (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:10723:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:10576:61)
+      at JSXParserMixin.parseExprOps (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:10581:23)
+      at JSXParserMixin.parseMaybeConditional (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:10558:23)
+      at JSXParserMixin.parseMaybeAssign (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:10521:21)
+      at C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:10491:39
+      at JSXParserMixin.allowInAnd (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12095:16)
+      at JSXParserMixin.parseMaybeAssignAllowIn (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:10491:17)
+      at JSXParserMixin.parseVar (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:13028:91)
+      at JSXParserMixin.parseVarStatement (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12874:10)
+      at JSXParserMixin.parseStatementContent (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12489:23)
+      at JSXParserMixin.parseStatementLike (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12406:17)
+      at JSXParserMixin.parseStatementListItem (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12386:17)
+      at JSXParserMixin.parseBlockOrModuleBlockBody (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12960:61)
+      at JSXParserMixin.parseBlockBody (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12953:10)
+[2m18:22:29[22m [31m[1m[vite][22m[39m [31mInternal server error: C:\Users\hp\Desktop\topzen\front\src\pages\dashboard\vendre.jsx: Missing semicolon. (205:24)
+
+[0m [90m 203 |[31m       setEncaissement([36mtrue[31m)[33m;[31m
+ [90m 204 |[31m         headers[33m:[31m {
+[31m[1m>[22m[31m[90m 205 |[31m           [32m"Content-Type"[31m[33m:[31m [32m"application/json"[31m[33m,[31m
+ [90m     |[31m                         [31m[1m^[22m[31m
+ [90m 206 |[31m           [32m"Authorization"[31m[33m:[31m [32m`Bearer ${token}`[31m[33m,[31m [90m// Ajouter le token dans l'en-tête Authorization[31m
+ [90m 207 |[31m         }[33m,[31m
+ [90m 208 |[31m         body[33m:[31m [33mJSON[31m[33m.[31mstringify(formData)[33m,[31m [90m// Données du formulaire à envoyer[31m[0m[39m
+  Plugin: [35mvite:react-babel[39m
+  File: [36mC:/Users/hp/Desktop/topzen/front/src/pages/dashboard/vendre.jsx[39m:205:24
+[33m  203|        setEncaissement(true);
+  204|          headers: {
+  205|            "Content-Type": "application/json",
+     |                          ^
+  206|            "Authorization": `Bearer ${token}`, // Ajouter le token dans l'en-tête Authorization
+  207|          },[39m
+      at constructor (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:360:19)
+      at JSXParserMixin.raise (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:3327:19)
+      at JSXParserMixin.semicolon (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:3653:10)
+      at JSXParserMixin.parseExpressionStatement (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12929:10)
+      at JSXParserMixin.parseStatementContent (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12543:19)
+      at JSXParserMixin.parseStatementLike (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12406:17)
+      at JSXParserMixin.parseStatementListItem (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12386:17)
+      at JSXParserMixin.parseBlockOrModuleBlockBody (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12960:61)
+      at JSXParserMixin.parseBlockBody (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12953:10)
+      at JSXParserMixin.parseBlock (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12941:10)
+      at JSXParserMixin.parseStatementContent (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12496:21)
+      at JSXParserMixin.parseStatementLike (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12406:17)
+      at JSXParserMixin.parseStatement (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12399:17)
+      at JSXParserMixin.parseLabeledStatement (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12922:95)
+      at JSXParserMixin.parseStatementContent (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12541:19)
+      at JSXParserMixin.parseStatementLike (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12406:17)
+      at JSXParserMixin.parseStatementListItem (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12386:17)
+      at JSXParserMixin.parseBlockOrModuleBlockBody (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12960:61)
+      at JSXParserMixin.parseBlockBody (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12953:10)
+      at JSXParserMixin.parseBlock (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12941:10)
+      at JSXParserMixin.parseTryStatement (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12849:23)
+      at JSXParserMixin.parseStatementContent (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12443:21)
+      at JSXParserMixin.parseStatementLike (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12406:17)
+      at JSXParserMixin.parseStatementListItem (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12386:17)
+      at JSXParserMixin.parseBlockOrModuleBlockBody (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12960:61)
+      at JSXParserMixin.parseBlockBody (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12953:10)
+      at JSXParserMixin.parseBlock (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12941:10)
+      at JSXParserMixin.parseFunctionBody (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:11783:24)
+      at JSXParserMixin.parseArrowExpression (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:11758:10)
+      at JSXParserMixin.parseAsyncArrowFromCallExpression (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:10939:10)
+      at JSXParserMixin.parseCoverCallAndAsyncArrowHead (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:10869:27)
+      at JSXParserMixin.parseSubscript (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:10798:19)
+      at JSXParserMixin.parseSubscripts (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:10771:19)
+      at JSXParserMixin.parseExprSubscripts (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:10762:17)
+      at JSXParserMixin.parseUpdate (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:10743:21)
+      at JSXParserMixin.parseMaybeUnary (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:10723:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:10576:61)
+      at JSXParserMixin.parseExprOps (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:10581:23)
+      at JSXParserMixin.parseMaybeConditional (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:10558:23)
+      at JSXParserMixin.parseMaybeAssign (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:10521:21)
+      at C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:10491:39
+      at JSXParserMixin.allowInAnd (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12095:16)
+      at JSXParserMixin.parseMaybeAssignAllowIn (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:10491:17)
+      at JSXParserMixin.parseVar (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:13028:91)
+      at JSXParserMixin.parseVarStatement (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12874:10)
+      at JSXParserMixin.parseStatementContent (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12489:23)
+      at JSXParserMixin.parseStatementLike (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12406:17)
+      at JSXParserMixin.parseStatementListItem (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12386:17)
+      at JSXParserMixin.parseBlockOrModuleBlockBody (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12960:61)
+      at JSXParserMixin.parseBlockBody (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12953:10)
+[33mfiles in the public directory are served at the root path.
+Instead of [36m/public/css/tailwind.css[33m, use [36m/css/tailwind.css[33m.[39m
+[33mfiles in the public directory are served at the root path.
+Instead of [36m/public/css/tailwind.css[33m, use [36m/css/tailwind.css[33m.[39m
+[2m18:22:29[22m [31m[1m[vite][22m[39m [31mInternal server error: C:\Users\hp\Desktop\topzen\front\src\pages\dashboard\vendre.jsx: Missing semicolon. (215:24)
+
+[0m [90m 213 |[31m       setEncaissement([36mtrue[31m)[33m;[31m
+ [90m 214 |[31m         headers[33m:[31m {
+[31m[1m>[22m[31m[90m 215 |[31m           [32m"Content-Type"[31m[33m:[31m [32m"application/json"[31m[33m,[31m
+ [90m     |[31m                         [31m[1m^[22m[31m
+ [90m 216 |[31m           [32m"Authorization"[31m[33m:[31m [32m`Bearer ${token}`[31m[33m,[31m [90m// Ajouter le token dans l'en-tête Authorization[31m
+ [90m 217 |[31m         }[33m,[31m
+ [90m 218 |[31m         body[33m:[31m [33mJSON[31m[33m.[31mstringify(formData)[33m,[31m [90m// Données du formulaire à envoyer[31m[0m[39m
+  Plugin: [35mvite:react-babel[39m
+  File: [36mC:/Users/hp/Desktop/topzen/front/src/pages/dashboard/vendre.jsx[39m:215:24
+[33m  213|        setEncaissement(true);
+  214|          headers: {
+  215|            "Content-Type": "application/json",
+     |                          ^
+  216|            "Authorization": `Bearer ${token}`, // Ajouter le token dans l'en-tête Authorization
+  217|          },[39m
+      at constructor (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:360:19)
+      at JSXParserMixin.raise (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:3327:19)
+      at JSXParserMixin.semicolon (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:3653:10)
+      at JSXParserMixin.parseExpressionStatement (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12929:10)
+      at JSXParserMixin.parseStatementContent (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12543:19)
+      at JSXParserMixin.parseStatementLike (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12406:17)
+      at JSXParserMixin.parseStatementListItem (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12386:17)
+      at JSXParserMixin.parseBlockOrModuleBlockBody (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12960:61)
+      at JSXParserMixin.parseBlockBody (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12953:10)
+      at JSXParserMixin.parseBlock (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12941:10)
+      at JSXParserMixin.parseStatementContent (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12496:21)
+      at JSXParserMixin.parseStatementLike (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12406:17)
+      at JSXParserMixin.parseStatement (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12399:17)
+      at JSXParserMixin.parseLabeledStatement (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12922:95)
+      at JSXParserMixin.parseStatementContent (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12541:19)
+      at JSXParserMixin.parseStatementLike (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12406:17)
+      at JSXParserMixin.parseStatementListItem (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12386:17)
+      at JSXParserMixin.parseBlockOrModuleBlockBody (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12960:61)
+      at JSXParserMixin.parseBlockBody (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12953:10)
+      at JSXParserMixin.parseBlock (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12941:10)
+      at JSXParserMixin.parseTryStatement (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12849:23)
+      at JSXParserMixin.parseStatementContent (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12443:21)
+      at JSXParserMixin.parseStatementLike (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12406:17)
+      at JSXParserMixin.parseStatementListItem (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12386:17)
+      at JSXParserMixin.parseBlockOrModuleBlockBody (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12960:61)
+      at JSXParserMixin.parseBlockBody (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12953:10)
+      at JSXParserMixin.parseBlock (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12941:10)
+      at JSXParserMixin.parseFunctionBody (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:11783:24)
+      at JSXParserMixin.parseArrowExpression (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:11758:10)
+      at JSXParserMixin.parseAsyncArrowFromCallExpression (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:10939:10)
+      at JSXParserMixin.parseCoverCallAndAsyncArrowHead (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:10869:27)
+      at JSXParserMixin.parseSubscript (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:10798:19)
+      at JSXParserMixin.parseSubscripts (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:10771:19)
+      at JSXParserMixin.parseExprSubscripts (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:10762:17)
+      at JSXParserMixin.parseUpdate (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:10743:21)
+      at JSXParserMixin.parseMaybeUnary (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:10723:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:10576:61)
+      at JSXParserMixin.parseExprOps (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:10581:23)
+      at JSXParserMixin.parseMaybeConditional (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:10558:23)
+      at JSXParserMixin.parseMaybeAssign (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:10521:21)
+      at C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:10491:39
+      at JSXParserMixin.allowInAnd (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12095:16)
+      at JSXParserMixin.parseMaybeAssignAllowIn (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:10491:17)
+      at JSXParserMixin.parseVar (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:13028:91)
+      at JSXParserMixin.parseVarStatement (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12874:10)
+      at JSXParserMixin.parseStatementContent (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12489:23)
+      at JSXParserMixin.parseStatementLike (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12406:17)
+      at JSXParserMixin.parseStatementListItem (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12386:17)
+      at JSXParserMixin.parseBlockOrModuleBlockBody (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12960:61)
+      at JSXParserMixin.parseBlockBody (C:\Users\hp\Desktop\topzen\front\node_modules\@babel\parser\lib\index.js:12953:10)
+[33mfiles in the public directory are served at the root path.
+Instead of [36m/public/css/tailwind.css[33m, use [36m/css/tailwind.css[33m.[39m
+[33mfiles in the public directory are served at the root path.
+Instead of [36m/public/css/tailwind.css[33m, use [36m/css/tailwind.css[33m.[39m
+[33mfiles in the public directory are served at the root path.
+Instead of [36m/public/css/tailwind.css[33m, use [36m/css/tailwind.css[33m.[39m
+[33mfiles in the public directory are served at the root path.
+Instead of [36m/public/css/tailwind.css[33m, use [36m/css/tailwind.css[33m.[39m
+[33mfiles in the public directory are served at the root path.
+Instead of [36m/public/css/tailwind.css[33m, use [36m/css/tailwind.css[33m.[39m
+[33mfiles in the public directory are served at the root path.
+Instead of [36m/public/css/tailwind.css[33m, use [36m/css/tailwind.css[33m.[39m
+[33mfiles in the public directory are served at the root path.
+Instead of [36m/public/css/tailwind.css[33m, use [36m/css/tailwind.css[33m.[39m
+[33mfiles in the public directory are served at the root path.
+Instead of [36m/public/css/tailwind.css[33m, use [36m/css/tailwind.css[33m.[39m
+[33mfiles in the public directory are served at the root path.
+Instead of [36m/public/css/tailwind.css[33m, use [36m/css/tailwind.css[33m.[39m
+[33mfiles in the public directory are served at the root path.
+Instead of [36m/public/css/tailwind.css[33m, use [36m/css/tailwind.css[33m.[39m
+[33mfiles in the public directory are served at the root path.
+Instead of [36m/public/css/tailwind.css[33m, use [36m/css/tailwind.css[33m.[39m
+[33mfiles in the public directory are served at the root path.
+Instead of [36m/public/css/tailwind.css[33m, use [36m/css/tailwind.css[33m.[39m
+[33mfiles in the public directory are served at the root path.
+Instead of [36m/public/css/tailwind.css[33m, use [36m/css/tailwind.css[33m.[39m
