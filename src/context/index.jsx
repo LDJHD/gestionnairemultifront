@@ -31,7 +31,7 @@ export function reducer(state, action) {
 }
 
 export function MaterialTailwindControllerProvider({ children }) {
-  const initialState = {
+  const etatParDefaut = {
     openSidenav: false,
     sidenavColor: "dark",
     sidenavType: "white",
@@ -40,7 +40,31 @@ export function MaterialTailwindControllerProvider({ children }) {
     openConfigurator: false,
   };
 
-  const [controller, dispatch] = React.useReducer(reducer, initialState);
+  // Restaurer les préférences de personnalisation (thème, couleur,
+  // disposition) — sans elles, les réglages étaient perdus au
+  // rechargement et n'étaient donc « pas pris en compte ».
+  const [controller, dispatch] = React.useReducer(reducer, etatParDefaut, (defaut) => {
+    try {
+      const sauvegarde = JSON.parse(localStorage.getItem("lg-theme") || "null");
+      return sauvegarde
+        ? { ...defaut, ...sauvegarde, openSidenav: false, openConfigurator: false }
+        : defaut;
+    } catch {
+      return defaut;
+    }
+  });
+
+  // Persister les réglages (les indicateurs transitoires ouverts/fermés
+  // ne sont pas sauvegardés).
+  React.useEffect(() => {
+    const { openSidenav, openConfigurator, ...persistants } = controller;
+    try {
+      localStorage.setItem("lg-theme", JSON.stringify(persistants));
+    } catch {
+      /* stockage privé : ignorer */
+    }
+  }, [controller]);
+
   const value = React.useMemo(
     () => [controller, dispatch],
     [controller, dispatch]

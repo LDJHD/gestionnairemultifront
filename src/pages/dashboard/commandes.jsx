@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import {
@@ -573,9 +574,9 @@ export default function CommandesEnLigne() {
 // DÉTAIL COMMANDE (client, articles, montants, adresses, note)
 // ===========================================================================
 function DetailModal({ detail, fermer, ouvrirAssignation }) {
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 z-[70] grid place-items-center bg-ink-900/50 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-[90] grid place-items-center bg-ink-900/50 p-4 backdrop-blur-sm"
       onClick={fermer}
     >
       <div
@@ -727,7 +728,8 @@ function DetailModal({ detail, fermer, ouvrirAssignation }) {
           )}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 
@@ -765,9 +767,9 @@ function AssignationModal({ data, fermer, fait }) {
     }
   };
 
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 z-[70] grid place-items-center bg-ink-900/50 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-[90] grid place-items-center bg-ink-900/50 p-4 backdrop-blur-sm"
       onClick={fermer}
     >
       <form
@@ -851,6 +853,7 @@ function AssignationModal({ data, fermer, fait }) {
           </button>
         </div>
       </form>
-    </div>
+    </div>,
+    document.body
   );
 }

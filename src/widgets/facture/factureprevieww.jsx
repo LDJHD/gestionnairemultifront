@@ -1,9 +1,11 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import {
   ArrowDownTrayIcon,
   DocumentTextIcon,
   ExclamationTriangleIcon,
+  XMarkIcon,
 } from "@heroicons/react/24/outline";
 import { toast } from "react-toastify";
 const FacturePrevieww = ({ formData, selectedProducts, onClose }) => {
@@ -221,9 +223,9 @@ const FacturePrevieww = ({ formData, selectedProducts, onClose }) => {
   };
   const fcfa = (n) => `${Number(n || 0).toLocaleString("fr-FR")} F`;
   if (!clientDetails) {
-    return (
-      <div className="fixed inset-0 z-[70] grid place-items-center bg-ink-900/50 p-6 backdrop-blur-sm">
-        <div className="w-full max-w-md animate-pop-in rounded-2xl border border-ink-200/80 bg-white p-8 text-center shadow-lift">
+    return createPortal(
+      <div className="fixed inset-0 z-[90] grid place-items-center bg-ink-900/50 p-6 backdrop-blur-sm">
+        <div className="w-full max-w-md animate-pop-in overflow-hidden rounded-2xl border border-ink-200/80 bg-white p-8 text-center shadow-lift">
           <span className="mx-auto mb-4 grid h-12 w-12 place-items-center rounded-2xl bg-amber-50 text-amber-600 ring-1 ring-inset ring-amber-100">
             <ExclamationTriangleIcon className="h-6 w-6" />
           </span>
@@ -233,17 +235,35 @@ const FacturePrevieww = ({ formData, selectedProducts, onClose }) => {
           <p className="mt-1.5 text-[13px] leading-relaxed text-ink-500">
             La facture ne peut pas être établie sans l'identité du client (nom, IFU, téléphone).
           </p>
+          <button
+            type="button"
+            onClick={onClose}
+            className="lg-btn-neutral lg-btn-sm mt-5"
+          >
+            <XMarkIcon className="h-4 w-4" />
+            Fermer
+          </button>
         </div>
-      </div>
+      </div>,
+      document.body
     );
   }
   const reste = calculateRemainingAmount(paidAmountInput);
-  return (
-    <div className="fixed inset-0 z-[70] overflow-y-auto bg-ink-900/50 backdrop-blur-sm">
+  return createPortal(
+    <div className="fixed inset-0 z-[90] overflow-y-auto bg-ink-900/50 backdrop-blur-sm">
       <div className="flex min-h-full items-start justify-center">
         <div className="w-full max-w-4xl overflow-hidden bg-white shadow-lift sm:my-6 sm:rounded-3xl animate-pop-in">
           {/* ══════════════ EN-TÊTRE ENTREPRISE ══════════════ */}
           <div className="relative overflow-hidden bg-brand-deep px-6 py-6 text-white sm:px-8">
+            {/* Croix de fermeture */}
+            <button
+              type="button"
+              onClick={onClose}
+              aria-label="Fermer la facture"
+              className="absolute right-4 top-4 z-10 grid h-8 w-8 place-items-center rounded-xl bg-white/10 text-white/80 transition-colors hover:bg-white/20 hover:text-white"
+            >
+              <XMarkIcon strokeWidth={2.5} className="h-5 w-5" />
+            </button>
             <div aria-hidden="true" className="pointer-events-none absolute inset-0">
               <div className="absolute -top-24 -right-16 h-64 w-64 rounded-full bg-white/[0.10] blur-3xl" />
               <div className="absolute -bottom-28 -left-10 h-56 w-56 rounded-full bg-accent-400/[0.20] blur-3xl" />
@@ -455,7 +475,8 @@ const FacturePrevieww = ({ formData, selectedProducts, onClose }) => {
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 /** Ligne du récapitulatif des totaux de facture. */

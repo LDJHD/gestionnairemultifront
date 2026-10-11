@@ -37,9 +37,39 @@ const SECTION_LABELS = {
 
 export function Sidenav({ brandImg, routes }) {
   const [controller, dispatch] = useMaterialTailwindController();
-  const { openSidenav } = controller;
+  const { openSidenav, sidenavColor, sidenavType } = controller;
   const [userStatus, setUserStatus] = useState(null);
   const [nouvellesCommandes, setNouvellesCommandes] = useState(0);
+
+  // ── Thème du menu latéral (personnalisation) ───────────────
+  // Type : « white » (clair, design par défaut), « transparent »
+  // ou « dark » (dégradé coloré selon sidenavColor).
+  const estFonce = sidenavType === "dark";
+  const fondClasses =
+    sidenavType === "white"
+      ? "bg-white/85 backdrop-blur-xl"
+      : sidenavType === "transparent"
+        ? "bg-transparent"
+        : `bg-gradient-to-br ${
+            ({
+              white: "from-gray-100 to-gray-200",
+              dark: "from-ink-900 to-ink-950",
+              green: "from-green-400 to-green-600",
+              orange: "from-orange-400 to-orange-600",
+              red: "from-red-400 to-red-600",
+              pink: "from-pink-400 to-pink-600",
+            })[sidenavColor] || "from-ink-900 to-ink-950"
+          }`;
+  const titreClasses = estFonce ? "text-white" : "text-ink-900";
+  const sousTitreClasses = estFonce ? "text-white/60" : "text-ink-400";
+  const etiquetteClasses = estFonce ? "text-white/50" : "text-ink-400";
+  const itemInactifClasses = estFonce
+    ? "text-white/80 hover:bg-white/10 hover:text-white"
+    : "text-ink-600 hover:bg-ink-100/80 hover:text-ink-900";
+  const chevronClasses = estFonce ? "text-white/40" : "text-ink-300";
+  const separateurClasses = estFonce
+    ? "from-transparent via-white/20 to-transparent"
+    : "from-transparent via-ink-200 to-transparent";
 
   const fetchUser = async () => {
     try {
@@ -106,7 +136,7 @@ export function Sidenav({ brandImg, routes }) {
     if (!pages.length) return null;
     return (
       <li key={cle} className="mb-5">
-        <p className="mb-2 ml-3 text-[10px] font-bold tracking-[.12em] text-ink-400 uppercase">
+        <p className={`mb-2 ml-3 text-[10px] font-bold tracking-[.12em] uppercase ${etiquetteClasses}`}>
           {SECTION_LABELS[cle] || cle}
         </p>
         <ul className="flex flex-col gap-0.5">
@@ -118,7 +148,7 @@ export function Sidenav({ brandImg, routes }) {
                     className={`lg-nav-item ${
                       isActive
                         ? "bg-brand-gradient text-white shadow-glow"
-                        : "text-ink-600 hover:bg-ink-100/80 hover:text-ink-900"
+                        : itemInactifClasses
                     }`}
                   >
                     {/* Barre d'accent à gauche de l'élément actif */}
@@ -128,7 +158,7 @@ export function Sidenav({ brandImg, routes }) {
                         isActive ? "opacity-100" : "opacity-0"
                       }`}
                     />
-                    <span className={`[&>svg]:h-[19px] [&>svg]:w-[19px] ${isActive ? "text-white" : "text-ink-400 group-hover:text-ink-600"}`}>
+                    <span className={`[&>svg]:h-[19px] [&>svg]:w-[19px] ${isActive ? "text-white" : estFonce ? "text-white/60 group-hover:text-white" : "text-ink-400 group-hover:text-ink-600"}`}>
                       {icon}
                     </span>
                     <span className="flex-1 truncate">{name}</span>
@@ -139,7 +169,7 @@ export function Sidenav({ brandImg, routes }) {
                     )}
                     <ChevronRightIcon
                       className={`h-3.5 w-3.5 shrink-0 transition-transform duration-200 ${
-                        isActive ? "text-white/70" : "text-ink-300 group-hover:translate-x-0.5"
+                        isActive ? "text-white/70" : chevronClasses
                       }`}
                     />
                   </span>
@@ -164,7 +194,11 @@ export function Sidenav({ brandImg, routes }) {
       />
 
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-[280px] flex-col border-r border-ink-200/80 bg-white/85 backdrop-blur-xl transition-transform duration-300 ease-smooth ${
+        className={`fixed inset-y-0 left-0 z-50 flex w-[280px] flex-col transition-transform duration-300 ease-smooth ${
+          sidenavType === "white"
+            ? "border-r border-ink-200/80"
+            : "border-r border-white/10"
+        } ${fondClasses} ${
           openSidenav ? "translate-x-0 shadow-lift" : "-translate-x-full"
         } xl:translate-x-0 xl:rounded-r-3xl xl:shadow-soft`}
       >
@@ -185,10 +219,10 @@ export function Sidenav({ brandImg, routes }) {
             )}
           </span>
           <div className="min-w-0">
-            <p className="font-display text-[15px] leading-tight font-extrabold text-ink-900">
+            <p className={`font-display text-[15px] leading-tight font-extrabold ${titreClasses}`}>
               Le Gestionnaire
             </p>
-            <p className="text-[11px] font-medium text-ink-400">
+            <p className={`text-[11px] font-medium ${sousTitreClasses}`}>
               Gestion & boutique en ligne
             </p>
           </div>
@@ -200,12 +234,12 @@ export function Sidenav({ brandImg, routes }) {
             className="absolute top-5 right-3 grid rounded-lg xl:hidden"
             onClick={() => setOpenSidenav(dispatch, false)}
           >
-            <XMarkIcon strokeWidth={2.5} className="h-5 w-5 text-ink-500" />
+            <XMarkIcon strokeWidth={2.5} className={`h-5 w-5 ${estFonce ? "text-white/70" : "text-ink-500"}`} />
           </IconButton>
         </div>
 
         {/* Séparateur */}
-        <div className="mx-5 h-px bg-gradient-to-r from-transparent via-ink-200 to-transparent" />
+        <div className={`mx-5 h-px bg-gradient-to-r ${separateurClasses}`} />
 
         {/* ── Navigation ── */}
         <nav className="mt-4 flex-1 overflow-y-auto px-3 pb-6">

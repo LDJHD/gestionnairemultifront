@@ -1,0 +1,47 @@
+
+  [32m[1mVITE[22m v4.5.0[39m  [2mready in [0m[1m761[22m[2m[0m ms[22m
+
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m5173[22m/[39m
+[2m  [32m➜[39m  [1mNetwork[22m[2m: use [22m[1m--host[22m[2m to expose[22m
+
+PWA v0.21.1
+mode      generateSW
+precache  2 entries (0.00 KiB)
+files generated
+  dev-dist/sw.js
+  dev-dist/workbox-54d0af47.js
+[2m09:30:18[22m [36m[1m[vite][22m[39m [32mpage reload [39m[2mtailwind.config.cjs[22m
+[2m09:30:31[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/context/index.jsx, /public/css/tailwind.css, /src/index.css[22m
+[2m09:31:32[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/widgets/layout/sidenav.jsx, /public/css/tailwind.css, /src/index.css[22m
+[2m09:32:36[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/widgets/layout/sidenav.jsx, /public/css/tailwind.css, /src/index.css[22m
+[2m09:32:36[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/widgets/layout/sidenav.jsx, /public/css/tailwind.css, /src/index.css[22m
+[2m09:32:37[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/widgets/layout/sidenav.jsx, /public/css/tailwind.css, /src/index.css[22m
+[2m09:34:31[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/widgets/layout/sidenav.jsx, /public/css/tailwind.css, /src/index.css[22m
+[2m09:36:42[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/widgets/layout/sidenav.jsx, /public/css/tailwind.css, /src/index.css[22m
+[2m09:36:53[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/widgets/layout/dashboard-navbar.jsx, /public/css/tailwind.css, /src/index.css[22m
+[2m09:36:53[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/widgets/layout/dashboard-navbar.jsx, /public/css/tailwind.css, /src/index.css[22m
+[2m09:37:46[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/widgets/modal/app-modal.jsx, /public/css/tailwind.css, /src/index.css[22m
+[2m09:38:00[22m [36m[1m[vite][22m[39m [32m✨ new dependencies optimized: [33mreact-dom[32m[39m
+[2m09:38:00[22m [36m[1m[vite][22m[39m [32m✨ optimized dependencies changed. reloading[39m
+[2m09:38:40[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/widgets/facture/facturepreview.jsx, /public/css/tailwind.css, /src/index.css[22m
+[2m09:40:28[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/widgets/facture/facturepreview.jsx, /public/css/tailwind.css, /src/index.css[22m
+[2m09:41:51[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/widgets/facture/factureprevieww.jsx, /public/css/tailwind.css, /src/index.css[22m
+[2m09:41:51[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/widgets/facture/factureprevieww.jsx, /public/css/tailwind.css, /src/index.css[22m
+[2m09:42:31[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/dashboard/produit.jsx, /public/css/tailwind.css, /src/index.css[22m
+[2m09:44:26[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/dashboard/commandes.jsx, /public/css/tailwind.css, /src/index.css[22m
+[2m09:44:26[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/dashboard/commandes.jsx, /public/css/tailwind.css, /src/index.css[22m
+[2m09:44:40[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/dashboard/commandes.jsx, /public/css/tailwind.css, /src/index.css[22m
+[2m09:44:40[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/dashboard/commandes.jsx, /public/css/tailwind.css, /src/index.css[22m
+[2m09:46:40[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/dashboard/livraisons.jsx, /public/css/tailwind.css, /src/index.css[22m
+[2m09:46:40[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/dashboard/livraisons.jsx, /public/css/tailwind.css, /src/index.css[22m
+[2m09:49:04[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/dashboard/notifications.jsx, /public/css/tailwind.css, /src/index.css[22m
+[2m09:49:04[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/dashboard/notifications.jsx, /public/css/tailwind.css, /src/index.css[22m
+[2m09:50:38[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/widgets/modal/productreminder.jsx, /public/css/tailwind.css, /src/index.css[22m
+[2m09:50:39[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/widgets/modal/productreminder.jsx, /public/css/tailwind.css, /src/index.css[22m
+[2m10:31:59[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/dashboard/produit.jsx, /public/css/tailwind.css, /src/index.css[22m
+[2m10:40:16[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/dashboard/produit.jsx, /public/css/tailwind.css, /src/index.css[22m
+[2m10:40:34[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/dashboard/produit.jsx, /public/css/tailwind.css, /src/index.css[22m
+[2m10:42:24[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/widgets/button/droplist.jsx, /public/css/tailwind.css, /src/index.css[22m
+[2m10:46:48[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/widgets/button/droplist.jsx, /public/css/tailwind.css, /src/index.css[22m
+[2m10:46:48[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/widgets/button/droplist.jsx, /public/css/tailwind.css, /src/index.css[22m
+[2m10:46:48[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/widgets/button/droplist.jsx, /public/css/tailwind.css, /src/index.css[22m

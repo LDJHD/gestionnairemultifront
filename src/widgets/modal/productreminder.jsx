@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { Dialog } from "@headlessui/react";
-import { ExclamationTriangleIcon } from "@heroicons/react/24/outline"; // Import d'une icône
+import { ExclamationTriangleIcon, XMarkIcon } from "@heroicons/react/24/outline"; // Import d'une icône
 
 const EXPIRATION_DAYS = 7; // 7 jours
 
@@ -65,32 +66,44 @@ const ProductReminder = ({ products }) => {
 
   return (
     <>
-      {/* Alerte produits bientôt expirés */}
-      <Dialog
-        open={showModal}
-        onClose={() => setShowModal(false)}
-        className="fixed inset-0 z-[70] grid place-items-center bg-ink-900/50 p-4 backdrop-blur-sm"
-      >
-        <div className="w-full max-w-lg animate-pop-in overflow-hidden rounded-2xl border border-ink-200/80 bg-white shadow-lift">
-          {/* Bandeau d'alerte */}
-          <div className="relative overflow-hidden bg-gradient-to-br from-amber-500 to-orange-600 px-6 py-6 text-white">
-            <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-              <div className="absolute -top-16 -right-12 h-48 w-48 rounded-full bg-white/15 blur-3xl" />
-            </div>
-            <div className="relative flex items-center gap-3.5">
-              <span className="grid h-12 w-12 flex-none place-items-center rounded-2xl bg-white/15 ring-1 ring-inset ring-white/25">
-                <ExclamationTriangleIcon className="h-6 w-6" />
-              </span>
-              <div>
-                <h2 className="font-display text-lg font-extrabold tracking-tight">
-                  Produits bientôt expirés
-                </h2>
-                <p className="mt-0.5 text-[13px] text-white/75">
-                  {expiringProducts.length} produit(s) à surveiller de près
-                </p>
+      {/* Alerte produits bientôt expirés — portalisée pour
+          rester au-dessus du menu latéral et de la barre
+          supérieure en toutes circonstances */}
+      {createPortal(
+        <Dialog
+          open={showModal}
+          onClose={() => setShowModal(false)}
+          className="fixed inset-0 z-[90] grid place-items-center bg-ink-900/50 p-4 backdrop-blur-sm"
+        >
+          <div className="w-full max-w-lg animate-pop-in overflow-hidden rounded-2xl border border-ink-200/80 bg-white shadow-lift">
+            {/* Bandeau d'alerte */}
+            <div className="relative overflow-hidden bg-gradient-to-br from-amber-500 to-orange-600 px-6 py-6 text-white">
+              {/* Croix de fermeture */}
+              <button
+                type="button"
+                onClick={() => setShowModal(false)}
+                aria-label="Fermer"
+                className="absolute right-4 top-4 z-10 grid h-8 w-8 place-items-center rounded-xl bg-white/10 text-white/80 transition-colors hover:bg-white/20 hover:text-white"
+              >
+                <XMarkIcon strokeWidth={2.5} className="h-5 w-5" />
+              </button>
+              <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+                <div className="absolute -top-16 -right-12 h-48 w-48 rounded-full bg-white/15 blur-3xl" />
+              </div>
+              <div className="relative flex items-center gap-3.5">
+                <span className="grid h-12 w-12 flex-none place-items-center rounded-2xl bg-white/15 ring-1 ring-inset ring-white/25">
+                  <ExclamationTriangleIcon className="h-6 w-6" />
+                </span>
+                <div>
+                  <h2 className="font-display text-lg font-extrabold tracking-tight">
+                    Produits bientôt expirés
+                  </h2>
+                  <p className="mt-0.5 text-[13px] text-white/75">
+                    {expiringProducts.length} produit(s) à surveiller de près
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
 
           {/* Liste */}
           <ul className="max-h-64 divide-y divide-ink-100 overflow-y-auto">
@@ -122,7 +135,9 @@ const ProductReminder = ({ products }) => {
             </button>
           </div>
         </div>
-      </Dialog>
+      </Dialog>,
+      document.body
+      )}
     </>
   );
 };

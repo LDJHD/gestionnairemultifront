@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import {
@@ -464,16 +465,17 @@ export default function Livraisons() {
       )}
 
       {/* ══════════════ Formulaire livreur (ajout / édition) ══════════════ */}
-      {formLivreur && (
-        <div
-          className="fixed inset-0 z-[70] grid place-items-center bg-ink-900/50 p-4 backdrop-blur-sm"
-          onClick={() => setFormLivreur(null)}
-        >
-          <form
-            className="w-full max-w-md animate-pop-in rounded-2xl border border-ink-200/80 bg-white p-6 shadow-lift"
-            onClick={(e) => e.stopPropagation()}
-            onSubmit={enregistrerLivreur}
+      {formLivreur &&
+        createPortal(
+          <div
+            className="fixed inset-0 z-[90] grid place-items-center bg-ink-900/50 p-4 backdrop-blur-sm"
+            onClick={() => setFormLivreur(null)}
           >
+            <form
+              className="w-full max-w-md animate-pop-in rounded-2xl border border-ink-200/80 bg-white p-6 shadow-lift"
+              onClick={(e) => e.stopPropagation()}
+              onSubmit={enregistrerLivreur}
+            >
             <div className="flex items-start justify-between gap-3">
               <h2 className="font-display text-lg font-extrabold text-ink-900">
                 {formLivreur.id ? "Modifier le livreur" : "Nouveau livreur"}
@@ -530,7 +532,8 @@ export default function Livraisons() {
               </button>
             </div>
           </form>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

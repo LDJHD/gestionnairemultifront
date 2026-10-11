@@ -74,7 +74,7 @@ export function DashboardNavbar() {
   const [commandesNouvelles, setCommandesNouvelles] = useState(0);
 
   const [controller, dispatch] = useMaterialTailwindController();
-  const { openSidenav } = controller;
+  const { openSidenav, fixedNavbar, transparentNavbar } = controller;
   const { pathname } = useLocation();
   const [layout, page] = pathname.split("/").filter((el) => el !== "");
   const navigate = useNavigate();
@@ -293,7 +293,9 @@ export function DashboardNavbar() {
   return (
     <Navbar
       fullWidth
-      className="sticky top-0 z-40 rounded-none border-b border-ink-200/70 bg-white/85 px-0 py-0 shadow-soft backdrop-blur-xl"
+      className={`${fixedNavbar ? "sticky" : "relative"} top-0 z-40 rounded-none border-b border-ink-200/70 px-0 py-0 shadow-soft ${
+        transparentNavbar ? "bg-white/85 backdrop-blur-xl" : "bg-white"
+      }`}
     >
       {/* ══════════════ Rangée 1 : titre + actions ══════════════ */}
       <div className="flex items-center gap-3 border-b border-ink-100 px-4 py-3 sm:px-6">

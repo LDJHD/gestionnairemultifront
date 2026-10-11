@@ -5,7 +5,7 @@ import { useState } from "react";
 import Modaleditproduit from "../modal/modaleditproduit";
 import Swal from 'sweetalert2'
 
-export function Droplist({ isOpen, handleClick, id, idp, onDelete,setMenuActif }) {
+export function Droplist({ isOpen, handleClick, id, idp, onDelete, onError, setMenuActif }) {
   const navigate = useNavigate();
   const [openmodaldrop,setOpenModaldrop]=useState(false);
   const [toast,setToast]=useState(false);
@@ -34,6 +34,10 @@ export function Droplist({ isOpen, handleClick, id, idp, onDelete,setMenuActif }
       reverseButtons: true
     }).then(async (result) => {
       if (result.isConfirmed) {
+        // ⚡ Suppression optimiste : la ligne disparaît
+        // TOUT DE SUITE, avant la réponse serveur (l'API
+        // de l'hébergeur peut mettre plusieurs secondes).
+        if (typeof onDelete === "function") onDelete();
         try {
           const token = localStorage.getItem("token");
           const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/produit/delete`, {
@@ -51,9 +55,9 @@ export function Droplist({ isOpen, handleClick, id, idp, onDelete,setMenuActif }
               text: "La suppression a été effectuée avec succès.",
               icon: "success",
             });
-            // Appelle removeStock pour mettre à jour la liste localement
-            onDelete();
           } else {
+            // Échec serveur : restaurer la liste depuis la base
+            if (typeof onError === "function") onError();
             swalWithTailwindButtons.fire({
               title: "Erreur",
               text: "La suppression a échoué.",
@@ -61,6 +65,8 @@ export function Droplist({ isOpen, handleClick, id, idp, onDelete,setMenuActif }
             });
           }
         } catch (error) {
+          // Erreur réseau : restaurer la liste depuis la base
+          if (typeof onError === "function") onError();
           swalWithTailwindButtons.fire({
             title: "Erreur",
             text: "Une erreur est survenue lors de la connexion au serveur.",

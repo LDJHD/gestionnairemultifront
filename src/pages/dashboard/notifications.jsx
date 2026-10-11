@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import Swal from "sweetalert2";
 import { CheckIcon, TrashIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { BellIcon as BellSolid, CheckCircleIcon as CheckCircleSolid } from "@heroicons/react/24/solid";
@@ -272,9 +273,10 @@ export function Notifications() {
       </div>
 
       {/* ══════════════ DÉTAIL DE LA NOTIFICATION ══════════════ */}
-      {selectedNotification && (
-        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-ink-900/50 p-4 backdrop-blur-sm">
-          <div className="lg-card w-full max-w-lg animate-pop-in p-6">
+      {selectedNotification &&
+        createPortal(
+          <div className="fixed inset-0 z-[90] flex items-center justify-center bg-ink-900/50 p-4 backdrop-blur-sm">
+            <div className="lg-card w-full max-w-lg animate-pop-in p-6">
             <div className="flex items-start justify-between gap-4">
               <div className="flex items-center gap-2.5">
                 <span className="lg-icon-chip h-9 w-9 bg-brand-50 text-brand-600 ring-1 ring-inset ring-brand-100">
@@ -323,7 +325,8 @@ export function Notifications() {
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

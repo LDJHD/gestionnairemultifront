@@ -58,11 +58,23 @@ export function Produit() {
   }; 
 
   // Fonction pour supprimer un produit de la liste
+  // ⚡ Suppression OPTIMISTE : la ligne disparaît
+  //    IMMÉDIATEMENT quand l'utilisateur confirme.
+  //    L'API de l'hébergeur met parfois 3 s+ à
+  //    répondre — attendre sa réponse laissait le
+  //    produit affiché, ce qui donnait l'impression
+  //    qu'il fallait recharger la page.
   const removeProduct = (id) => {
-    setProducts((prevProducts) => prevProducts.filter((product) => product.id !== id));
-    setProductsstore([]);
+    const filtrer = (liste) =>
+      Array.isArray(liste) ? liste.filter((p) => p.id !== id) : liste;
+    setProducts((prev) => filtrer(prev));
+    if (productsstore.length > 0) setProductsstore(filtrer(productsstore));
     setMenuActif(null);
   };
+
+  // En cas d'échec de la suppression serveur :
+  // restaurer la liste depuis la base.
+  const rechargerProduits = () => fetchProducts();
 
   // Appel de fetchProducts lors du chargement du composant
   useEffect(() => {
@@ -192,6 +204,7 @@ export function Produit() {
                           id={key}
                           idp={product.id}
                           onDelete={() => removeProduct(product.id)}
+                          onError={rechargerProduits}
                         />
                       </div>
                     </td>

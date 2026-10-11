@@ -197,12 +197,21 @@ module.exports = withMT({
         smooth: "cubic-bezier(0.22, 1, 0.36, 1)",
         spring: "cubic-bezier(0.34, 1.56, 0.64, 1)",
       },
+      /* ── Transitions / animations ──────────────────────────────────────
+       * REMplissage « backwards » (et non « both ») : l'état initial
+       * ne s'applique que pendant le délai, et AUCUNE propriété
+       * (opacity / transform) ne persiste après la fin de l'animation.
+       * Avec « both », opacity:0 / transform:scale() restaient appliqués
+       * en permanence → le conteneur créait un contexte d'empilement
+       * qui piégeait les modales « fixed » sous le menu latéral (z-50)
+       * et la barre supérieure (z-40).
+       * ───────────────────────────────────────────────────────────────── */
       animation: {
-        "fade-in": "fadeIn .4s cubic-bezier(.22,1,.36,1) both",
-        "slide-up": "slideUp .5s cubic-bezier(.22,1,.36,1) both",
-        "slide-down": "slideDown .35s cubic-bezier(.22,1,.36,1) both",
-        "pop-in": "popIn .35s cubic-bezier(.34,1.56,.64,1) both",
-        "scale-in": "scaleIn .3s cubic-bezier(.22,1,.36,1) both",
+        "fade-in": "fadeIn .4s cubic-bezier(.22,1,.36,1) backwards",
+        "slide-up": "slideUp .5s cubic-bezier(.22,1,.36,1) backwards",
+        "slide-down": "slideDown .35s cubic-bezier(.22,1,.36,1) backwards",
+        "pop-in": "popIn .35s cubic-bezier(.34,1.56,.64,1) backwards",
+        "scale-in": "scaleIn .3s cubic-bezier(.22,1,.36,1) backwards",
         shimmer: "shimmer 2s linear infinite",
         float: "float 7s ease-in-out infinite",
         "pulse-ring": "pulseRing 2.4s cubic-bezier(.4,0,.6,1) infinite",
