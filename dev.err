@@ -55,3 +55,55 @@ Instead of [36m/public/css/tailwind.css[33m, use [36m/css/tailwind.css[33m.
 Instead of [36m/public/css/tailwind.css[33m, use [36m/css/tailwind.css[33m.[39m
 [33mfiles in the public directory are served at the root path.
 Instead of [36m/public/css/tailwind.css[33m, use [36m/css/tailwind.css[33m.[39m
+[33mfiles in the public directory are served at the root path.
+Instead of [36m/public/css/tailwind.css[33m, use [36m/css/tailwind.css[33m.[39m
+[33mfiles in the public directory are served at the root path.
+Instead of [36m/public/css/tailwind.css[33m, use [36m/css/tailwind.css[33m.[39m
+[33mfiles in the public directory are served at the root path.
+Instead of [36m/public/css/tailwind.css[33m, use [36m/css/tailwind.css[33m.[39m
+[33mfiles in the public directory are served at the root path.
+Instead of [36m/public/css/tailwind.css[33m, use [36m/css/tailwind.css[33m.[39m
+[2m15:23:12[22m [31m[1m[vite][22m[39m [31mInternal server error: The server is being restarted or closed. Request is outdated[39m
+      at throwClosedServerError (file:///C:/Users/hp/Desktop/topzen/front/node_modules/vite/dist/node/chunks/dep-bb8a8339.js:43868:17)
+      at transformRequest (file:///C:/Users/hp/Desktop/topzen/front/node_modules/vite/dist/node/chunks/dep-bb8a8339.js:54858:9)
+      at Object.transformRequest (file:///C:/Users/hp/Desktop/topzen/front/node_modules/vite/dist/node/chunks/dep-bb8a8339.js:65080:20)
+      at preTransformRequest (file:///C:/Users/hp/Desktop/topzen/front/node_modules/vite/dist/node/chunks/dep-bb8a8339.js:64716:12)
+      at processNodeUrl (file:///C:/Users/hp/Desktop/topzen/front/node_modules/vite/dist/node/chunks/dep-bb8a8339.js:64543:13)
+      at file:///C:/Users/hp/Desktop/topzen/front/node_modules/vite/dist/node/chunks/dep-bb8a8339.js:64625:17
+      at traverseNodes (file:///C:/Users/hp/Desktop/topzen/front/node_modules/vite/dist/node/chunks/dep-bb8a8339.js:37435:5)
+      at file:///C:/Users/hp/Desktop/topzen/front/node_modules/vite/dist/node/chunks/dep-bb8a8339.js:37439:48
+      at Array.forEach (<anonymous>)
+      at traverseNodes (file:///C:/Users/hp/Desktop/topzen/front/node_modules/vite/dist/node/chunks/dep-bb8a8339.js:37439:25)
+      at file:///C:/Users/hp/Desktop/topzen/front/node_modules/vite/dist/node/chunks/dep-bb8a8339.js:37439:48
+      at Array.forEach (<anonymous>)
+      at traverseNodes (file:///C:/Users/hp/Desktop/topzen/front/node_modules/vite/dist/node/chunks/dep-bb8a8339.js:37439:25)
+      at file:///C:/Users/hp/Desktop/topzen/front/node_modules/vite/dist/node/chunks/dep-bb8a8339.js:37439:48
+      at Array.forEach (<anonymous>)
+      at traverseNodes (file:///C:/Users/hp/Desktop/topzen/front/node_modules/vite/dist/node/chunks/dep-bb8a8339.js:37439:25)
+      at traverseHtml (file:///C:/Users/hp/Desktop/topzen/front/node_modules/vite/dist/node/chunks/dep-bb8a8339.js:37452:5)
+      at async devHtmlHook (file:///C:/Users/hp/Desktop/topzen/front/node_modules/vite/dist/node/chunks/dep-bb8a8339.js:64617:5)
+      at async applyHtmlTransforms (file:///C:/Users/hp/Desktop/topzen/front/node_modules/vite/dist/node/chunks/dep-bb8a8339.js:38049:21)
+      at async viteIndexHtmlMiddleware (file:///C:/Users/hp/Desktop/topzen/front/node_modules/vite/dist/node/chunks/dep-bb8a8339.js:64698:28)
+[33mfiles in the public directory are served at the root path.
+Instead of [36m/public/css/tailwind.css[33m, use [36m/css/tailwind.css[33m.[39m
+[2m15:23:18[22m [31m[1m[vite][22m[39m [31mInternal server error: The server is being restarted or closed. Request is outdated[39m
+      at throwClosedServerError (file:///C:/Users/hp/Desktop/topzen/front/node_modules/vite/dist/node/chunks/dep-bb8a8339.js:43868:17)
+      at transformRequest (file:///C:/Users/hp/Desktop/topzen/front/node_modules/vite/dist/node/chunks/dep-bb8a8339.js:54858:9)
+      at Object.transformRequest (file:///C:/Users/hp/Desktop/topzen/front/node_modules/vite/dist/node/chunks/dep-bb8a8339.js:65080:20)
+      at preTransformRequest (file:///C:/Users/hp/Desktop/topzen/front/node_modules/vite/dist/node/chunks/dep-bb8a8339.js:64716:12)
+      at processNodeUrl (file:///C:/Users/hp/Desktop/topzen/front/node_modules/vite/dist/node/chunks/dep-bb8a8339.js:64543:13)
+      at file:///C:/Users/hp/Desktop/topzen/front/node_modules/vite/dist/node/chunks/dep-bb8a8339.js:64625:17
+      at traverseNodes (file:///C:/Users/hp/Desktop/topzen/front/node_modules/vite/dist/node/chunks/dep-bb8a8339.js:37435:5)
+      at file:///C:/Users/hp/Desktop/topzen/front/node_modules/vite/dist/node/chunks/dep-bb8a8339.js:37439:48
+      at Array.forEach (<anonymous>)
+      at traverseNodes (file:///C:/Users/hp/Desktop/topzen/front/node_modules/vite/dist/node/chunks/dep-bb8a8339.js:37439:25)
+      at file:///C:/Users/hp/Desktop/topzen/front/node_modules/vite/dist/node/chunks/dep-bb8a8339.js:37439:48
+      at Array.forEach (<anonymous>)
+      at traverseNodes (file:///C:/Users/hp/Desktop/topzen/front/node_modules/vite/dist/node/chunks/dep-bb8a8339.js:37439:25)
+      at file:///C:/Users/hp/Desktop/topzen/front/node_modules/vite/dist/node/chunks/dep-bb8a8339.js:37439:48
+      at Array.forEach (<anonymous>)
+      at traverseNodes (file:///C:/Users/hp/Desktop/topzen/front/node_modules/vite/dist/node/chunks/dep-bb8a8339.js:37439:25)
+      at traverseHtml (file:///C:/Users/hp/Desktop/topzen/front/node_modules/vite/dist/node/chunks/dep-bb8a8339.js:37452:5)
+      at async devHtmlHook (file:///C:/Users/hp/Desktop/topzen/front/node_modules/vite/dist/node/chunks/dep-bb8a8339.js:64617:5)
+      at async applyHtmlTransforms (file:///C:/Users/hp/Desktop/topzen/front/node_modules/vite/dist/node/chunks/dep-bb8a8339.js:38049:21)
+      at async viteIndexHtmlMiddleware (file:///C:/Users/hp/Desktop/topzen/front/node_modules/vite/dist/node/chunks/dep-bb8a8339.js:64698:28)
