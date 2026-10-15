@@ -116,6 +116,10 @@ export function Sidenav({ brandImg, routes }) {
       ...section,
       pages: section.pages.filter((page) => {
         if (!userStatus) return false;
+        // Super Admin : accès à tout + la page dédiée
+        if (userStatus === "SuperAdmin") return true;
+        // Page Super Admin réservée aux super admins
+        if (page.superAdminOnly) return false;
         if (userStatus === "Admin") return true;
         if (userStatus === "user")
           return ![

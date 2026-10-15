@@ -8,6 +8,7 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import { toast } from "react-toastify";
+import { lireEntrepriseIfu } from "@/utils/auth";
 const FacturePreview = ({ formData, selectedProducts, onClose }) => {
   const [clientDetails, setClientDetails] = useState(null);
   const [utilisateurs, setutilisateurs] = useState(null);
@@ -131,7 +132,7 @@ const FacturePreview = ({ formData, selectedProducts, onClose }) => {
       cTTC: calculateTotalTTC(),
       cTVA: calculateTVA(),
       format: formData.format,
-      ifu: "3202397904961", // Remplacez par l'IFU du client
+      ifu: lireEntrepriseIfu(), // IFU de l'entreprise connectée (facture normalisée DGI)
       aib: formData.aib,
       type: "FV", // Type de facture
       operator: {

@@ -17,9 +17,10 @@ import {
 } from "@heroicons/react/24/outline";
 
 /* ===========================================================================
-   « LE GESTIONNAIRE » — INSCRIPTION
-   Le champ WhatsApp devient le numéro de réception des notifications du
-   gestionnaire en chef (RESUME_PROJET §4.8).
+   « LE GESTIONNAIRE » — INSCRIPTION MULTI-TENANT
+   L'inscription crée une entreprise (nom, IFU, secteur) + le compte Admin
+   associé.  L'entreprise démarre en attente d'activation par le super
+   administrateur de plateforme.
    =========================================================================== */
 
 const PILIERS = [
@@ -37,6 +38,9 @@ export function SignUp() {
   const [confirmpassword, setConfirmpassword] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
   const [pays, setPays] = useState("");
+  const [nomEntreprise, setNomEntreprise] = useState("");
+  const [ifu, setIfu] = useState("");
+  const [secteur, setSecteur] = useState("supermarche");
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -51,12 +55,20 @@ export function SignUp() {
       toast.error("Les mots de passe ne correspondent pas");
       return;
     }
+    if (!nomEntreprise.trim()) {
+      toast.error("Le nom de votre entreprise est requis.");
+      return;
+    }
+    if (!ifu.trim()) {
+      toast.error("L'IFU de votre entreprise est requis (facture normalisée DGI).");
+      return;
+    }
     if (!termsAccepted) {
       toast.error("Vous devez accepter les conditions d'utilisation.");
       return;
     }
 
-    const utilisateur = { nom, prenom, email, password, whatsapp, pays, confirmpassword };
+    const utilisateur = { nom, prenom, email, password, whatsapp, pays, confirmpassword, nom_entreprise: nomEntreprise, ifu, secteur };
 
     try {
       setEnvoi(true);
@@ -230,6 +242,62 @@ export function SignUp() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
+              </div>
+            </div>
+
+            {/* ── Entreprise ── */}
+            <div className="rounded-2xl border border-brand-200 bg-brand-50/50 p-4">
+              <p className="mb-3 flex items-center gap-2 text-[13px] font-bold text-brand-700">
+                <BuildingStorefrontIcon className="h-4 w-4" />
+                Votre entreprise
+              </p>
+              <div className="space-y-3">
+                <div>
+                  <label className="lg-label" htmlFor="nom_entreprise">
+                    Nom de l'entreprise
+                  </label>
+                  <input
+                    id="nom_entreprise"
+                    className="lg-input"
+                    placeholder="Ex : Supermarché Les Jumelles"
+                    required
+                    value={nomEntreprise}
+                    onChange={(e) => setNomEntreprise(e.target.value)}
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="lg-label" htmlFor="ifu">
+                      IFU <span className="text-ink-400">(facture DGI)</span>
+                    </label>
+                    <input
+                      id="ifu"
+                      className="lg-input font-mono"
+                      placeholder="3202397904961"
+                      required
+                      value={ifu}
+                      onChange={(e) => setIfu(e.target.value.toUpperCase())}
+                    />
+                  </div>
+                  <div>
+                    <label className="lg-label" htmlFor="secteur">
+                      Secteur
+                    </label>
+                    <select
+                      id="secteur"
+                      className="lg-input"
+                      value={secteur}
+                      onChange={(e) => setSecteur(e.target.value)}
+                    >
+                      <option value="supermarche">Supermarché</option>
+                      <option value="restaurant">Restaurant</option>
+                      <option value="boutique">Boutique</option>
+                      <option value="salon">Salon / Coiffure</option>
+                      <option value="pharmacie">Pharmacie</option>
+                      <option value="autre">Autre</option>
+                    </select>
+                  </div>
+                </div>
               </div>
             </div>
 

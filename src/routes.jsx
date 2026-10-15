@@ -35,6 +35,7 @@ import CommandesEnLigne from "./pages/dashboard/commandes";
 import Livraisons from "./pages/dashboard/livraisons";
 import Paiements from "./pages/dashboard/paiements";
 import ParametresBoutique from "./pages/dashboard/parametres";
+import SuperAdmin from "./pages/dashboard/superadmin";
 
 const icon = {
   className: "w-5 h-5 text-inherit",
@@ -142,6 +143,14 @@ export const routes = [
         name: "Utilisateurs",
         path: "/Utilisateurs",
         element: <User />,
+      },
+      // ─── Super Admin (visible uniquement aux super admins) ───
+      {
+        icon: <ServerStackIcon {...icon} />,
+        name: "Super Admin",
+        path: "/superadmin",
+        element: <SuperAdmin />,
+        superAdminOnly: true,
       },
     ],
   },

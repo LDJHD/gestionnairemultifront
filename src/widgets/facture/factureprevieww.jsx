@@ -129,7 +129,7 @@ const FacturePrevieww = ({ formData, selectedProducts, onClose }) => {
       cTTC: calculateTotalTTC(),
       cTVA: calculateTVA(),
       format: formData.format,
-      ifu: "3202397904961", // Remplacez par l'IFU du client
+      ifu: lireEntrepriseIfu(), // IFU de l'entreprise connectée (facture normalisée DGI)
       aib: formData.aib,
       type: "FV", // Type de facture
       operator: {
