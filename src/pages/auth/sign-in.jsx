@@ -33,6 +33,9 @@ export function SignIn() {
   const [showPassword, setShowPassword] = useState(false);
   const [disabled, setDisabled] = useState(false);
   const [seSouvenir, setSeSouvenir] = useState(true);
+  const [showForgot, setShowForgot] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [sendingForgot, setSendingForgot] = useState(false);
   const navigate = useNavigate();
 
   const handleSignIn = async (e) => {
@@ -58,6 +61,35 @@ export function SignIn() {
       }
     } catch (error) {
       toast.error("Une erreur réseau est survenue.");
+    }
+  };
+
+  const handleForgot = async (e) => {
+    e.preventDefault();
+    if (!forgotEmail) { toast.error("Email requis."); return; }
+    try {
+      setSendingForgot(true);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/utilisateur/mot-de-passe-oublie`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: forgotEmail }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        toast.success(data.message || "Lien envoye si l'email existe.");
+        if (data.lien_dev) {
+          // Aide en developpement si SMTP non configure
+          console.log("[Mot de passe oublie] lien dev :", data.lien_dev);
+          window.open(data.lien_dev, "_blank");
+        }
+        setShowForgot(false);
+      } else {
+        toast.error(data.erreur || "Echec de la demande.");
+      }
+    } catch (e) {
+      toast.error("Erreur reseau.");
+    } finally {
+      setSendingForgot(false);
     }
   };
 
@@ -203,6 +235,9 @@ export function SignIn() {
               </div>
             </div>
 
+            <div className="flex items-center justify-between">
+              <button type="button" onClick={() => setShowForgot(true)} className="text-[12px] font-medium text-brand-600 hover:underline">Mot de passe oublie ?</button>
+            </div>
             <label className="flex cursor-pointer items-center gap-2.5 select-none">
               <input
                 type="checkbox"
@@ -248,6 +283,34 @@ export function SignIn() {
           </div>
         </div>
       </div>
+    {showForgot && (
+      <div className="fixed inset-0 z-[90] flex items-center justify-center bg-ink-900/50 p-4 backdrop-blur-sm">
+        <div className="w-full max-w-sm animate-pop-in rounded-3xl border border-ink-200/80 bg-white p-6 shadow-lift">
+          <div className="mb-4 flex items-start justify-between">
+            <h2 className="font-display text-lg font-extrabold text-ink-900">Mot de passe oublie</h2>
+            <button onClick={() => setShowForgot(false)} aria-label="Fermer" className="grid h-8 w-8 place-items-center rounded-xl text-ink-400 transition-colors hover:bg-ink-100 hover:text-ink-900">
+              <span className="text-xl leading-none">&times;</span>
+            </button>
+          </div>
+          <p className="mb-4 text-[13px] text-ink-500">
+            Saisissez votre email : un lien de reinitialisation vous sera envoye (15 min).
+          </p>
+          <form onSubmit={handleForgot} className="space-y-3">
+            <input
+              type="email"
+              className="lg-input"
+              placeholder="votre@email.com"
+              value={forgotEmail}
+              onChange={(e) => setForgotEmail(e.target.value)}
+              required
+            />
+            <button type="submit" disabled={sendingForgot} className="lg-btn-primary w-full">
+              {sendingForgot ? "Envoi..." : "Envoyer le lien"}
+            </button>
+          </form>
+        </div>
+      </div>
+    )}
     </section>
   );
 }

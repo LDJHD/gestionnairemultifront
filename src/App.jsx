@@ -6,6 +6,7 @@ import Detailproduit from "./pages/dashboard/detailproduit";
 import Detailvente from "./pages/dashboard/detailvente";
 import Vendre from "./pages/dashboard/vendre";
 import { SignUp } from "./pages/auth";
+import { ResetPassword } from "./pages/auth/reset-password";
 import Boutique from "./pages/boutique";
 import SuiviCommande from "./pages/boutique/suivi";
 import PaiementRetour from "./pages/boutique/paiement-retour";
@@ -21,6 +22,7 @@ function App() {
       <Route path="/detailvente/*" element={<Detailvente />} />
       <Route path="/auth/*" element={<Auth />} />
       <Route path="/auth/sign-up" element={<SignUp />} />
+      <Route path="/auth/reinitialiser-mot-de-passe" element={<ResetPassword />} />
 
       {/* Espace client public — boutique en ligne (nouveaux modules) */}
       <Route path="/boutique/:slug" element={<Boutique />} />
