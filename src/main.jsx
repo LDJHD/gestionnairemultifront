@@ -18,6 +18,11 @@ import { MaterialTailwindControllerProvider } from "@/context";
 import "../public/css/tailwind.css";
 import { ToastContainer, Bounce, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import { initThemeBoutique } from "@/utils/themeBoutique";
+
+// Restaure la couleur personnalisée de la vitrine AVANT le premier rendu,
+// sinon le flash de la couleur par défaut trahit un thème « ignoré ».
+initThemeBoutique();
 
 /* ===========================================================================
    SERVICE WORKER (PWA)

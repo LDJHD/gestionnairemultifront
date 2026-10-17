@@ -10,10 +10,12 @@ import { ResetPassword } from "./pages/auth/reset-password";
 import Boutique from "./pages/boutique";
 import SuiviCommande from "./pages/boutique/suivi";
 import PaiementRetour from "./pages/boutique/paiement-retour";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 function App() {
   return (
-    <Routes>
+    <ErrorBoundary>
+      <Routes>
       {/* Espace gestion (socle conservé) */}
       <Route path="/dashboard/*" element={<Dashboard />} />
       <Route path="/detail/*" element={<Detail />} />
@@ -31,7 +33,8 @@ function App() {
 
       <Route path="*" element={<Navigate to="/dashboard/home" replace />} />
       <Route path="/" element={<Navigate to="/auth/sign-in" replace />} />
-    </Routes>
+      </Routes>
+    </ErrorBoundary>
   );
 }
 

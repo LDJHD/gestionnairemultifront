@@ -120,13 +120,17 @@ const FacturePrevieww = ({ formData, selectedProducts, onClose }) => {
   const calculateRemainingAmount = (paidAmount) =>
     calculateTotalTTC() - calculatePaidAmount(paidAmount);
   const handleInvoiceSubmit = async () => {
+    if (!clientDetails) {
+      toast.error("Sélectionnez d'abord un client pour établir la facture.");
+      return;
+    }
     setLoading(true);
     const token = localStorage.getItem("token"); // Assurez-vous que le token est récupéré correctement
     // Données de la facture
     const invoiceData = {
       cAIB: calculateAIB(),
       cHT: calculateTotalHT(),
-      cTTC: calculateTotalTTC(),
+      cTTC: calculateTotalWithRemise(),
       cTVA: calculateTVA(),
       format: formData.format,
       ifu: lireEntrepriseIfu(), // IFU de l'entreprise connectée (facture normalisée DGI)
@@ -211,12 +215,20 @@ const FacturePrevieww = ({ formData, selectedProducts, onClose }) => {
       );
       // alert("Vente enregistrée avec succès !");
       console.log("Réponse serveur :", venteResponse.data);
+      toast.success("Facture générée et vente enregistrée avec succès !");
+      // Ouvre le PDF dans un nouvel onglet pour un retour immédiat
+      window.open(filePathsimple, "_blank", "noopener");
     } catch (error) {
       console.error(
         "Erreur lors de l'enregistrement de la vente ou de la création de la facture :",
         error.response?.data || error.message,
       );
-      toast.error("Erreur lors de l'enregistrement de la vente ou de la création de la facture.");
+      const detail =
+        error.response?.data?.erreur ||
+        error.response?.data?.error ||
+        error.response?.data?.message ||
+        "Erreur lors de l'enregistrement de la vente ou de la création de la facture.";
+      toast.error(detail);
     } finally {
       setLoading(false);
     }

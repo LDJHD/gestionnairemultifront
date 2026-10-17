@@ -845,7 +845,7 @@ const fetchStockValue = async (id) => {
                       onChange={handleInputChange}
                       className="lg-select"
                     >
-                      <option value=" ">N/A</option>
+                      <option value="N/A">N/A</option>
                       <option value="A">1%</option>
                       <option value="B">5%</option>
                     </select>

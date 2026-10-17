@@ -13,6 +13,11 @@ import {
   setSidenavType,
   setFixedNavbar,
 } from "@/context";
+import {
+  appliquerThemeBoutique,
+  lireCouleurBoutique,
+  COULEUR_DEFAUT,
+} from "@/utils/themeBoutique";
 
 function formatNumber(number, decPlaces) {
   decPlaces = Math.pow(10, decPlaces);
@@ -67,6 +72,19 @@ export function Configurator() {
   const { openConfigurator, sidenavColor, sidenavType, fixedNavbar } =
     controller;
   const [stars, setStars] = React.useState(0);
+  const [couleurPerso, setCouleurPerso] = React.useState(lireCouleurBoutique);
+  const [couleurSidenav, setCouleurSidenav] = React.useState(() => {
+    try { return localStorage.getItem("lg-couleur-sidenav") || ""; } catch { return ""; }
+  });
+
+  const choisirCouleurBoutique = (c) => {
+    setCouleurPerso(c);
+    appliquerThemeBoutique(c, true);
+  };
+  const appliquerCouleurSidenav = (c) => {
+    setCouleurSidenav(c);
+    try { localStorage.setItem("lg-couleur-sidenav", c); } catch {}
+  };
 
   const sidenavColors = {
     white: "from-gray-100 to-gray-100 border-gray-200",
@@ -152,6 +170,90 @@ export function Configurator() {
                     ? "border-brand-600 ring-2 ring-brand-500/[0.25]"
                     : "border-transparent"
                 }`}
+              />
+            ))}
+          </div>
+        </section>
+
+        {/* Couleur personnalisée du menu latéral */}
+        <section className="rounded-xl border border-ink-200 p-4">
+          <div className="flex items-center gap-2.5">
+            <span className="lg-icon-chip h-8 w-8 bg-ink-100 text-ink-600 ring-1 ring-inset ring-ink-200">
+              <PaintBrushIcon className="h-4 w-4" />
+            </span>
+            <div>
+              <h3 className="font-display text-[13px] font-extrabold text-ink-900">
+                Couleur personnalisée
+              </h3>
+              <p className="text-[12px] text-ink-500">
+                Choisissez votre propre couleur pour le menu.
+              </p>
+            </div>
+          </div>
+          <div className="mt-4 flex items-center gap-3">
+            <input
+              type="color"
+              value={couleurSidenav || "#0f766e"}
+              onChange={(e) => appliquerCouleurSidenav(e.target.value)}
+              className="h-10 w-14 cursor-pointer rounded-lg border border-ink-200"
+              aria-label="Couleur personnalisée du menu"
+            />
+            <span className="font-mono text-[12px] text-ink-500">{couleurSidenav || "Par défaut"}</span>
+            {couleurSidenav && (
+              <button
+                type="button"
+                onClick={() => appliquerCouleurSidenav("")}
+                className="text-[11px] text-ink-400 hover:text-ink-600"
+              >
+                Réinitialiser
+              </button>
+            )}
+          </div>
+        </section>
+
+        {/* Couleur de la boutique */}
+        <section className="rounded-xl border border-ink-200 p-4">
+          <div className="flex items-center gap-2.5">
+            <span className="lg-icon-chip h-8 w-8 bg-ink-100 text-ink-600 ring-1 ring-inset ring-ink-200">
+              <PaintBrushIcon className="h-4 w-4" />
+            </span>
+            <div>
+              <h3 className="font-display text-[13px] font-extrabold text-ink-900">
+                Couleur de la boutique
+              </h3>
+              <p className="text-[12px] text-ink-500">
+                Couleur d'accent de votre site de vente.
+              </p>
+            </div>
+          </div>
+          <div className="mt-4 flex items-center gap-3">
+            <input
+              type="color"
+              value={couleurPerso}
+              onChange={(e) => choisirCouleurBoutique(e.target.value)}
+              className="h-10 w-14 cursor-pointer rounded-lg border border-ink-200"
+              aria-label="Couleur de la boutique"
+            />
+            <span className="font-mono text-[12px] text-ink-500">{couleurPerso}</span>
+            <button
+              type="button"
+              onClick={() => choisirCouleurBoutique(COULEUR_DEFAUT)}
+              className="ml-auto text-[11px] text-ink-400 hover:text-ink-600"
+            >
+              Par défaut
+            </button>
+          </div>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {["#0f766e", "#1d4ed8", "#dc2626", "#d97706", "#7c3aed", "#059669", "#e11d48", "#0891b2"].map((c) => (
+              <button
+                key={c}
+                type="button"
+                onClick={() => choisirCouleurBoutique(c)}
+                className={`h-6 w-6 rounded-full border-2 transition-transform hover:scale-110 ${
+                  couleurPerso === c ? "border-ink-900" : "border-transparent"
+                }`}
+                style={{ backgroundColor: c }}
+                aria-label={`Couleur ${c}`}
               />
             ))}
           </div>

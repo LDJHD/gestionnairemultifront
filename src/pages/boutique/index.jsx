@@ -1559,9 +1559,8 @@ export default function Boutique() {
             },
           ]
     );
-    // Retours visuels : la pastille du bouton devient « Ajouté » 1,6 s
+    // Retour visuel : la pastille du bouton devient « Ajouté » 1,6 s
     setAjouteId(produit.id);
-    setTiroirOuvert(true);
   };
 
   // Remet le bouton à son état normal après l'animation « Ajouté »
