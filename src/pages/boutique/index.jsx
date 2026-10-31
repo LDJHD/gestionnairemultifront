@@ -285,7 +285,7 @@ function CarteProduit({ produit, api, onApercu, onAjouter, ajoute }) {
             className={`inline-flex h-9 flex-none items-center gap-1.5 rounded-full px-3.5 text-[12px] font-bold transition-all duration-200 active:scale-[0.96] ${
               dispo
                 ? ajoute
-                  ? "bg-forest-600 text-white"
+                  ? "bg-boutique-600 text-boutique-50 shadow-soft"
                   : "bg-boutique-900 text-boutique-50 hover:bg-boutique-800"
                 : "cursor-not-allowed bg-boutique-100 text-boutique-400"
             }`}
@@ -468,7 +468,7 @@ function ApercuRapide({ produit, api, onFermer, onAjouter, ajoute }) {
                 className={`inline-flex w-full items-center justify-center gap-2 rounded-full px-6 py-4 text-sm font-bold transition-all duration-200 active:scale-[0.98] ${
                   dispo
                     ? ajoute
-                      ? "bg-forest-600 text-white shadow-soft"
+                      ? "bg-boutique-600 text-boutique-50 shadow-soft"
                       : "bg-boutique-900 text-boutique-50 shadow-soft hover:bg-boutique-800 hover:shadow-lift"
                     : "cursor-not-allowed bg-boutique-200 text-boutique-400"
                 }`}
@@ -912,13 +912,13 @@ function CheckoutView({
                       }
                       className={`flex items-start gap-3.5 rounded-xl border-2 p-4 text-left transition-all duration-200 ${
                         actif
-                          ? "border-forest-600 bg-forest-50 shadow-soft"
+                          ? "border-boutique-900 bg-boutique-100 shadow-soft"
                           : "border-boutique-200 bg-boutique-50 hover:border-boutique-300 hover:bg-white"
                       }`}
                     >
                       <span
                         className={`grid h-10 w-10 flex-none place-items-center rounded-xl ${
-                          actif ? "bg-forest-600 text-white" : "bg-white text-boutique-400"
+                          actif ? "bg-boutique-900 text-boutique-50" : "bg-white text-boutique-400"
                         }`}
                       >
                         <Icone className="h-5 w-5" />
@@ -1389,7 +1389,7 @@ function ConfirmationView({ commande, api, slug }) {
                 <>
                   <a
                     href={etat.checkout_url}
-                    className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-forest-600 px-6 py-4 text-sm font-bold text-white shadow-soft transition-all duration-200 hover:bg-forest-700 hover:shadow-lift active:scale-[0.98]"
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-boutique-900 px-6 py-4 text-sm font-bold text-boutique-50 shadow-soft transition-all duration-200 hover:bg-boutique-800 hover:shadow-lift active:scale-[0.98]"
                   >
                     <CreditCardIcon className="h-[18px] w-[18px]" />
                     Payer maintenant{etat.simulation ? " (mode test)" : ""}

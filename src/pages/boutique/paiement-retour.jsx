@@ -194,7 +194,7 @@ export default function PaiementRetour() {
                         href={`${API}${resultat.recu_url}`}
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-flex items-center gap-1.5 rounded-full bg-forest-600 px-4 py-2.5 text-[12.5px] font-bold text-white transition-colors hover:bg-forest-700"
+                        className="inline-flex items-center gap-1.5 rounded-full bg-boutique-900 px-4 py-2.5 text-[12.5px] font-bold text-boutique-50 transition-colors hover:bg-boutique-800"
                       >
                         <EyeIcon className="h-4 w-4" />
                         Afficher le reçu
@@ -202,7 +202,7 @@ export default function PaiementRetour() {
                       <a
                         href={`${API}${resultat.recu_url}`}
                         download
-                        className="inline-flex items-center gap-1.5 rounded-full border border-forest-200 bg-white px-4 py-2.5 text-[12.5px] font-bold text-forest-700 transition-colors hover:bg-forest-50"
+                        className="inline-flex items-center gap-1.5 rounded-full border border-boutique-200 bg-white px-4 py-2.5 text-[12.5px] font-bold text-boutique-800 transition-colors hover:bg-boutique-50"
                       >
                         <ArrowDownTrayIcon className="h-4 w-4" />
                         Télécharger (PDF)

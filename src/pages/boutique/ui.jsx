@@ -52,7 +52,7 @@ export const fmt = (n) => `${Number(n || 0).toLocaleString("fr-FR")} F`;
 /** Dégradés disponibles pour les visuels générés (fond + dégradé). */
 const TONS = [
   { from: "from-boutique-100", to: "to-boutique-300", ink: "text-boutique-700", chip: "bg-boutique-200/70 text-boutique-800" },
-  { from: "from-forest-100", to: "to-forest-300", ink: "text-forest-700", chip: "bg-forest-100 text-forest-700" },
+  { from: "from-boutique-100", to: "to-boutique-300", ink: "text-boutique-800", chip: "bg-boutique-200 text-boutique-800" },
   { from: "from-amber-50", to: "to-amber-200", ink: "text-amber-700", chip: "bg-amber-100 text-amber-800" },
   { from: "from-rose-50", to: "to-rose-200", ink: "text-rose-700", chip: "bg-rose-100 text-rose-700" },
   { from: "from-sky-50", to: "to-sky-200", ink: "text-sky-700", chip: "bg-sky-100 text-sky-700" },
@@ -181,7 +181,7 @@ export function PastilleStock({ produit, className = "" }) {
     );
   }
   return (
-    <span className={`lg-badge bg-white/95 text-forest-700 shadow-soft ring-1 ring-inset ring-forest-100 ${className}`}>
+    <span className={`lg-badge bg-white/95 text-boutique-900 shadow-soft ring-1 ring-inset ring-boutique-200 ${className}`}>
       En stock
     </span>
   );
@@ -302,7 +302,7 @@ export function EnteteVitrine({
           <span className="relative">
             <ShoppingCartIcon className="h-[18px] w-[18px]" />
             {nombreArticles > 0 && (
-              <span className="absolute -top-2 -right-2.5 grid h-[18px] min-w-[18px] place-items-center rounded-full bg-forest-500 px-1 text-[10px] font-extrabold text-white tabular ring-2 ring-boutique-50">
+              <span className="absolute -top-2 -right-2.5 grid h-[18px] min-w-[18px] place-items-center rounded-full bg-boutique-900 px-1 text-[10px] font-extrabold text-boutique-50 tabular ring-2 ring-boutique-50">
                 {nombreArticles}
               </span>
             )}
@@ -371,17 +371,17 @@ export function PiedVitrine({ activite, vitrine, paiements }) {
             </h3>
             <ul className="mt-4 space-y-2.5 text-[13.5px]">
               <li>
-                <Link to={`/boutique/${activite?.slug || ""}`} className="text-boutique-700 transition-colors hover:text-forest-600">
+                <Link to={`/boutique/${activite?.slug || ""}`} className="text-boutique-700 transition-colors hover:text-boutique-900">
                   Tout le catalogue
                 </Link>
               </li>
               <li>
-                <Link to="/commande/suivi" className="text-boutique-700 transition-colors hover:text-forest-600">
+                <Link to="/commande/suivi" className="text-boutique-700 transition-colors hover:text-boutique-900">
                   Suivre ma commande
                 </Link>
               </li>
               <li>
-                <Link to="/auth/sign-in" className="text-boutique-700 transition-colors hover:text-forest-600">
+                <Link to="/auth/sign-in" className="text-boutique-700 transition-colors hover:text-boutique-900">
                   Espace gestionnaire
                 </Link>
               </li>
@@ -514,7 +514,7 @@ export function BoutonVitrine({ children, className = "", variante = "principal"
   const variantes = {
     principal: "bg-boutique-900 text-boutique-50 shadow-soft hover:bg-boutique-800 hover:shadow-lift",
     clair: "border border-boutique-200 bg-white text-boutique-800 hover:border-boutique-300 hover:bg-boutique-50",
-    accent: "bg-forest-600 text-white shadow-soft hover:bg-forest-700 hover:shadow-lift",
+    accent: "bg-boutique-600 text-boutique-50 shadow-soft hover:bg-boutique-800 hover:shadow-lift",
     fantome: "text-boutique-600 hover:bg-boutique-100 hover:text-boutique-900",
   };
   return (
@@ -533,7 +533,7 @@ export function BandeauConfiance({ items }) {
           key={titre}
           className="flex items-start gap-3 rounded-2xl border border-boutique-200/70 bg-white/70 px-4 py-3.5"
         >
-          <span className="grid h-9 w-9 flex-none place-items-center rounded-xl bg-forest-100 text-forest-700">
+          <span className="grid h-9 w-9 flex-none place-items-center rounded-xl bg-boutique-100 text-boutique-800">
             <Icone className="h-[18px] w-[18px]" />
           </span>
           <span className="min-w-0">

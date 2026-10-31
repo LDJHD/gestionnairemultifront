@@ -146,6 +146,18 @@ function feuilleDeStyle(couleur) {
   color: ${surAccent} !important;
 }
 
+/* États hover / focus : les !important injectés ci-dessus empêchent les
+   variantes Tailwind (hover:, focus:, …) de s'appliquer → on les (ré)injecte. */
+.bg-boutique-900:hover { background-color: ${accentFonce} !important; }
+.bg-boutique-800:hover { background-color: ${accent} !important; }
+.bg-boutique-600:hover { background-color: ${accentFonce} !important; }
+.bg-boutique-500:hover { background-color: ${accent} !important; }
+.bg-boutique-400:hover { background-color: ${accent} !important; }
+.bg-boutique-300:hover { background-color: ${accent} !important; }
+.bg-boutique-200:hover { background-color: ${accent} !important; }
+.bg-boutique-100:hover { background-color: ${accent} !important; }
+.bg-boutique-50:hover { background-color: ${accent} !important; }
+
 /* Ombre colorée cohérente avec l'accent */
 .shadow-glow { box-shadow: 0 10px 30px -8px ${accentVoile} !important; }
 `;

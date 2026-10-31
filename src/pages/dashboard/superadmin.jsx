@@ -188,6 +188,7 @@ export function SuperAdmin() {
                   <th className="px-5 py-3 font-semibold">Entreprise</th>
                   <th className="px-5 py-3 font-semibold">IFU</th>
                   <th className="px-5 py-3 font-semibold">Secteur</th>
+                  <th className="px-5 py-3 font-semibold">Boutique</th>
                   <th className="px-5 py-3 font-semibold">Utilisateurs</th>
                   <th className="px-5 py-3 font-semibold">Produits</th>
                   <th className="px-5 py-3 font-semibold">Créée le</th>
@@ -207,6 +208,11 @@ export function SuperAdmin() {
                     <td className="px-5 py-3.5 font-mono text-ink-600">{ent.ifu || "—"}</td>
                     <td className="px-5 py-3.5">
                       <span className="lg-badge-neutral">{SECTEUR_LABELS[ent.secteur] || ent.secteur}</span>
+                    </td>
+                    <td className="px-5 py-3.5">
+                      <span className="font-mono text-[11px] font-semibold text-ink-600">
+                        {ent.slug ? `/boutique/${ent.slug}` : "—"}
+                      </span>
                     </td>
                     <td className="px-5 py-3.5 tabular text-ink-700">{ent.nb_utilisateurs}</td>
                     <td className="px-5 py-3.5 tabular text-ink-700">{ent.nb_produits}</td>
