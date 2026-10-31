@@ -152,6 +152,12 @@ export const routes = [
         element: <SuperAdmin />,
         superAdminOnly: true,
       },
+      {
+        icon: <UserCircleIcon {...icon} />,
+        name: "Mon profil",
+        path: "/profile",
+        element: <Profile />,
+      },
     ],
   },
   {

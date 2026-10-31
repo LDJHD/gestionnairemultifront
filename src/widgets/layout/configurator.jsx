@@ -84,6 +84,9 @@ export function Configurator() {
   const appliquerCouleurSidenav = (c) => {
     setCouleurSidenav(c);
     try { localStorage.setItem("lg-couleur-sidenav", c); } catch {}
+    // Synchroniser l'état global du menu latéral : sans ce dispatch, la
+    // couleur personnalisée n'était pas répercutée sur le sidebar.
+    setSidenavColor(dispatch, c);
   };
 
   const sidenavColors = {

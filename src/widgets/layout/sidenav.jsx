@@ -45,11 +45,14 @@ export function Sidenav({ brandImg, routes }) {
   // Type : « white » (clair, design par défaut), « transparent »
   // ou « dark » (dégradé coloré selon sidenavColor).
   const estFonce = sidenavType === "dark";
+  const couleurSidenavHex = String(sidenavColor || "");
+  const estCouleurPerso = /^#[0-9a-fA-F]{6}$/.test(couleurSidenavHex);
   const fondClasses =
-    sidenavType === "white"
-      ? "bg-white/85 backdrop-blur-xl"
-      : sidenavType === "transparent"
-        ? "bg-transparent"
+    sidenavType === "transparent"
+      ? "bg-transparent"
+      : String(sidenavType).toLowerCase() === "white" &&
+        ["white", "dark"].includes(String(sidenavColor).toLowerCase())
+        ? "bg-white/85 backdrop-blur-xl"
         : `bg-gradient-to-br ${
             ({
               white: "from-gray-100 to-gray-200",
@@ -198,6 +201,11 @@ export function Sidenav({ brandImg, routes }) {
       />
 
       <aside
+        style={
+          estCouleurPerso
+            ? { backgroundImage: `linear-gradient(150deg, ${couleurSidenavHex} 0%, ${couleurSidenavHex} 100%)` }
+            : undefined
+        }
         className={`fixed inset-y-0 left-0 z-50 flex w-[280px] flex-col transition-transform duration-300 ease-smooth ${
           sidenavType === "white"
             ? "border-r border-ink-200/80"
