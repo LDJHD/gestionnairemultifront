@@ -79,17 +79,18 @@ function feuilleDeStyle(couleur) {
   background-image: linear-gradient(150deg, ${accentTresFonce} 0%, ${accentFonce} 45%, ${accent} 100%) !important;
 }
 
-/* Textes */
-.text-boutique-900 { color: ${accentTresFonce} !important; }
-.text-boutique-800 { color: ${accentFonce} !important; }
-.text-boutique-700 { color: ${accentFonce} !important; }
-.text-boutique-600 { color: ${accent} !important; }
-.text-boutique-500 { color: ${accent} !important; }
-.text-boutique-400 { color: ${accent} !important; opacity: 0.75; }
-.text-boutique-300 { color: ${accentClair} !important; }
-.text-boutique-200 { color: ${accentTresClair} !important; }
-.text-boutique-100 { color: ${accentTresClair} !important; }
-.text-boutique-50  { color: ${accentTresClair} !important; }
+/* Textes : tons foncés garantis lisibles pour toute couleur choisie
+   (y compris le blanc, où les tons précédents redevenaient invisibles). */
+.text-boutique-900 { color: ${nuance(accent, 0.45)} !important; }
+.text-boutique-800 { color: ${nuance(accent, 0.5)} !important; }
+.text-boutique-700 { color: ${nuance(accent, 0.52)} !important; }
+.text-boutique-600 { color: ${nuance(accent, 0.58)} !important; }
+.text-boutique-500 { color: ${nuance(accent, 0.62)} !important; }
+.text-boutique-400 { color: ${nuance(accent, 0.66)} !important; opacity: 0.75; }
+.text-boutique-300 { color: ${nuance(accent, 0.7)} !important; }
+.text-boutique-200 { color: ${nuance(accent, 0.74)} !important; }
+.text-boutique-100 { color: ${nuance(accent, 0.78)} !important; }
+.text-boutique-50  { color: ${nuance(accent, 0.82)} !important; }
 
 /* Bordures / pastilles */
 .border-boutique-200 { border-color: ${accentVoile} !important; }
