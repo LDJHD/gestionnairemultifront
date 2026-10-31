@@ -98,10 +98,30 @@ function feuilleDeStyle(couleur) {
 .from-boutique-100 { --tw-gradient-from: ${accentTresClair} !important; }
 .to-boutique-300   { --tw-gradient-to: ${accentClair} !important; }
 
-/* Contrastes sur accent (boutons pleins) : le texte doit rester lisible,
-   quelle que soit la couleur choisie par l'utilisateur. */
-.bg-boutique-900 *,
-.bg-boutique-800 * { }
+/* Contraste texte sur fonds pleins d'accent : le texte doit rester
+   lisible et esthétique, quelle que soit la couleur choisie par l'utilisateur. */
+.bg-boutique-900 .text-boutique-50,
+.bg-boutique-900 .text-boutique-600,
+.bg-boutique-900 .text-boutique-700,
+.bg-boutique-900 .text-boutique-800,
+.bg-boutique-900 .text-boutique-900,
+.bg-boutique-800 .text-boutique-50,
+.bg-boutique-800 .text-boutique-600,
+.bg-boutique-800 .text-boutique-700,
+.bg-boutique-800 .text-boutique-800,
+.bg-boutique-800 .text-boutique-900,
+.bg-boutique-600 .text-boutique-50,
+.bg-boutique-600 .text-boutique-600,
+.bg-boutique-600 .text-boutique-700,
+.bg-boutique-600 .text-boutique-800,
+.bg-boutique-600 .text-boutique-900,
+.bg-boutique-deep .text-boutique-50,
+.bg-boutique-deep .text-boutique-600,
+.bg-boutique-deep .text-boutique-700,
+.bg-boutique-deep .text-boutique-800,
+.bg-boutique-deep .text-boutique-900 {
+  color: ${surAccent} !important;
+}
 
 /* Ombre colorée cohérente avec l'accent */
 .shadow-glow { box-shadow: 0 10px 30px -8px ${accentVoile} !important; }
