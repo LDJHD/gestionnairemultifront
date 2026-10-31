@@ -100,7 +100,29 @@ function feuilleDeStyle(couleur) {
 .to-boutique-300   { --tw-gradient-to: ${accentClair} !important; }
 
 /* Contraste texte sur fonds pleins d'accent : le texte doit rester
-   lisible et esthétique, quelle que soit la couleur choisie par l'utilisateur. */
+   lisible et esthétique, quelle que soit la couleur choisie par l'utilisateur.
+   (Fond plein + texte sur le MÊME élément : boutons ; ou en descendant :
+   badges, chips, cartes.) */
+.bg-boutique-900.text-boutique-50,
+.bg-boutique-900.text-boutique-600,
+.bg-boutique-900.text-boutique-700,
+.bg-boutique-900.text-boutique-800,
+.bg-boutique-900.text-boutique-900,
+.bg-boutique-800.text-boutique-50,
+.bg-boutique-800.text-boutique-600,
+.bg-boutique-800.text-boutique-700,
+.bg-boutique-800.text-boutique-800,
+.bg-boutique-800.text-boutique-900,
+.bg-boutique-600.text-boutique-50,
+.bg-boutique-600.text-boutique-600,
+.bg-boutique-600.text-boutique-700,
+.bg-boutique-600.text-boutique-800,
+.bg-boutique-600.text-boutique-900,
+.bg-boutique-deep.text-boutique-50,
+.bg-boutique-deep.text-boutique-600,
+.bg-boutique-deep.text-boutique-700,
+.bg-boutique-deep.text-boutique-800,
+.bg-boutique-deep.text-boutique-900,
 .bg-boutique-900 .text-boutique-50,
 .bg-boutique-900 .text-boutique-600,
 .bg-boutique-900 .text-boutique-700,
