@@ -335,7 +335,7 @@ function ModaleCreerEntreprise({ onFermer, surSucces }) {
           <div>
             <h2 className="font-display text-lg font-extrabold text-ink-900">Créer un compte entreprise</h2>
             <p className="mt-0.5 text-[13px] text-ink-500">
-              L'entreprise est immédiatement activée.
+              L'entreprise et le compte sont créés en attente d'activation par le super administrateur.
             </p>
           </div>
           <button
@@ -395,7 +395,7 @@ function ModaleCreerEntreprise({ onFermer, surSucces }) {
             ) : (
               <>
                 <PlusIcon className="h-4 w-4" />
-                Créer et activer l'entreprise
+                Créer le compte
               </>
             )}
           </button>

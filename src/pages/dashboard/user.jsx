@@ -14,8 +14,12 @@ function estAdministrateurConnecte() {
         const payload = token?.split(".")[1];
         if (!payload) return false;
         const base64 = payload.replace(/-/g, "+").replace(/_/g, "/");
-        const role = JSON.parse(atob(base64)).role || "";
-        return String(role).toLocaleLowerCase("fr-FR") === "admin";
+        const data = JSON.parse(atob(base64));
+        // Le super admin a les droits d'administration de la plateforme :
+        // il peut modifier les rôles, activer/désactiver les comptes et supprimer.
+        if (data.super_admin) return true;
+        const role = String(data.role || "").trim().toLocaleLowerCase("fr-FR") || String(data.status || "").trim().toLocaleLowerCase("fr-FR");
+        return role === "admin";
     } catch {
         return false;
     }
@@ -98,10 +102,12 @@ export function User() {
                 try {
                     const token = localStorage.getItem("token");
                     const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/utilisateur/delete/${id}`, {
-                        method: "DELETE",
+                        method: "POST",
                         headers: {
+                            "Content-Type": "application/json",
                             Authorization: `Bearer ${token}`,
                         },
+                        body: JSON.stringify({ id }),
                     });
 
                     if (response.ok) {

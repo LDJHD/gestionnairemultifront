@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { Typography, Card, CardBody, IconButton, Tooltip } from "@material-tailwind/react";
 import {
   ArrowRightIcon,
@@ -19,6 +19,7 @@ import {
   ExclamationTriangleIcon,
 } from "@heroicons/react/24/solid";
 import { StatisticsCard } from "@/widgets/cards";
+import { estSuperAdmin } from "@/utils/auth";
 
 /* ===========================================================================
    « LE GESTIONNAIRE » — TABLEAU DE BORD
@@ -156,6 +157,11 @@ export function Home() {
     }
     return liste.slice(0, 5);
   }, [produits, commandes]);
+
+  // Le super admin est redirigé vers son tableau de bord dédié
+  if (estSuperAdmin()) {
+    return <Navigate to="/dashboard/superadmin" replace />;
+  }
 
   const skeletons = [0, 1, 2, 3];
 

@@ -286,6 +286,7 @@ export function DashboardNavbar() {
     parametres: "Paramètres de la boutique",
     notifications: "Notifications",
     users: "Utilisateurs",
+    superadmin: "Super Administrateur",
     profile: "Mon profil",
   };
   const titrePage = TITRES[page] || TITRES[layout] || page || "Tableau de bord";

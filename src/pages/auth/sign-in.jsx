@@ -54,7 +54,8 @@ export function SignIn() {
         setDisabled(true);
         toast.success("Authentification réussie !");
         setTimeout(() => {
-          navigate("/dashboard/home");
+          // Le super admin est redirigé vers son tableau de bord dédié
+          navigate(data.super_admin ? "/dashboard/superadmin" : "/dashboard/home");
         }, 700);
       } else {
         toast.error(data.erreur || "Une erreur s'est produite.");
