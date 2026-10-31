@@ -247,7 +247,7 @@ export function Configurator() {
             </button>
           </div>
           <div className="mt-3 flex flex-wrap gap-2">
-            {["#0f766e", "#1d4ed8", "#dc2626", "#d97706", "#7c3aed", "#059669", "#e11d48", "#0891b2"].map((c) => (
+            {["#0f766e", "#1d4ed8", "#dc2626", "#d97706", "#7c3aed", "#059669", "#e11d48", "#0891b2", "#ffffff"].map((c) => (
               <button
                 key={c}
                 type="button"
