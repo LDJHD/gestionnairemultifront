@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import {
   Cog6ToothIcon,
   CreditCardIcon,
@@ -92,6 +93,12 @@ export default function ParametresBoutique() {
   const [envoi, setEnvoi] = useState(false);
   const [migrationRequise, setMigrationRequise] = useState(false);
   const [boutique, setBoutique] = useState({ slug: null, nom: null });
+  const [localisation, setLocalisation] = useState({
+    adresse: "",
+    ville: "",
+    latitude: "",
+    longitude: "",
+  });
 
   // Lien public de la boutique : FRONT/boutique/:slug
   const lienBoutique = boutique.slug
@@ -165,6 +172,12 @@ export default function ParametresBoutique() {
           email_gestionnaire: json.email_gestionnaire || "",
         });
         setZones((json.zones || []).map((z) => ({ nom: z.nom, frais: z.frais })));
+        setLocalisation({
+          adresse: json.localisation?.adresse || "",
+          ville: json.localisation?.ville || "",
+          latitude: json.localisation?.latitude != null ? String(json.localisation.latitude) : "",
+          longitude: json.localisation?.longitude != null ? String(json.localisation.longitude) : "",
+        });
       } catch (e) {
         toast.error(e.message);
       } finally {
@@ -174,6 +187,8 @@ export default function ParametresBoutique() {
   }, []);
 
   const maj = (champ, valeur) => setParams((p) => ({ ...p, [champ]: valeur }));
+
+  const majLoc = (champ, valeur) => setLocalisation((l) => ({ ...l, [champ]: valeur }));
 
   // Règle §4.6 en direct
   const regleLive = params?.en_ligne && params?.a_la_livraison
@@ -214,6 +229,10 @@ export default function ParametresBoutique() {
           ...params,
           livraison_gratuite_des: params.livraison_gratuite_des === "" ? null : Number(params.livraison_gratuite_des),
           zones,
+          adresse: localisation.adresse || null,
+          ville: localisation.ville || null,
+          latitude: localisation.latitude === "" ? null : Number(localisation.latitude),
+          longitude: localisation.longitude === "" ? null : Number(localisation.longitude),
         }),
       });
       const json = await res.json();
@@ -643,6 +662,139 @@ export default function ParametresBoutique() {
                 onChange={(e) => maj("email_gestionnaire", e.target.value)}
               />
             </div>
+          </div>
+        </section>
+
+        {/* ══════════════ LOCALISATION BOUTIQUE ══════════════ */}
+        <section className="overflow-hidden rounded-2xl border border-ink-200/80 bg-white shadow-card">
+          <TitreSection
+            icon={MapPinIcon}
+            ton="bg-ink-50 text-ink-600 ring-1 ring-inset ring-ink-200"
+            titre="Localisation de la boutique"
+            sousTitre="Adresse et coordonnées GPS — s'affiche sur la vitrine publique avec un bouton itinéraire"
+          />
+          <div className="space-y-4 p-5">
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div>
+                <label className="lg-label" htmlFor="loc-adresse">
+                  Adresse
+                </label>
+                <input
+                  id="loc-adresse"
+                  className="lg-input"
+                  placeholder="Ex : 15 Rue de la Paix, Cotonou"
+                  value={localisation.adresse}
+                  onChange={(e) => majLoc("adresse", e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="lg-label" htmlFor="loc-ville">
+                  Ville
+                </label>
+                <input
+                  id="loc-ville"
+                  className="lg-input"
+                  placeholder="Ex : Cotonou"
+                  value={localisation.ville}
+                  onChange={(e) => majLoc("ville", e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div>
+                <label className="lg-label" htmlFor="loc-lat">
+                  Latitude
+                </label>
+                <input
+                  id="loc-lat"
+                  type="number"
+                  step="any"
+                  className="lg-input tabular"
+                  placeholder="Ex : 6.3700"
+                  value={localisation.latitude}
+                  onChange={(e) => majLoc("latitude", e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="lg-label" htmlFor="loc-lng">
+                  Longitude
+                </label>
+                <input
+                  id="loc-lng"
+                  type="number"
+                  step="any"
+                  className="lg-input tabular"
+                  placeholder="Ex : 2.4200"
+                  value={localisation.longitude}
+                  onChange={(e) => majLoc("longitude", e.target.value)}
+                />
+              </div>
+            </div>
+
+            {/* Carte */}
+            <div className="rounded-xl border border-ink-200 overflow-hidden">
+              {localisation.latitude && localisation.longitude ? (
+                <MapContainer
+                  center={[Number(localisation.latitude), Number(localisation.longitude)]}
+                  zoom={15}
+                  className="w-full h-64"
+                  style={{ height: "260px" }}
+                >
+                  <TileLayer
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  />
+                  <Marker position={[Number(localisation.latitude), Number(localisation.longitude)]}>
+                    <Popup>
+                      {localisation.adresse || localisation.ville || "Votre boutique"}
+                    </Popup>
+                  </Marker>
+                </MapContainer>
+              ) : (
+                <div className="w-full h-64 flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-ink-200 bg-ink-50/50 text-ink-400">
+                  <MapPinIcon className="h-10 w-10 mb-2 opacity-50" />
+                  <p className="text-sm font-medium">
+                    Aucune coordonnée saisie — la carte s'affichera après enregistrement de la latitude/longitude.
+                  </p>
+                </div>
+              )}
+            </div>
+
+            <p className="mt-2 text-[12.5px] text-ink-500">
+              Astuce : vous pouvez trouver vos coordonnées GPS sur{" "}
+              <a
+                href="https://www.google.com/maps"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-brand-600 hover:underline font-medium"
+              >
+                Google Maps
+              </a>
+              (clic droit sur votre boutique → «&nbsp;Afficher l'adresse&nbsp;»).
+            </p>
+
+            {/* Bouton itinéraire (Google Maps) */}
+            {(localisation.latitude && localisation.longitude) || (localisation.adresse || localisation.ville) ? (
+              <button
+                type="button"
+                onClick={() => {
+                  const destination = localisation.latitude && localisation.longitude
+                    ? `${localisation.latitude},${localisation.longitude}`
+                    : encodeURIComponent(`${localisation.adresse}, ${localisation.ville}`);
+                  window.open(
+                    `https://www.google.com/maps/dir/?api=1&destination=${destination}`,
+                    "_blank"
+                  );
+                }}
+                className="inline-flex items-center gap-2 rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-bold text-white shadow-soft transition-all hover:bg-brand-700 hover:shadow-lift active:scale-[0.98]"
+              >
+                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                Voir l'itinéraire sur Google Maps
+              </button>
+            ) : null}
           </div>
         </section>
 

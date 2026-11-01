@@ -111,7 +111,9 @@ h1, h2, h3, h4, h5, h6, .font-display {
     @apply mb-1.5 block text-[13px] font-semibold text-ink-700;
   }
   .lg-input {
-    @apply w-full rounded-xl border border-ink-200 bg-white px-3.5 py-2.5 text-sm text-ink-800
+    /* text-base (16px) sur mobile : évite le zoom automatique iOS Safari au focus ;
+       sm:text-sm pour l'ergonomie desktop. */
+    @apply w-full rounded-xl border border-ink-200 bg-white px-3.5 py-2.5 text-base sm:text-sm text-ink-800
       shadow-xs outline-none transition-all duration-200 placeholder:text-ink-400
       focus:border-brand-400 focus:ring-4 focus:ring-brand-500/[0.12];
   }
@@ -239,6 +241,20 @@ h1, h2, h3, h4, h5, h6, .font-display {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/* ==========================================================================
+   RESPONSIVE MOBILE
+   ========================================================================== */
+/* iOS Safari zoome automatiquement (focus + zoom) dès qu'un champ texte a une
+   police < 16px. On force 16px sur les champs de saisie en mobile uniquement,
+   pour garder le design desktop (text-sm) intact. */
+@media (max-width: 640px) {
+  input:not([type="checkbox"]):not([type="radio"]),
+  textarea,
+  select {
+    font-size: 16px;
   }
 }
 

@@ -197,7 +197,7 @@ export function SignUp() {
 
           <form onSubmit={handleSubmit} className="mt-8 space-y-4">
             {/* Nom / Prénom */}
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div>
                 <label className="lg-label" htmlFor="nom">
                   Nom
@@ -265,7 +265,7 @@ export function SignUp() {
                     onChange={(e) => setNomEntreprise(e.target.value)}
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   <div>
                     <label className="lg-label" htmlFor="ifu">
                       IFU <span className="text-ink-400">(facture DGI)</span>

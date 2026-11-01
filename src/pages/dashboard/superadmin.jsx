@@ -357,7 +357,7 @@ function ModaleCreerEntreprise({ onFermer, surSucces }) {
             <label className="lg-label">Nom de l'entreprise</label>
             <input className="lg-input" required value={form.nom_entreprise} onChange={set("nom_entreprise")} placeholder="Ex : Supermarché Les Jumelles" />
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
               <label className="lg-label">IFU</label>
               <input className="lg-input font-mono" required value={form.ifu} onChange={(e) => setForm((f) => ({ ...f, ifu: e.target.value.toUpperCase() }))} placeholder="3202397904961" />
@@ -374,7 +374,7 @@ function ModaleCreerEntreprise({ onFermer, surSucces }) {
               </select>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
               <label className="lg-label">Nom du responsable</label>
               <input className="lg-input" required value={form.nom} onChange={set("nom")} placeholder="Kossi" />

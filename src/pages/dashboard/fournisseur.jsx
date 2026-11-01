@@ -3,6 +3,7 @@ import { Tabs } from "@material-tailwind/react";
   import { useEffect, useState } from "react";
   import {
     BuildingStorefrontIcon,
+    MagnifyingGlassIcon,
     TrashIcon,
     TruckIcon,
   } from "@heroicons/react/24/outline";
@@ -19,6 +20,7 @@ import Modaleditfournisseur from "@/widgets/modal/modaleditfournisseur";
     const [toast, setToast] = useState(false);
     const rep = "Enregistrement effectué avec succès";
     const [loading, setLoading] = useState(true); // Ajout d'un état pour suivre le chargement
+    const [recherche, setRecherche] = useState(""); // Recherche dans la liste des fournisseurs
   
     // Gestion des menus actifs
     const handleClick = (id) => {
@@ -124,13 +126,22 @@ import Modaleditfournisseur from "@/widgets/modal/modaleditfournisseur";
     const removefournisseur = (id) => {
       setfournisseurs((prevfournisseurs) => prevfournisseurs.filter((fournisseur) => fournisseur.id !== id));
     };
+
+    // Liste filtrée par la recherche (nom, contact, adresse…)
+    const fournisseursFiltres = fournisseurs.filter((fournisseur) =>
+      [fournisseur.nom, fournisseur.contact, fournisseur.adresse]
+        .map((v) => String(v || ""))
+        .join(" ")
+        .toLowerCase()
+        .includes(recherche.trim().toLowerCase())
+    );
   
     // Appel de fetchfournisseurs lors du chargement du composant
     useEffect(() => {
       fetchfournisseurs();
     }, []);
   
-    const total = fournisseurs.length;
+    const total = fournisseursFiltres.length;
 
     const boutonAjout = <Modaladdfournisseur handletoast={handletoast} />;
 
@@ -160,6 +171,15 @@ import Modaleditfournisseur from "@/widgets/modal/modaleditfournisseur";
             <span className="lg-badge-neutral tabular">
               {total} fournisseur{total > 1 ? "s" : ""}
             </span>
+            <div className="relative w-full max-w-xs">
+              <MagnifyingGlassIcon className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-ink-400" />
+              <input
+                value={recherche}
+                onChange={(e) => setRecherche(e.target.value)}
+                placeholder="Rechercher un fournisseur…"
+                className="lg-input w-full pl-10 pr-4"
+              />
+            </div>
           </div>
 
           {/* Squelettes de chargement */}
@@ -193,7 +213,7 @@ import Modaleditfournisseur from "@/widgets/modal/modaleditfournisseur";
                   </tr>
                 </thead>
                 <tbody>
-                  {fournisseurs.map((fournisseur) => (
+                  {fournisseursFiltres.map((fournisseur) => (
                     <tr key={fournisseur.id}>
                       <td className="lg-td font-semibold text-ink-800">
                         {fournisseur.nom || "—"}

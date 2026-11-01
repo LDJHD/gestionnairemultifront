@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 export function Modifieclient({ ClientId, handleformclick }) {
   const [formData, setFormData] = useState({
@@ -13,6 +14,14 @@ export function Modifieclient({ ClientId, handleformclick }) {
     ifu: "",
   });
   console.log(ClientId);
+
+  const swalWithTailwindButtons = Swal.mixin({
+    customClass: {
+      confirmButton: "bg-green-800 hover:bg-green-400 text-white font-bold py-2 mx-2 px-4 rounded",
+      cancelButton: "bg-red-800 hover:bg-red-200 text-white font-bold py-2 mx-2 px-4 rounded",
+    },
+    buttonsStyling: false,
+  });
 
   // Fonction pour récupérer les détails du client
   const fetchclientDetails = async (id) => {
@@ -80,14 +89,33 @@ export function Modifieclient({ ClientId, handleformclick }) {
 
       if (response.ok) {
         const data = await response.json();
-        toast.success("client mis à jour avec succès !", { autoClose: 600 });
+        swalWithTailwindButtons.fire({
+          title: "Succès",
+          text: "Client mis à jour avec succès !",
+          icon: "success",
+        });
         console.log("Response data:", data);
       } else {
-        toast.error("Échec de la mise à jour du client.");
+        let message = "Échec de la mise à jour du client.";
+        try {
+          const data = await response.json();
+          if (data?.erreur) message = data.erreur;
+        } catch (e) {
+          /* corps de réponse indisponible */
+        }
+        swalWithTailwindButtons.fire({
+          title: "Erreur",
+          text: message,
+          icon: "error",
+        });
         console.error("Error:", response.statusText);
       }
     } catch (error) {
-      toast.error("Erreur de connexion au serveur.");
+      swalWithTailwindButtons.fire({
+        title: "Erreur",
+        text: "Erreur de connexion au serveur.",
+        icon: "error",
+      });
       console.error("Error:", error);
     }
   };
@@ -161,6 +189,7 @@ export function Modifieclient({ ClientId, handleformclick }) {
               type="email"
               name="email"
               id="email"
+              required
               value={formData.email}
               onChange={handleInputChange}
               className="lg-input"

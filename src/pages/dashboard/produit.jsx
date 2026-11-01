@@ -1,6 +1,6 @@
 import { Tabs } from "@material-tailwind/react";
 import { useEffect, useState } from "react";
-import { CubeIcon } from "@heroicons/react/24/outline";
+import { CubeIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import Modal from "@/widgets/modal/modal";
 import Toastadd from "@/widgets/toast/toastadd";
 import Droplist from "@/widgets/button/droplist";
@@ -17,6 +17,7 @@ export function Produit() {
   const [toast, setToast] = useState(false);
   const [loading, setLoading] = useState(true); // Ajout d'un état pour suivre le chargement
   const rep = "Enregistrement effectué avec succès";
+  const [recherche, setRecherche] = useState(""); // Recherche dans le catalogue produits
 
   // Gestion des menus actifs
   const handleClick = (id) => {
@@ -83,7 +84,15 @@ export function Produit() {
 
   const displayproducts = productsstore.length > 0 ? productsstore : products;
 
-  const total = displayproducts.length;
+  const displayproduitsFiltres = displayproducts.filter((product) =>
+    [product.nom, product.nom_categorie, product.code_barre]
+      .map((v) => String(v || ""))
+      .join(" ")
+      .toLowerCase()
+      .includes(recherche.trim().toLowerCase())
+  );
+
+  const total = displayproduitsFiltres.length;
 
   const boutonAjout = <Modal handletoast={handletoast} />;
 
@@ -115,6 +124,15 @@ export function Produit() {
           <span className="lg-badge-neutral tabular">
             {total} produit{total > 1 ? "s" : ""}
           </span>
+          <div className="relative w-full max-w-xs">
+            <MagnifyingGlassIcon className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-ink-400" />
+            <input
+              value={recherche}
+              onChange={(e) => setRecherche(e.target.value)}
+              placeholder="Rechercher un produit…"
+              className="lg-input w-full pl-10 pr-4"
+            />
+          </div>
         </div>
 
         {/* Squelettes de chargement */}
@@ -153,7 +171,7 @@ export function Produit() {
                 </tr>
               </thead>
               <tbody>
-                {displayproducts.map((product, key) => (
+                {displayproduitsFiltres.map((product, key) => (
                   <tr key={product.id ?? product.code_barre ?? key}>
                     <td className="lg-td">
                       <Link

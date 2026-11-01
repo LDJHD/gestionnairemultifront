@@ -3,6 +3,7 @@ import { Tabs } from "@material-tailwind/react";
   import { useEffect, useState } from "react";
   import {
     FolderPlusIcon,
+    MagnifyingGlassIcon,
     TagIcon,
     TrashIcon,
   } from "@heroicons/react/24/outline";
@@ -82,8 +83,9 @@ import { Tabs } from "@material-tailwind/react";
     const [toast, setToast] = useState(false);
     const rep = "Enregistrement effectué avec succès";
     const [loading, setLoading] = useState(true); // Ajout d'un état pour suivre le chargement
+    const [recherche, setRecherche] = useState(""); // Recherche dans la liste des catégories
   
-    
+     
     // Gestion des menus actifs
     const handleClick = (id) => {
       setMenuActif(menuActif === id ? null : id);
@@ -132,7 +134,14 @@ import { Tabs } from "@material-tailwind/react";
       fetchcategories();
     }, []);
   
-    const total = categorie.length;
+    // Liste filtrée par la recherche (nom de la catégorie)
+    const categoriesFiltrees = categorie.filter((cat) =>
+      String(cat.nom || "")
+        .toLowerCase()
+        .includes(recherche.trim().toLowerCase())
+    );
+
+    const total = categoriesFiltrees.length;
 
     const boutonAjout = <Modaladdcategorie handletoast={handletoast} />;
 
@@ -162,6 +171,15 @@ import { Tabs } from "@material-tailwind/react";
             <span className="lg-badge-neutral tabular">
               {total} catégorie{total > 1 ? "s" : ""}
             </span>
+            <div className="relative w-full max-w-xs">
+              <MagnifyingGlassIcon className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-ink-400" />
+              <input
+                value={recherche}
+                onChange={(e) => setRecherche(e.target.value)}
+                placeholder="Rechercher une catégorie…"
+                className="lg-input w-full pl-10 pr-4"
+              />
+            </div>
           </div>
 
           {/* Squelettes de chargement */}
@@ -193,7 +211,7 @@ import { Tabs } from "@material-tailwind/react";
                   </tr>
                 </thead>
                 <tbody>
-                  {categorie.map((categorie) => (
+                  {categoriesFiltrees.map((categorie) => (
                     <tr key={categorie.nom}>
                       <td className="lg-td font-semibold text-ink-800">{categorie.nom || "—"}</td>
                       <td className="lg-td text-[13px] text-ink-500">

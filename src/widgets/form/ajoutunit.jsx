@@ -1,10 +1,19 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Swal from "sweetalert2";
 
 export function AjoutUnit({ handleformclick, handletoast }) {
   const [formData, setFormData] = useState({
     nom: "",
+  });
+
+  const swalWithTailwindButtons = Swal.mixin({
+    customClass: {
+      confirmButton: "bg-green-800 hover:bg-green-400 text-white font-bold py-2 mx-2 px-4 rounded",
+      cancelButton: "bg-red-800 hover:bg-red-200 text-white font-bold py-2 mx-2 px-4 rounded",
+    },
+    buttonsStyling: false,
   });
 
   const handleInputChange = (e) => {
@@ -30,18 +39,37 @@ export function AjoutUnit({ handleformclick, handletoast }) {
 
       if (response.ok) {
         const data = await response.json();
-        toast.success("unit ajouté avec succès !", { autoClose: 600 });
+        swalWithTailwindButtons.fire({
+          title: "Succès",
+          text: "Unité ajoutée avec succès !",
+          icon: "success",
+        });
         console.log("Response data:", data);
         // Réinitialise les champs du formulaire après la soumission
         setFormData({
           nom: "",
         });
       } else {
-        toast.error("Échec de l'ajout de unit.");
+        let message = "Échec de l'ajout de l'unité.";
+        try {
+          const data = await response.json();
+          if (data?.erreur) message = data.erreur;
+        } catch (e) {
+          /* corps de réponse indisponible */
+        }
+        swalWithTailwindButtons.fire({
+          title: "Erreur",
+          text: message,
+          icon: "error",
+        });
         console.error("Error:", response.statusText);
       }
     } catch (error) {
-      toast.error("Erreur de connexion au serveur.");
+      swalWithTailwindButtons.fire({
+        title: "Erreur",
+        text: "Erreur de connexion au serveur.",
+        icon: "error",
+      });
       console.error("Error:", error);
     }
   };

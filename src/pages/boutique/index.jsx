@@ -38,6 +38,7 @@ import {
   TrashIcon,
   TruckIcon,
   XMarkIcon,
+  MapPinIcon,
 } from "@heroicons/react/24/outline";
 import {
   BandeauAnnonce,
@@ -103,7 +104,7 @@ function avantages({ vitrine, paiements }) {
  * 1. HÉROS ÉDITORIAL
  * =========================================================================== */
 function Hero({ data }) {
-  const { activite, vitrine, paiements, produits } = data;
+  const { activite, vitrine, paiements, produits, localisation } = data;
 
   // Mosaïque des plus grandes catégories → donne un ancrage visuel au héros
   // même quand le catalogue n'a aucune photo.
@@ -177,7 +178,46 @@ function Hero({ data }) {
             </Link>
           </div>
 
-          <dl className="mt-10 grid max-w-lg grid-cols-3 gap-6 border-t border-white/10 pt-7">
+          {/* Localisation de la boutique */}
+          {(localisation?.adresse || localisation?.ville || localisation?.latitude) && (
+            <div className="mt-8 flex flex-wrap items-center gap-3 rounded-xl border border-white/20 bg-white/10 px-4 py-4 backdrop-blur-sm">
+              <MapPinIcon className="h-5 w-5 text-boutique-300 flex-none" />
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-boutique-100">
+                  {localisation.adresse || localisation.ville}
+                </p>
+                {localisation.ville && localisation.adresse && (
+                  <p className="text-[12px] text-boutique-200/70">
+                    {localisation.adresse}, {localisation.ville}
+                  </p>
+                )}
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  const destination =
+                    localisation.latitude && localisation.longitude
+                      ? `${localisation.latitude},${localisation.longitude}`
+                      : encodeURIComponent(
+                          `${localisation.adresse || ""}, ${localisation.ville || ""}`
+                        );
+                  window.open(
+                    `https://www.google.com/maps/dir/?api=1&destination=${destination}`,
+                    "_blank"
+                  );
+                }}
+                className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-2.5 text-sm font-bold text-boutique-100 transition-all hover:bg-white/20 hover:border-white/50 active:scale-[0.98]"
+              >
+                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                Itinéraire
+              </button>
+            </div>
+          )}
+
+          <dl className="mt-10 grid max-w-lg grid-cols-2 gap-6 border-t border-white/10 pt-7 sm:grid-cols-3">
             {[
               { v: String(produits.length), l: "Références" },
               { v: String(enStock), l: "En stock" },
