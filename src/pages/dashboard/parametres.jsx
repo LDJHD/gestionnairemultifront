@@ -93,6 +93,7 @@ export default function ParametresBoutique() {
   const [envoi, setEnvoi] = useState(false);
   const [migrationRequise, setMigrationRequise] = useState(false);
   const [boutique, setBoutique] = useState({ slug: null, nom: null });
+  const [lienBoutiqueDirect, setLienBoutiqueDirect] = useState(null);
   const [localisation, setLocalisation] = useState({
     adresse: "",
     ville: "",
@@ -101,7 +102,10 @@ export default function ParametresBoutique() {
   });
 
   // Lien public de la boutique : FRONT/boutique/:slug
-  const lienBoutique = boutique.slug
+  // Source de vérité : l'endpoint dédié /api/v1/activite/mon-lien (isolé par entreprise)
+  const lienBoutique = lienBoutiqueDirect
+    ? lienBoutiqueDirect
+    : boutique.slug
     ? `${window.location.origin}/boutique/${boutique.slug}`
     : null;
 
@@ -178,6 +182,19 @@ export default function ParametresBoutique() {
           latitude: json.localisation?.latitude != null ? String(json.localisation.latitude) : "",
           longitude: json.localisation?.longitude != null ? String(json.localisation.longitude) : "",
         });
+
+        // Récupération du lien dédié de l'entreprise connectée (source de vérité, isolé par entreprise)
+        try {
+          const resLien = await fetch(`${API}/api/v1/activite/mon-lien`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          if (resLien.ok) {
+            const jsonLien = await resLien.json();
+            setLienBoutiqueDirect(jsonLien.lien || null);
+          }
+        } catch (e) {
+          /* non bloquant : le lien de secours boutique.slug sera utilisé */
+        }
       } catch (e) {
         toast.error(e.message);
       } finally {
