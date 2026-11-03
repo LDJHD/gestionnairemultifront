@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
-import { Card, CardBody, Avatar, Tabs, TabsHeader, Tab } from "@material-tailwind/react";
+import { toast } from "react-toastify";
+import { Card, CardBody, Avatar } from "@material-tailwind/react";
 import {
   UserCircleIcon,
   BuildingStorefrontIcon,
   LinkIcon,
   EnvelopeIcon,
   DocumentTextIcon,
+  ArrowRightIcon,
 } from "@heroicons/react/24/solid";
 import { Link } from "react-router-dom";
 
@@ -68,12 +70,14 @@ export function Profile() {
             entreprise_id: decoded.entreprise_id || null,
             entreprise_nom: decoded.entreprise_nom || null,
             entreprise_ifu: decoded.entreprise_ifu || null,
+            entreprise_slug: decoded.entreprise_slug || null,
             super_admin: decoded.super_admin || false,
           });
         }
 
-        // Lien dédié de la boutique de l'entreprise connectée (isolé par entreprise)
-        if (decoded && !decoded.super_admin && decoded.entreprise_id) {
+        // Lien dédié de la boutique de l'entreprise connectée (source de vérité, isolé par entreprise)
+        const eid = decoded?.entreprise_id;
+        if (decoded && !decoded.super_admin && eid) {
           try {
             const res = await fetch(`${API}/api/v1/activite/mon-lien`, {
               headers: { Authorization: `Bearer ${token}` },
@@ -83,8 +87,13 @@ export function Profile() {
               setLienBoutique(json.lien || null);
             }
           } catch (e) {
-            /* non bloquant */
+            /* non bloquant : le lien sera construit depuis le slug du JWT */
           }
+        }
+
+        // Fallback : construire le lien depuis le slug stocké dans le JWT
+        if (!lienBoutique && decoded?.entreprise_slug) {
+          setLienBoutique(`${window.location.origin}/boutique/${decoded.entreprise_slug}`);
         }
       } catch (e) {
         console.error("Erreur chargement profil:", e);
@@ -159,7 +168,7 @@ export function Profile() {
             <ChampInfo label="ID utilisateur" valeur={String(user.id || "—")} Icone={DocumentTextIcon} />
           </div>
 
-          {/* Entreprise & lien boutique */}
+          {/* Entreprise & lien boutique (spécifique à cette entreprise) */}
           {user.entreprise_nom || user.entreprise_id ? (
             <div className="mt-8 overflow-hidden rounded-2xl border border-ink-200/80 bg-white shadow-card">
               <CardBody className="p-6">
@@ -208,6 +217,11 @@ export function Profile() {
                       Ouvrir ma boutique
                     </a>
                   </div>
+                )}
+                {!lienBoutique && (
+                  <p className="mt-4 text-[13px] text-ink-500">
+                    Aucun lien de boutique configuré pour cette entreprise.
+                  </p>
                 )}
               </CardBody>
             </div>
