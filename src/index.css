@@ -204,6 +204,31 @@ h1, h2, h3, h4, h5, h6, .font-display {
     @apply grid shrink-0 place-items-center rounded-xl;
   }
 
+  /* =========================================================================
+     VITRINE PUBLIQUE — texte BIEN VISIBLE sur fond clair (règle de contraste)
+     Règle de lisibilité (WCAG) : le texte courant doit atteindre au moins
+     4.5:1 sur son fond. Deux pièges corrigeaient avant :
+       - les teintes `boutique-400/500` claires appliquées en texte courant
+         sur fond `boutique-50` → remplacées par la teinte 700+ ;
+       - les opaques `bg-boutique-50/85` qui laissaient passer le fond
+         technique de la page (2 halos) → fond plein + bordure renforcée.
+     Les teintes 400/500 ne restent que pour icônes décoratives,
+     pastilles données ou fonds saturés ; le texte informative utilise
+     toujours *-700 et au-dessus.
+     ========================================================================= */
+  .boutique-page {
+    background: linear-gradient(to bottom, #f3ede0 0%, #fdf9ef 28%, #fdf9ef 72%, #f3ede0 100%);
+    @apply text-boutique-800;
+  }
+  /* Texte courant et secondaires : jamais plus clair que 700. */
+  .boutique-texte { @apply text-boutique-700; }
+  .boutique-texte-fort { @apply text-boutique-800; }
+  /* Fond clair garanti pour en-têtes et barres fines (ou fonds saturés). */
+  .boutique-barre-claire {
+    background: #f3ede0;
+    @apply border-b border-boutique-300 shadow-soft;
+  }
+
   /* ---------- Lien de navigation latérale ---------- */
   .lg-nav-item {
     @apply relative flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium

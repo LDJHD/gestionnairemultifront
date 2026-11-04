@@ -51,8 +51,8 @@ export const fmt = (n) => `${Number(n || 0).toLocaleString("fr-FR")} F`;
 
 /** Dégradés disponibles pour les visuels générés (fond + dégradé). */
 const TONS = [
-  { from: "from-boutique-100", to: "to-boutique-300", ink: "text-boutique-700", chip: "bg-boutique-200/70 text-boutique-800" },
-  { from: "from-boutique-100", to: "to-boutique-300", ink: "text-boutique-800", chip: "bg-boutique-200 text-boutique-800" },
+  { from: "from-boutique-200", to: "to-boutique-400", ink: "text-boutique-700", chip: "bg-boutique-300/60 text-boutique-800" },
+  { from: "from-boutique-200", to: "to-boutique-400", ink: "text-boutique-800", chip: "bg-boutique-300 text-boutique-900" },
   { from: "from-amber-50", to: "to-amber-200", ink: "text-amber-700", chip: "bg-amber-100 text-amber-800" },
   { from: "from-rose-50", to: "to-rose-200", ink: "text-rose-700", chip: "bg-rose-100 text-rose-700" },
   { from: "from-sky-50", to: "to-sky-200", ink: "text-sky-700", chip: "bg-sky-100 text-sky-700" },
@@ -149,7 +149,7 @@ export function TuileVisuel({ produit, api, className = "", taille = "normale" }
       ) : (
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
           <span
-            className={`font-display font-extrabold tracking-tight text-white/90 drop-sm ${gros ? "text-6xl" : "text-4xl"}`}
+            className={`font-display font-extrabold tracking-tight text-white drop-sm ${gros ? "text-6xl" : "text-4xl"}`}
           >
             {initiales(produit.nom)}
           </span>
@@ -231,7 +231,7 @@ export function BandeauAnnonce({ vitrine, paiements, activite }) {
           <span
             key={texte}
             className={`flex flex-none items-center gap-1.5 text-[11.5px] font-semibold tracking-wide ${
-              i === 0 ? "text-white" : "text-boutique-300"
+              i === 0 ? "text-white" : "text-boutique-100"
             } ${i > 1 ? "hidden md:flex" : ""}`}
           >
             <Icone className="h-3.5 w-3.5 flex-none opacity-70" />
@@ -256,7 +256,7 @@ export function EnteteVitrine({
   children,
 }) {
   return (
-    <header className="border-b border-boutique-200/80 bg-boutique-50/85 backdrop-blur-xl">
+    <header className="boutique-barre-claire">
       <div className="mx-auto flex max-w-[1400px] items-center gap-3 px-4 py-3 sm:gap-5 sm:px-8 sm:py-4">
         <Link to={`/boutique/${activite?.slug || ""}`} className="group flex min-w-0 flex-none items-center gap-3">
           <span className="grid h-11 w-11 flex-none place-items-center rounded-2xl bg-boutique-900 text-boutique-50 shadow-soft transition-transform duration-300 group-hover:-rotate-3">
@@ -266,7 +266,7 @@ export function EnteteVitrine({
             <span className="block truncate font-display text-[15px] leading-tight font-extrabold tracking-tight text-boutique-900">
               {activite?.nom}
             </span>
-            <span className="block text-[10.5px] font-semibold tracking-[0.16em] text-boutique-400 uppercase">
+            <span className="block text-[10.5px] font-bold tracking-[0.16em] text-boutique-700 uppercase">
               Boutique en ligne
             </span>
           </span>
@@ -276,9 +276,9 @@ export function EnteteVitrine({
             `mx-auto` absorbe tout l'espace libre de la ligne : le bouton Panier
             se retrouve donc plaqué contre le bord droit du conteneur. */}
         <div className="relative order-last hidden w-full max-w-md flex-1 md:order-none md:mx-auto md:block">
-          <MagnifyingGlassIcon className="pointer-events-none absolute top-1/2 left-4 h-[18px] w-[18px] -translate-y-1/2 text-boutique-400" />
+          <MagnifyingGlassIcon className="pointer-events-none absolute top-1/2 left-4 h-[18px] w-[18px] -translate-y-1/2 text-boutique-700" />
           <input
-            className="w-full rounded-full border border-boutique-200 bg-white py-2.5 pr-4 pl-11 text-sm text-boutique-900 shadow-xs transition-shadow outline-none placeholder:text-boutique-400 focus:border-boutique-300 focus:ring-4 focus:ring-boutique-200/50"
+            className="w-full rounded-full border border-boutique-300 bg-white py-2.5 pr-4 pl-11 text-sm font-semibold text-boutique-900 shadow-xs transition-shadow outline-none placeholder:font-normal placeholder:text-boutique-600 focus:border-boutique-500 focus:ring-4 focus:ring-boutique-300/50"
             placeholder="Rechercher un article, une marque…"
             aria-label="Rechercher un article"
             value={recherche}
@@ -312,11 +312,11 @@ export function EnteteVitrine({
       </div>
 
       {/* Recherche mobile */}
-      <div className="border-t border-boutique-200/70 px-4 py-2.5 md:hidden">
+      <div className="border-t border-boutique-300/70 px-4 py-2.5 md:hidden">
         <div className="relative mx-auto max-w-[1400px]">
-          <MagnifyingGlassIcon className="pointer-events-none absolute top-1/2 left-4 h-[18px] w-[18px] -translate-y-1/2 text-boutique-400" />
+          <MagnifyingGlassIcon className="pointer-events-none absolute top-1/2 left-4 h-[18px] w-[18px] -translate-y-1/2 text-boutique-700" />
           <input
-            className="w-full rounded-full border border-boutique-200 bg-white py-2.5 pr-4 pl-11 text-sm text-boutique-900 outline-none placeholder:text-boutique-400 focus:border-boutique-300 focus:ring-4 focus:ring-boutique-200/50"
+            className="w-full rounded-full border border-boutique-300 bg-white py-2.5 pr-4 pl-11 text-sm font-semibold text-boutique-900 outline-none placeholder:font-normal placeholder:text-boutique-600 focus:border-boutique-500 focus:ring-4 focus:ring-boutique-300/50"
             placeholder="Rechercher un article, une marque…"
             aria-label="Rechercher un article"
             value={recherche}
@@ -335,7 +335,7 @@ export function EnteteVitrine({
 export function PiedVitrine({ activite, vitrine, paiements }) {
   const annee = new Date().getFullYear();
   return (
-    <footer className="mt-24 border-t border-boutique-200 bg-boutique-100/70">
+    <footer className="mt-24 border-t border-boutique-300 bg-boutique-100">
       <div className="mx-auto max-w-[1400px] px-4 py-14 sm:px-8">
         <div className="grid gap-10 lg:grid-cols-12">
           <div className="lg:col-span-4">
@@ -347,18 +347,18 @@ export function PiedVitrine({ activite, vitrine, paiements }) {
                 {activite?.nom}
               </span>
             </div>
-            <p className="mt-4 max-w-sm text-[13.5px] leading-relaxed text-boutique-600">
-              Catalogue servi par <strong className="font-bold text-boutique-800">Le Gestionnaire</strong>.
+            <p className="mt-4 max-w-sm text-[13.5px] leading-relaxed text-boutique-700">
+              Catalogue servi par <strong className="font-bold text-boutique-900">Le Gestionnaire</strong>.
               Commandez en quelques clics, avec retrait en boutique ou livraison à domicile.
             </p>
             <div className="mt-5 flex flex-wrap gap-2">
               {paiements?.en_ligne && (
-                <span className="lg-badge border-boutique-200 bg-white text-boutique-700">
+                <span className="lg-badge border-boutique-300 bg-white text-boutique-800">
                   <ShieldCheckIcon className="h-3.5 w-3.5" /> Paiement sécurisé
                 </span>
               )}
               {paiements?.a_la_livraison && (
-                <span className="lg-badge border-boutique-200 bg-white text-boutique-700">
+                <span className="lg-badge border-boutique-300 bg-white text-boutique-800">
                   <BanknotesIcon className="h-3.5 w-3.5" /> Paiement à la livraison
                 </span>
               )}
@@ -366,22 +366,22 @@ export function PiedVitrine({ activite, vitrine, paiements }) {
           </div>
 
           <div className="lg:col-span-3">
-            <h3 className="text-[11px] font-bold tracking-[0.16em] text-boutique-500 uppercase">
+            <h3 className="text-[11px] font-bold tracking-[0.16em] text-boutique-700 uppercase">
               Navigation
             </h3>
-            <ul className="mt-4 space-y-2.5 text-[13.5px]">
+            <ul className="mt-4 space-y-2.5 text-[13.5px] font-semibold">
               <li>
-                <Link to={`/boutique/${activite?.slug || ""}`} className="text-boutique-700 transition-colors hover:text-boutique-900">
+                <Link to={`/boutique/${activite?.slug || ""}`} className="text-boutique-700 transition-colors hover:text-boutique-950 hover:underline">
                   Tout le catalogue
                 </Link>
               </li>
               <li>
-                <Link to="/commande/suivi" className="text-boutique-700 transition-colors hover:text-boutique-900">
+                <Link to="/commande/suivi" className="text-boutique-700 transition-colors hover:text-boutique-950 hover:underline">
                   Suivre ma commande
                 </Link>
               </li>
               <li>
-                <Link to="/auth/sign-in" className="text-boutique-700 transition-colors hover:text-boutique-900">
+                <Link to="/auth/sign-in" className="text-boutique-700 transition-colors hover:text-boutique-950 hover:underline">
                   Espace gestionnaire
                 </Link>
               </li>
@@ -389,7 +389,7 @@ export function PiedVitrine({ activite, vitrine, paiements }) {
           </div>
 
           <div className="lg:col-span-5">
-            <h3 className="text-[11px] font-bold tracking-[0.16em] text-boutique-500 uppercase">
+            <h3 className="text-[11px] font-bold tracking-[0.16em] text-boutique-700 uppercase">
               {vitrine?.livraison_active ? "Zones & frais de livraison" : "Retrait en boutique"}
             </h3>
             {(vitrine?.zones || []).length ? (
@@ -403,12 +403,12 @@ export function PiedVitrine({ activite, vitrine, paiements }) {
                       <MapPinIcon className="h-4 w-4 flex-none text-forest-500" />
                       {z.nom}
                     </span>
-                    <span className="font-bold text-boutique-600 tabular">{fmt(z.frais)}</span>
+                    <span className="font-extrabold text-boutique-800 tabular">{fmt(z.frais)}</span>
                   </li>
                 ))}
               </ul>
             ) : (
-              <p className="mt-4 text-[13.5px] text-boutique-600">
+              <p className="mt-4 text-[13.5px] font-semibold text-boutique-700">
                 Retrait sur place au point de vente
                 {vitrine?.frais_livraison_defaut
                   ? ` · Livraison ${fmt(vitrine.frais_livraison_defaut)} par défaut`
@@ -425,12 +425,12 @@ export function PiedVitrine({ activite, vitrine, paiements }) {
           </div>
         </div>
 
-        <div className="mt-12 flex flex-col gap-3 border-t border-boutique-200 pt-6 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-[12.5px] text-boutique-500">
+        <div className="mt-12 flex flex-col gap-3 border-t border-boutique-300 pt-6 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-[12.5px] font-semibold text-boutique-700">
             © {annee} — {activite?.nom}. Conception et développement :{" "}
-            <strong className="font-bold text-boutique-700">Le Gestionnaire · TO CONNECT</strong>
+            <strong className="font-bold text-boutique-900">Le Gestionnaire · TO CONNECT</strong>
           </p>
-          <p className="flex items-center gap-1.5 text-[12px] text-boutique-400">
+          <p className="flex items-center gap-1.5 text-[12px] font-semibold text-boutique-600">
             <ClockIcon className="h-3.5 w-3.5" />
             Montants vérifiés et recalculés côté serveur
           </p>
@@ -476,11 +476,11 @@ export function SelecteurQuantite({ valeur, max, onChange, libelle }) {
 export function EtatVide({ Icone = ShoppingBagIcon, titre, texte, action }) {
   return (
     <div className="flex flex-col items-center justify-center px-6 py-24 text-center">
-      <span className="grid h-20 w-20 place-items-center rounded-3xl border border-boutique-200 bg-white text-boutique-300 shadow-soft">
+      <span className="grid h-20 w-20 place-items-center rounded-3xl border border-boutique-300 bg-boutique-100 text-boutique-700 shadow-soft">
         <Icone className="h-9 w-9" />
       </span>
       <h3 className="mt-6 font-display text-xl font-extrabold tracking-tight text-boutique-900">{titre}</h3>
-      {texte && <p className="mt-2 max-w-sm text-sm leading-relaxed text-boutique-500">{texte}</p>}
+      {texte && <p className="mt-2 max-w-sm text-sm leading-relaxed font-medium text-boutique-700">{texte}</p>}
       {action && <div className="mt-6">{action}</div>}
     </div>
   );
@@ -492,7 +492,7 @@ export function SqueletteGrille({ nombre = 8 }) {
       {Array.from({ length: nombre }).map((_, i) => (
         <div
           key={i}
-          className="overflow-hidden rounded-2xl border border-boutique-200/70 bg-white shadow-xs"
+          className="overflow-hidden rounded-2xl border border-boutique-300 bg-white shadow-xs"
         >
           <div className="lg-skeleton aspect-square w-full rounded-none" />
           <div className="space-y-2.5 p-4">
@@ -513,9 +513,9 @@ export function BoutonVitrine({ children, className = "", variante = "principal"
     "inline-flex items-center justify-center gap-2 rounded-full font-bold transition-all duration-200 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50";
   const variantes = {
     principal: "bg-boutique-900 text-boutique-50 shadow-soft hover:bg-boutique-800 hover:shadow-lift",
-    clair: "border border-boutique-200 bg-white text-boutique-800 hover:border-boutique-300 hover:bg-boutique-50",
+    clair: "border border-boutique-300 bg-white text-boutique-800 hover:border-boutique-500 hover:bg-boutique-100",
     accent: "bg-boutique-600 text-boutique-50 shadow-soft hover:bg-boutique-800 hover:shadow-lift",
-    fantome: "text-boutique-600 hover:bg-boutique-100 hover:text-boutique-900",
+    fantome: "text-boutique-800 hover:bg-boutique-100 hover:text-boutique-950",
   };
   return (
     <button type="button" className={`${base} ${variantes[variante]} ${className}`} {...props}>
@@ -531,14 +531,14 @@ export function BandeauConfiance({ items }) {
       {items.map(({ Icone, titre, texte }) => (
         <div
           key={titre}
-          className="flex items-start gap-3 rounded-2xl border border-boutique-200/70 bg-white/70 px-4 py-3.5"
+          className="flex items-start gap-3 rounded-2xl border border-boutique-300 bg-white px-4 py-3.5"
         >
           <span className="grid h-9 w-9 flex-none place-items-center rounded-xl bg-boutique-100 text-boutique-800">
             <Icone className="h-[18px] w-[18px]" />
           </span>
           <span className="min-w-0">
             <span className="block text-[13px] font-bold text-boutique-900">{titre}</span>
-            <span className="block text-[12px] leading-snug text-boutique-500">{texte}</span>
+            <span className="block text-[12px] leading-snug font-medium text-boutique-700">{texte}</span>
           </span>
         </div>
       ))}
@@ -589,7 +589,7 @@ export function BarreSticky({ children }) {
  */
 export function BarreVitrine({ children }) {
   return (
-    <div className="bg-boutique-50">
+    <div className="boutique-barre-claire">
       <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-4 px-4 py-4 sm:px-8">
         <div className="flex items-center gap-3">
           <span className="grid h-10 w-10 flex-none place-items-center rounded-xl bg-boutique-900 text-boutique-50">
@@ -599,7 +599,7 @@ export function BarreVitrine({ children }) {
             <span className="block truncate font-display text-[15px] leading-tight font-extrabold tracking-tight text-boutique-900">
               Le Gestionnaire
             </span>
-            <span className="block text-[10.5px] font-semibold tracking-[0.16em] text-boutique-400 uppercase">
+            <span className="block text-[10.5px] font-bold tracking-[0.16em] text-boutique-700 uppercase">
               Boutique en ligne
             </span>
           </span>
@@ -626,7 +626,7 @@ export function SelecteurTri({ valeur, options, onChange }) {
           </option>
         ))}
       </select>
-      <ChevronDownIcon className="pointer-events-none absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 text-boutique-400" />
+      <ChevronDownIcon className="pointer-events-none absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 text-boutique-700" />
     </div>
   );
 }

@@ -84,11 +84,11 @@ export default function SuiviCommande() {
   const progression = etapes.length ? Math.round((nbFaites / etapes.length) * 100) : 0;
 
   return (
-    <div className="flex min-h-screen flex-col bg-boutique-50 font-sans text-boutique-900">
+    <div className="flex min-h-screen flex-col boutique-page font-sans">
       <BarreVitrine>
         <Link
           to="/auth/sign-in"
-          className="rounded-full border border-boutique-200 bg-white px-4 py-2 text-[12.5px] font-bold text-boutique-700 transition-colors hover:border-boutique-300 hover:bg-boutique-100"
+          className="rounded-full border border-boutique-300 bg-white px-4 py-2 text-[12.5px] font-bold text-boutique-800 transition-colors hover:border-boutique-500 hover:bg-boutique-100"
         >
           Espace gestionnaire
         </Link>
@@ -116,7 +116,7 @@ export default function SuiviCommande() {
           <h1 className="mt-5 font-display text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
             Suivre ma commande
           </h1>
-          <p className="mx-auto mt-3 max-w-md text-[15px] leading-relaxed text-boutique-200/80">
+          <p className="mx-auto mt-3 max-w-md text-[15px] leading-relaxed font-medium text-boutique-100">
             Saisissez votre numéro de commande pour connaître son état d'avancement, étape par
             étape.
           </p>
@@ -127,17 +127,17 @@ export default function SuiviCommande() {
         {/* Recherche par référence */}
         <form
           onSubmit={soumettre}
-          className="flex flex-col gap-3 rounded-2xl border border-boutique-200/70 bg-white p-5 shadow-card sm:flex-row sm:items-end"
+          className="flex flex-col gap-3 rounded-2xl border border-boutique-300 bg-white p-5 shadow-card sm:flex-row sm:items-end"
         >
           <div className="flex-1">
-            <label className="mb-1.5 block text-[13px] font-semibold text-boutique-700" htmlFor="reference">
+            <label className="mb-1.5 block text-[13px] font-bold text-boutique-800" htmlFor="reference">
               Numéro de commande
             </label>
             <div className="relative">
-              <MagnifyingGlassIcon className="pointer-events-none absolute top-1/2 left-3.5 h-[18px] w-[18px] -translate-y-1/2 text-boutique-400" />
+              <MagnifyingGlassIcon className="pointer-events-none absolute top-1/2 left-3.5 h-[18px] w-[18px] -translate-y-1/2 text-boutique-700" />
               <input
                 id="reference"
-                className="w-full rounded-xl border border-boutique-200 bg-boutique-50 py-2.5 pr-4 pl-11 font-mono text-sm text-boutique-900 outline-none transition-all placeholder:font-sans placeholder:text-boutique-400 focus:border-boutique-400 focus:bg-white focus:ring-4 focus:ring-boutique-200/50"
+                className="w-full rounded-xl border border-boutique-300 bg-white py-2.5 pr-4 pl-11 font-mono text-sm font-semibold text-boutique-900 outline-none transition-all placeholder:font-sans placeholder:font-normal placeholder:text-boutique-600 focus:border-boutique-500 focus:bg-white focus:ring-4 focus:ring-boutique-300/50"
                 placeholder="CMD-2026-0001"
                 value={reference}
                 onChange={(e) => setReference(e.target.value)}
@@ -162,14 +162,14 @@ export default function SuiviCommande() {
 
         {/* Erreur */}
         {erreur && (
-          <div className="mt-6 animate-pop-in rounded-2xl border border-boutique-200/70 bg-white p-8 text-center shadow-card">
-            <span className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-amber-50 text-amber-500">
+          <div className="mt-6 animate-pop-in rounded-2xl border border-boutique-300 bg-white p-8 text-center shadow-card">
+            <span className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-amber-100 text-amber-700">
               <ExclamationTriangleIcon className="h-7 w-7" />
             </span>
             <p className="mt-4 font-display text-lg font-extrabold tracking-tight text-boutique-900">
               {erreur}
             </p>
-            <p className="mt-1 text-sm text-boutique-500">
+            <p className="mt-1 text-sm font-medium text-boutique-700">
               Vérifiez le numéro figurant dans votre email de confirmation.
             </p>
           </div>
@@ -177,15 +177,15 @@ export default function SuiviCommande() {
 
         {/* Commande */}
         {commande && (
-          <article className="mt-6 animate-slide-up overflow-hidden rounded-2xl border border-boutique-200/70 bg-white shadow-card">
+          <article className="mt-6 animate-slide-up overflow-hidden rounded-2xl border border-boutique-300 bg-white shadow-card">
             {/* Résumé */}
-            <div className="border-b border-boutique-200 bg-boutique-50 p-5 sm:p-6">
+            <div className="border-b border-boutique-300 bg-boutique-100 p-5 sm:p-6">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div className="min-w-0">
                   <p className="font-mono text-lg font-extrabold tracking-tight text-boutique-900">
                     {commande.reference}
                   </p>
-                  <p className="mt-0.5 text-[13px] text-boutique-500">
+                  <p className="mt-0.5 text-[13px] font-semibold text-boutique-700">
                     {commande.created_at
                       ? new Date(commande.created_at).toLocaleString("fr-FR")
                       : ""}
@@ -197,21 +197,21 @@ export default function SuiviCommande() {
               </div>
 
               <div className="mt-5 flex flex-wrap items-center gap-x-7 gap-y-3">
-                <p className="text-sm text-boutique-500">
+                <p className="text-sm font-medium text-boutique-700">
                   Total{" "}
-                  <strong className="font-display text-lg font-extrabold text-forest-700 tabular">
+                  <strong className="font-display text-lg font-extrabold text-forest-800 tabular">
                     {fmt(commande.montant_total)}
                   </strong>
                 </p>
-                <span className="flex items-center gap-1.5 text-[13px] font-semibold text-boutique-600">
+                <span className="flex items-center gap-1.5 text-[13px] font-bold text-boutique-800">
                   {commande.mode_recuperation === "livraison" ? (
                     <>
-                      <TruckIcon className="h-[18px] w-[18px] text-forest-600" /> Livraison à
+                      <TruckIcon className="h-[18px] w-[18px] text-forest-700" /> Livraison à
                       domicile
                     </>
                   ) : (
                     <>
-                      <BuildingStorefrontIcon className="h-[18px] w-[18px] text-forest-600" />{" "}
+                      <BuildingStorefrontIcon className="h-[18px] w-[18px] text-forest-700" />{" "}
                       Retrait en boutique
                     </>
                   )}
@@ -220,13 +220,13 @@ export default function SuiviCommande() {
 
               {/* Barre de progression */}
               <div className="mt-5">
-                <div className="h-2 w-full overflow-hidden rounded-full bg-boutique-200">
+                <div className="h-2 w-full overflow-hidden rounded-full bg-boutique-300">
                   <div
                     className="h-full rounded-full bg-forest-gradient transition-all duration-700 ease-smooth"
                     style={{ width: `${progression}%` }}
                   />
                 </div>
-                <p className="mt-2 text-[11.5px] font-semibold text-boutique-400">
+                <p className="mt-2 text-[11.5px] font-bold text-boutique-700">
                   {nbFaites} étape{nbFaites > 1 ? "s" : ""} sur {etapes.length} · {progression} %
                 </p>
               </div>
@@ -245,14 +245,14 @@ export default function SuiviCommande() {
                           className={`grid h-10 w-10 flex-none place-items-center rounded-full transition-all duration-500 ${
                             etape.fait
                               ? "bg-forest-gradient text-white shadow-soft"
-                              : "bg-boutique-100 text-boutique-400 ring-1 ring-inset ring-boutique-200"
+                              : "bg-boutique-100 text-boutique-700 ring-1 ring-inset ring-boutique-300"
                           }`}
                         >
                           <Icone className="h-[18px] w-[18px]" />
                         </span>
                         {!derniere && (
                           <span
-                            className={`w-0.5 flex-1 ${etape.fait ? "bg-forest-300" : "bg-boutique-200"}`}
+                            className={`w-0.5 flex-1 ${etape.fait ? "bg-forest-300" : "bg-boutique-300"}`}
                           />
                         )}
                       </div>
@@ -260,8 +260,8 @@ export default function SuiviCommande() {
                         <p
                           className={`text-sm ${
                             etape.fait
-                              ? "font-bold text-boutique-900"
-                              : "font-medium text-boutique-400"
+                              ? "font-bold text-boutique-950"
+                              : "font-semibold text-boutique-600"
                           }`}
                         >
                           {etape.libelle}
@@ -269,8 +269,8 @@ export default function SuiviCommande() {
                         {etape.statut === "EN_LIVRAISON" &&
                           etape.fait &&
                           commande.livraison?.livreur && (
-                            <p className="mt-1 inline-flex items-center gap-1.5 rounded-lg bg-boutique-100 px-2.5 py-1 text-[12.5px] text-boutique-700">
-                              <MapPinIcon className="h-3.5 w-3.5 flex-none text-forest-600" />
+                            <p className="mt-1 inline-flex items-center gap-1.5 rounded-lg bg-boutique-100 px-2.5 py-1 text-[12.5px] font-semibold text-boutique-800">
+                              <MapPinIcon className="h-3.5 w-3.5 flex-none text-forest-700" />
                               Livreur : {commande.livraison.livreur}
                             </p>
                           )}
@@ -295,7 +295,7 @@ export default function SuiviCommande() {
 
         {/* Info actualisation */}
         {commande && !terminee && (
-          <p className="mt-6 flex items-center justify-center gap-2 text-[12px] text-boutique-400">
+          <p className="mt-6 flex items-center justify-center gap-2 text-[12px] font-semibold text-boutique-600">
             <ArrowPathIcon className="h-3.5 w-3.5 animate-spin" />
             Actualisation automatique toutes les 10 secondes
           </p>
@@ -311,23 +311,23 @@ export default function SuiviCommande() {
             ].map((e) => (
               <div
                 key={e.n}
-                className="rounded-2xl border border-boutique-200/70 bg-white/70 px-4 py-4"
+                className="rounded-2xl border border-boutique-300 bg-white px-4 py-4"
               >
                 <span className="grid h-7 w-7 place-items-center rounded-full bg-boutique-900 text-[12px] font-extrabold text-boutique-50">
                   {e.n}
                 </span>
                 <p className="mt-3 text-[13px] font-bold text-boutique-900">{e.t}</p>
-                <p className="mt-0.5 text-[12px] leading-snug text-boutique-500">{e.d}</p>
+                <p className="mt-0.5 text-[12px] leading-snug font-medium text-boutique-700">{e.d}</p>
               </div>
             ))}
           </div>
         )}
       </main>
 
-      <footer className="border-t border-boutique-200 bg-boutique-100/70">
-        <div className="mx-auto max-w-[1400px] px-4 py-6 text-center text-[12.5px] text-boutique-500 sm:px-8">
+      <footer className="border-t border-boutique-300 bg-boutique-100">
+        <div className="mx-auto max-w-[1400px] px-4 py-6 text-center text-[12.5px] font-semibold text-boutique-700 sm:px-8">
           © {new Date().getFullYear()} —{" "}
-          <strong className="font-bold text-boutique-700">Le Gestionnaire · TO CONNECT</strong>
+          <strong className="font-bold text-boutique-900">Le Gestionnaire · TO CONNECT</strong>
         </div>
       </footer>
     </div>

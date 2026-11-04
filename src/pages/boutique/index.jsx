@@ -148,7 +148,7 @@ function Hero({ data }) {
             {activite.nom}
           </h1>
 
-          <p className="mt-5 max-w-xl text-[15px] leading-relaxed text-boutique-200/85 sm:text-base">
+          <p className="mt-5 max-w-xl text-[15px] leading-relaxed text-boutique-100 sm:text-base">
             {produits.length} article{produits.length > 1 ? "s" : ""} en catalogue
             {topCategories.length > 0 && (
               <>
@@ -171,7 +171,7 @@ function Hero({ data }) {
             </a>
             <Link
               to="/commande/suivi"
-              className="inline-flex items-center gap-2 rounded-full border border-white/20 px-6 py-3.5 text-sm font-bold text-white/90 backdrop-blur transition-all duration-200 hover:border-white/40 hover:bg-white/5"
+              className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/5 px-6 py-3.5 text-sm font-bold text-white backdrop-blur transition-all duration-200 hover:border-white/50 hover:bg-white/10"
             >
               <TruckIcon className="h-[18px] w-[18px]" />
               Suivre ma commande
@@ -181,7 +181,7 @@ function Hero({ data }) {
           {/* Localisation de la boutique */}
           {(localisation?.adresse || localisation?.ville || localisation?.latitude) && (
             <div className="mt-8 flex flex-wrap items-center gap-3 rounded-xl border border-white/20 bg-white/10 px-4 py-4 backdrop-blur-sm">
-              <MapPinIcon className="h-5 w-5 text-boutique-300 flex-none" />
+              <MapPinIcon className="h-5 w-5 text-boutique-100 flex-none" />
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-boutique-100">
                   {localisation.adresse || localisation.ville}
@@ -227,7 +227,7 @@ function Hero({ data }) {
                 <dt className="font-display text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
                   {s.v}
                 </dt>
-                <dd className="mt-1 text-[11.5px] font-semibold tracking-wider text-boutique-300/80 uppercase">
+                <dd className="mt-1 text-[11.5px] font-bold tracking-wider text-boutique-100 uppercase">
                   {s.l}
                 </dd>
               </div>
@@ -262,7 +262,7 @@ function Hero({ data }) {
                   <p className="truncate text-[12.5px] font-extrabold tracking-tight text-white sm:text-sm">
                     {cat}
                   </p>
-                  <p className="mt-0.5 text-[10.5px] font-semibold text-white/65 tabular">{n} réf.</p>
+                  <p className="mt-0.5 text-[10.5px] font-bold text-white/90 tabular">{n} réf.</p>
                 </div>
               </a>
             ))}
@@ -281,7 +281,7 @@ function CarteProduit({ produit, api, onApercu, onAjouter, ajoute }) {
   const prix = Number(produit.prix || 0);
 
   return (
-    <article className="group flex flex-col overflow-hidden rounded-2xl border border-boutique-200/70 bg-white shadow-xs transition-all duration-300 hover:-translate-y-1 hover:border-boutique-300 hover:shadow-lift">
+    <article className="group flex flex-col overflow-hidden rounded-2xl border border-boutique-300 bg-white shadow-xs transition-all duration-300 hover:-translate-y-1 hover:border-boutique-500 hover:shadow-lift">
       <button
         type="button"
         onClick={() => onApercu(produit)}
@@ -294,7 +294,7 @@ function CarteProduit({ produit, api, onApercu, onAjouter, ajoute }) {
 
         {/* Appel à l'action au survol (desktop) / toujours visible (mobile) */}
         <span className="absolute inset-x-3 bottom-3 flex translate-y-2 justify-center opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 max-sm:translate-y-0 max-sm:opacity-100">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-white/95 px-3.5 py-2 text-[11.5px] font-bold text-boutique-900 shadow-soft backdrop-blur">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-2 text-[11.5px] font-bold text-boutique-950 shadow-soft ring-1 ring-inset ring-boutique-300">
             <EyeIcon className="h-3.5 w-3.5" />
             Aperçu rapide
           </span>
@@ -309,11 +309,11 @@ function CarteProduit({ produit, api, onApercu, onAjouter, ajoute }) {
         </h3>
 
         {produit.description && (
-          <p className="mt-1 truncate text-[11.5px] text-boutique-400">{produit.description}</p>
+          <p className="mt-1 truncate text-[11.5px] font-medium text-boutique-600">{produit.description}</p>
         )}
 
         <div className="mt-auto flex items-end justify-between gap-2 pt-4">
-          <p className="font-display text-[17px] leading-none font-extrabold tracking-tight text-forest-700 tabular">
+          <p className="font-display text-[17px] leading-none font-extrabold tracking-tight text-forest-800 tabular">
             {prix > 0 ? fmt(prix) : "—"}
           </p>
 
@@ -327,7 +327,7 @@ function CarteProduit({ produit, api, onApercu, onAjouter, ajoute }) {
                 ? ajoute
                   ? "bg-boutique-600 text-boutique-50 shadow-soft"
                   : "bg-boutique-900 text-boutique-50 hover:bg-boutique-800"
-                : "cursor-not-allowed bg-boutique-100 text-boutique-400"
+                : "cursor-not-allowed bg-boutique-200 text-boutique-600"
             }`}
           >
             {dispo ? (
@@ -382,14 +382,14 @@ function Pagination({ page, nbPages, allerPage }) {
           onClick={() => allerPage(page - 1)}
           disabled={page === 1}
           aria-label="Page précédente"
-          className={`${bouton} border border-boutique-200 bg-white text-boutique-600 hover:border-boutique-300 hover:bg-boutique-100`}
+          className={`${bouton} border border-boutique-300 bg-white text-boutique-800 hover:border-boutique-500 hover:bg-boutique-100`}
         >
           <ChevronLeftIcon className="h-4 w-4" />
         </button>
 
         {fenetrePages(page, nbPages).map((n, i) =>
           n === "…" ? (
-            <span key={`e${i}`} className="px-1 text-[13px] text-boutique-400">
+            <span key={`e${i}`} className="px-1 text-[13px] font-bold text-boutique-700">
               …
             </span>
           ) : (
@@ -401,7 +401,7 @@ function Pagination({ page, nbPages, allerPage }) {
               className={`${bouton} ${
                 n === page
                   ? "bg-boutique-900 text-boutique-50 shadow-soft"
-                  : "border border-boutique-200 bg-white text-boutique-600 hover:border-boutique-300 hover:bg-boutique-100"
+                  : "border border-boutique-300 bg-white text-boutique-800 hover:border-boutique-500 hover:bg-boutique-100"
               }`}
             >
               {n}
@@ -414,7 +414,7 @@ function Pagination({ page, nbPages, allerPage }) {
           onClick={() => allerPage(page + 1)}
           disabled={page === nbPages}
           aria-label="Page suivante"
-          className={`${bouton} border border-boutique-200 bg-white text-boutique-600 hover:border-boutique-300 hover:bg-boutique-100`}
+          className={`${bouton} border border-boutique-300 bg-white text-boutique-800 hover:border-boutique-500 hover:bg-boutique-100`}
         >
           <ChevronRightIcon className="h-4 w-4" />
         </button>
@@ -451,13 +451,13 @@ function ApercuRapide({ produit, api, onFermer, onAjouter, ajoute }) {
         role="dialog"
         aria-modal="true"
         aria-label={`Aperçu de ${produit.nom}`}
-        className="relative max-h-[92vh] w-full max-w-4xl overflow-y-auto rounded-t-3xl bg-boutique-50 shadow-lift animate-pop-in sm:rounded-3xl"
+        className="relative max-h-[92vh] w-full max-w-4xl overflow-y-auto rounded-t-3xl bg-white shadow-lift animate-pop-in sm:rounded-3xl"
       >
         <button
           type="button"
           onClick={onFermer}
           aria-label="Fermer l'aperçu"
-          className="absolute top-4 right-4 z-10 grid h-9 w-9 place-items-center rounded-full bg-white/90 text-boutique-700 shadow-soft backdrop-blur transition-colors hover:bg-white hover:text-boutique-900"
+          className="absolute top-4 right-4 z-10 grid h-9 w-9 place-items-center rounded-full bg-white text-boutique-900 shadow-soft ring-1 ring-inset ring-boutique-300 transition-colors hover:bg-boutique-100"
         >
           <XMarkIcon className="h-[18px] w-[18px]" />
         </button>
@@ -476,24 +476,24 @@ function ApercuRapide({ produit, api, onFermer, onAjouter, ajoute }) {
             </h2>
 
             {produit.description && (
-              <p className="mt-2 text-sm leading-relaxed text-boutique-500">{produit.description}</p>
+              <p className="mt-2 text-sm leading-relaxed font-medium text-boutique-700">{produit.description}</p>
             )}
 
-            <p className="mt-6 font-display text-3xl font-extrabold tracking-tight text-forest-700 tabular">
+            <p className="mt-6 font-display text-3xl font-extrabold tracking-tight text-forest-800 tabular">
               {fmt(produit.prix)}
             </p>
 
-            <ul className="mt-6 space-y-2.5 border-t border-boutique-200 pt-5 text-[13px] text-boutique-600">
+            <ul className="mt-6 space-y-2.5 border-t border-boutique-300 pt-5 text-[13px] font-semibold text-boutique-700">
               {produit.code_barre && (
                 <li className="flex items-center justify-between gap-3">
-                  <span className="text-boutique-400">Code-barres</span>
+                  <span className="text-boutique-700">Code-barres</span>
                   <span className="font-mono text-[12px] font-semibold text-boutique-800">
                     {produit.code_barre}
                   </span>
                 </li>
               )}
               <li className="flex items-center justify-between gap-3">
-                <span className="text-boutique-400">Disponibilité</span>
+                <span className="text-boutique-700">Disponibilité</span>
                 <span className="font-bold text-boutique-800">
                   {produit.en_rupture ? "Rupture de stock" : `${stock} unité${stock > 1 ? "s" : ""}`}
                 </span>
@@ -510,7 +510,7 @@ function ApercuRapide({ produit, api, onFermer, onAjouter, ajoute }) {
                     ? ajoute
                       ? "bg-boutique-600 text-boutique-50 shadow-soft"
                       : "bg-boutique-900 text-boutique-50 shadow-soft hover:bg-boutique-800 hover:shadow-lift"
-                    : "cursor-not-allowed bg-boutique-200 text-boutique-400"
+                    : "cursor-not-allowed bg-boutique-200 text-boutique-600"
                 }`}
               >
                 {dispo ? (
@@ -526,7 +526,7 @@ function ApercuRapide({ produit, api, onFermer, onAjouter, ajoute }) {
                   "Indisponible pour le moment"
                 )}
               </button>
-              <p className="mt-3 flex items-center justify-center gap-1.5 text-[11.5px] text-boutique-400">
+              <p className="mt-3 flex items-center justify-center gap-1.5 text-[11.5px] font-semibold text-boutique-600">
                 <LockClosedIcon className="h-3.5 w-3.5" />
                 Stock contrôlé en temps réel
               </p>
@@ -580,14 +580,14 @@ function PanierTiroir({
         role="dialog"
         aria-modal="true"
         aria-label="Votre panier"
-        className="relative flex h-full w-full max-w-[27rem] flex-col bg-boutique-50 shadow-lift animate-slide-up sm:animate-none"
+        className="relative flex h-full w-full max-w-[27rem] flex-col bg-white shadow-lift animate-slide-up sm:animate-none"
       >
-        <header className="flex items-center justify-between gap-3 border-b border-boutique-200 px-5 py-4">
+        <header className="flex items-center justify-between gap-3 border-b border-boutique-300 bg-boutique-100 px-5 py-4">
           <div className="min-w-0">
             <h2 className="font-display text-lg font-extrabold tracking-tight text-boutique-900">
               Votre panier
             </h2>
-            <p className="text-[12px] font-semibold text-boutique-400">
+            <p className="text-[12px] font-bold text-boutique-700">
               {nombre} article{nombre > 1 ? "s" : ""}
               {panier.length > 0 && ` · ${panier.length} ligne${panier.length > 1 ? "s" : ""}`}
             </p>
@@ -596,7 +596,7 @@ function PanierTiroir({
             type="button"
             onClick={onFermer}
             aria-label="Fermer le panier"
-            className="grid h-9 w-9 flex-none place-items-center rounded-full text-boutique-500 transition-colors hover:bg-boutique-200/70 hover:text-boutique-900"
+            className="grid h-9 w-9 flex-none place-items-center rounded-full text-boutique-700 transition-colors hover:bg-boutique-200 hover:text-boutique-950"
           >
             <XMarkIcon className="h-5 w-5" />
           </button>
@@ -604,9 +604,9 @@ function PanierTiroir({
 
         {/* Progression vers la livraison offerte */}
         {seuil > 0 && (
-          <div className="border-b border-boutique-200 bg-white px-5 py-3.5">
-            <p className="flex items-center gap-1.5 text-[12px] font-bold text-boutique-700">
-              <TruckIcon className="h-4 w-4 text-forest-600" />
+          <div className="border-b border-boutique-300 bg-white px-5 py-3.5">
+            <p className="flex items-center gap-1.5 text-[12px] font-bold text-boutique-800">
+              <TruckIcon className="h-4 w-4 text-forest-700" />
               {reste > 0 ? (
                 <>
                   Plus que <span className="tabular">{fmt(reste)}</span> pour la livraison offerte
@@ -615,7 +615,7 @@ function PanierTiroir({
                 "Livraison offerte débloquée"
               )}
             </p>
-            <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-boutique-200">
+            <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-boutique-300">
               <div
                 className="h-full rounded-full bg-forest-gradient transition-all duration-500 ease-smooth"
                 style={{ width: `${progression}%` }}
@@ -648,7 +648,7 @@ function PanierTiroir({
                     <p className="text-[13px] leading-snug font-bold text-boutique-900 lg-clamp-2">
                       {p.nom}
                     </p>
-                    <p className="mt-0.5 text-[11.5px] text-boutique-400 tabular">
+                    <p className="mt-0.5 text-[11.5px] font-semibold text-boutique-600 tabular">
                       {fmt(p.prix)} / unité · max {p.stock}
                     </p>
                     <div className="mt-2.5 flex items-center justify-between gap-2">
@@ -668,7 +668,7 @@ function PanierTiroir({
                     type="button"
                     onClick={() => changerQuantite(p.id, -p.quantite)}
                     aria-label={`Retirer ${p.nom} du panier`}
-                    className="h-7 w-7 flex-none rounded-lg text-boutique-300 transition-colors hover:bg-rose-50 hover:text-rose-600"
+                    className="h-7 w-7 flex-none rounded-lg text-boutique-600 transition-colors hover:bg-rose-50 hover:text-rose-600"
                   >
                     <TrashIcon className="h-4 w-4" />
                   </button>
@@ -679,14 +679,14 @@ function PanierTiroir({
         </div>
 
         {panier.length > 0 && (
-          <footer className="border-t border-boutique-200 bg-white px-5 py-4">
+          <footer className="border-t border-boutique-300 bg-white px-5 py-4">
             <div className="flex items-center justify-between text-sm">
-              <span className="font-semibold text-boutique-600">Sous-total</span>
+              <span className="font-bold text-boutique-800">Sous-total</span>
               <span className="font-display text-xl font-extrabold text-boutique-900 tabular">
                 {fmt(totalArticles)}
               </span>
             </div>
-            <p className="mt-1 text-[11px] text-boutique-400">
+            <p className="mt-1 text-[11px] font-semibold text-boutique-600">
               Frais de livraison calculés à l'étape suivante
             </p>
             <button
@@ -700,7 +700,7 @@ function PanierTiroir({
             <button
               type="button"
               onClick={viderPanier}
-              className="mt-2 w-full py-2 text-[12px] font-semibold text-boutique-400 transition-colors hover:text-rose-600"
+              className="mt-2 w-full py-2 text-[12px] font-bold text-boutique-600 transition-colors hover:text-rose-600"
             >
               Vider le panier
             </button>
@@ -720,7 +720,7 @@ function PanierTiroir({
    démontait/remontait <Etape> → les champs perdaient le focus à chaque lettre. */
 function Etape({ n, titre, children }) {
   return (
-    <section className="rounded-2xl border border-boutique-200/70 bg-white p-5 shadow-xs sm:p-6">
+    <section className="rounded-2xl border border-boutique-300 bg-white p-5 shadow-xs sm:p-6">
       <h2 className="flex items-center gap-3 font-display text-base font-extrabold tracking-tight text-boutique-900">
         <span className="grid h-7 w-7 flex-none place-items-center rounded-full bg-boutique-900 text-[12px] font-extrabold text-boutique-50">
           {n}
@@ -892,7 +892,7 @@ function CheckoutView({
     <section className="mx-auto max-w-[1400px] px-4 pt-6 pb-4 sm:px-8 animate-fade-in">
       <button
         type="button"
-        className="inline-flex items-center gap-2 rounded-full px-3 py-2 text-[13px] font-bold text-boutique-500 transition-colors hover:bg-boutique-100 hover:text-boutique-900"
+        className="inline-flex items-center gap-2 rounded-full px-3 py-2 text-[13px] font-bold text-boutique-800 transition-colors hover:bg-boutique-100 hover:text-boutique-950"
         onClick={retour}
       >
         <ArrowLeftIcon className="h-4 w-4" />
@@ -902,7 +902,7 @@ function CheckoutView({
       <h1 className="mt-4 font-display text-3xl font-extrabold tracking-tight text-boutique-900 sm:text-4xl">
         Finaliser la commande
       </h1>
-      <p className="mt-2 text-sm text-boutique-500">
+      <p className="mt-2 text-sm font-medium text-boutique-700">
         Trois étapes, aucun compte à créer. Montants recalculés et vérifiés côté serveur.
       </p>
 
@@ -953,12 +953,12 @@ function CheckoutView({
                       className={`flex items-start gap-3.5 rounded-xl border-2 p-4 text-left transition-all duration-200 ${
                         actif
                           ? "border-boutique-900 bg-boutique-100 shadow-soft"
-                          : "border-boutique-200 bg-boutique-50 hover:border-boutique-300 hover:bg-white"
+                          : "border-boutique-300 bg-white hover:border-boutique-500 hover:bg-boutique-50"
                       }`}
                     >
                       <span
                         className={`grid h-10 w-10 flex-none place-items-center rounded-xl ${
-                          actif ? "bg-boutique-900 text-boutique-50" : "bg-white text-boutique-400"
+                          actif ? "bg-boutique-900 text-boutique-50" : "bg-boutique-100 text-boutique-800"
                         }`}
                       >
                         <Icone className="h-5 w-5" />
@@ -967,14 +967,14 @@ function CheckoutView({
                         <span className="block text-[13.5px] font-bold text-boutique-900">
                           {titre}
                         </span>
-                        <span className="mt-0.5 block text-[12px] text-boutique-500">{texte}</span>
+                        <span className="mt-0.5 block text-[12px] font-medium text-boutique-700">{texte}</span>
                       </span>
                     </button>
                   );
                 })}
               </div>
             ) : (
-              <p className="text-[13px] text-boutique-600">
+              <p className="text-[13px] font-semibold text-boutique-700">
                 Cette boutique propose uniquement le retrait en boutique.
               </p>
             )}
@@ -987,7 +987,7 @@ function CheckoutView({
                   </label>
                   <input
                     id="c_adr"
-                    className="w-full rounded-xl border border-boutique-200 bg-boutique-50 px-4 py-3 text-sm text-boutique-900 outline-none transition-all placeholder:text-boutique-400 focus:border-boutique-400 focus:bg-white focus:ring-4 focus:ring-boutique-200/50"
+                    className="w-full rounded-xl border border-boutique-300 bg-white px-4 py-3 text-sm font-semibold text-boutique-900 outline-none transition-all placeholder:font-normal placeholder:text-boutique-600 focus:border-boutique-500 focus:bg-white focus:ring-4 focus:ring-boutique-300/50"
                     required
                     value={form.adresse_livraison}
                     name="adresse_livraison"
@@ -1002,7 +1002,7 @@ function CheckoutView({
                   <div className="relative">
                     <select
                       id="c_zone"
-                      className="w-full appearance-none rounded-xl border border-boutique-200 bg-boutique-50 py-3 pr-10 pl-4 text-sm text-boutique-900 outline-none transition-all focus:border-boutique-400 focus:bg-white focus:ring-4 focus:ring-boutique-200/50"
+                      className="w-full appearance-none rounded-xl border border-boutique-300 bg-white py-3 pr-10 pl-4 text-sm font-semibold text-boutique-900 outline-none transition-all focus:border-boutique-500 focus:bg-white focus:ring-4 focus:ring-boutique-300/50"
                       value={form.zone_livraison}
                       name="zone_livraison"
                       onChange={majForm}
@@ -1014,7 +1014,7 @@ function CheckoutView({
                         </option>
                       ))}
                     </select>
-                    <ChevronDownIcon className="pointer-events-none absolute top-1/2 right-3.5 h-4 w-4 -translate-y-1/2 text-boutique-400" />
+                    <ChevronDownIcon className="pointer-events-none absolute top-1/2 right-3.5 h-4 w-4 -translate-y-1/2 text-boutique-700" />
                   </div>
                 </div>
                 <div>
@@ -1023,7 +1023,7 @@ function CheckoutView({
                   </label>
                   <input
                     id="c_cre"
-                    className="w-full rounded-xl border border-boutique-200 bg-boutique-50 px-4 py-3 text-sm text-boutique-900 outline-none transition-all placeholder:text-boutique-400 focus:border-boutique-400 focus:bg-white focus:ring-4 focus:ring-boutique-200/50"
+                    className="w-full rounded-xl border border-boutique-300 bg-white px-4 py-3 text-sm font-semibold text-boutique-900 outline-none transition-all placeholder:font-normal placeholder:text-boutique-600 focus:border-boutique-500 focus:bg-white focus:ring-4 focus:ring-boutique-300/50"
                     value={form.creneau_souhaite}
                     name="creneau_souhaite"
                     onChange={majForm}
@@ -1043,7 +1043,7 @@ function CheckoutView({
                 </label>
                 <input
                   id="c_nom"
-                  className="w-full rounded-xl border border-boutique-200 bg-boutique-50 px-4 py-3 text-sm text-boutique-900 outline-none transition-all focus:border-boutique-400 focus:bg-white focus:ring-4 focus:ring-boutique-200/50"
+                  className="w-full rounded-xl border border-boutique-300 bg-white px-4 py-3 text-sm font-semibold text-boutique-900 outline-none transition-all placeholder:font-normal placeholder:text-boutique-600 focus:border-boutique-500 focus:bg-white focus:ring-4 focus:ring-boutique-300/50"
                   required
                   value={form.client_nom}
                   name="client_nom"
@@ -1056,7 +1056,7 @@ function CheckoutView({
                 </label>
                 <input
                   id="c_prenom"
-                  className="w-full rounded-xl border border-boutique-200 bg-boutique-50 px-4 py-3 text-sm text-boutique-900 outline-none transition-all focus:border-boutique-400 focus:bg-white focus:ring-4 focus:ring-boutique-200/50"
+                  className="w-full rounded-xl border border-boutique-300 bg-white px-4 py-3 text-sm font-semibold text-boutique-900 outline-none transition-all placeholder:font-normal placeholder:text-boutique-600 focus:border-boutique-500 focus:bg-white focus:ring-4 focus:ring-boutique-300/50"
                   value={form.client_prenom}
                   name="client_prenom"
                   onChange={majForm}
@@ -1068,7 +1068,7 @@ function CheckoutView({
                 </label>
                 <input
                   id="c_contact"
-                  className="w-full rounded-xl border border-boutique-200 bg-boutique-50 px-4 py-3 text-sm text-boutique-900 outline-none transition-all placeholder:text-boutique-400 focus:border-boutique-400 focus:bg-white focus:ring-4 focus:ring-boutique-200/50"
+                  className="w-full rounded-xl border border-boutique-300 bg-white px-4 py-3 text-sm font-semibold text-boutique-900 outline-none transition-all placeholder:font-normal placeholder:text-boutique-600 focus:border-boutique-500 focus:bg-white focus:ring-4 focus:ring-boutique-300/50"
                   required
                   value={form.client_contact}
                   name="client_contact"
@@ -1078,11 +1078,11 @@ function CheckoutView({
               </div>
               <div className="sm:col-span-2">
                 <label className="lg-label" htmlFor="c_email">
-                  Email <span className="font-normal text-boutique-400">(pour le reçu)</span>
+                  Email <span className="font-normal text-boutique-600">(pour le reçu)</span>
                 </label>
                 <input
                   id="c_email"
-                  className="w-full rounded-xl border border-boutique-200 bg-boutique-50 px-4 py-3 text-sm text-boutique-900 outline-none transition-all focus:border-boutique-400 focus:bg-white focus:ring-4 focus:ring-boutique-200/50"
+                  className="w-full rounded-xl border border-boutique-300 bg-white px-4 py-3 text-sm font-semibold text-boutique-900 outline-none transition-all placeholder:font-normal placeholder:text-boutique-600 focus:border-boutique-500 focus:bg-white focus:ring-4 focus:ring-boutique-300/50"
                   type="email"
                   value={form.client_email}
                   name="client_email"
@@ -1091,11 +1091,11 @@ function CheckoutView({
               </div>
               <div className="sm:col-span-2">
                 <label className="lg-label" htmlFor="c_note">
-                  Note <span className="font-normal text-boutique-400">(optionnel)</span>
+                  Note <span className="font-normal text-boutique-600">(optionnel)</span>
                 </label>
                 <textarea
                   id="c_note"
-                  className="min-h-[84px] w-full rounded-xl border border-boutique-200 bg-boutique-50 px-4 py-3 text-sm text-boutique-900 outline-none transition-all focus:border-boutique-400 focus:bg-white focus:ring-4 focus:ring-boutique-200/50"
+                  className="min-h-[84px] w-full rounded-xl border border-boutique-300 bg-white px-4 py-3 text-sm font-semibold text-boutique-900 outline-none transition-all placeholder:font-normal placeholder:text-boutique-600 focus:border-boutique-500 focus:bg-white focus:ring-4 focus:ring-boutique-300/50"
                   value={form.note_client}
                   name="note_client"
                   onChange={majForm}
@@ -1137,7 +1137,7 @@ function CheckoutView({
                       className={`flex cursor-pointer items-center gap-3.5 rounded-xl border-2 p-4 text-[13px] font-medium transition-all duration-200 ${
                         actif
                           ? "border-forest-600 bg-forest-50 font-bold text-forest-800"
-                          : "border-boutique-200 bg-boutique-50 text-boutique-600 hover:border-boutique-300 hover:bg-white"
+                          : "border-boutique-300 bg-white text-boutique-800 hover:border-boutique-500 hover:bg-boutique-50"
                       }`}
                     >
                       <input
@@ -1148,7 +1148,7 @@ function CheckoutView({
                         onChange={majForm}
                         className="h-4 w-4 flex-none accent-forest-600"
                       />
-                      <Icone className="h-5 w-5 flex-none text-boutique-400" />
+                      <Icone className="h-5 w-5 flex-none text-boutique-700" />
                       {label}
                     </label>
                   );
@@ -1160,8 +1160,8 @@ function CheckoutView({
 
         {/* ── Colonne récapitulatif ── */}
         <div className="lg:col-span-5">
-          <div className="sticky top-28 overflow-hidden rounded-2xl border border-boutique-200/70 bg-white shadow-card">
-            <header className="flex items-center justify-between gap-3 border-b border-boutique-200 px-5 py-4">
+          <div className="sticky top-28 overflow-hidden rounded-2xl border border-boutique-300 bg-white shadow-card">
+            <header className="flex items-center justify-between gap-3 border-b border-boutique-300 bg-boutique-100 px-5 py-4">
               <h2 className="font-display text-base font-extrabold tracking-tight text-boutique-900">
                 Votre commande
               </h2>
@@ -1169,7 +1169,7 @@ function CheckoutView({
                 <button
                   type="button"
                   onClick={viderPanier}
-                  className="inline-flex items-center gap-1.5 text-[12px] font-bold text-boutique-400 transition-colors hover:text-rose-600"
+                  className="inline-flex items-center gap-1.5 text-[12px] font-bold text-boutique-600 transition-colors hover:text-rose-600"
                 >
                   <TrashIcon className="h-3.5 w-3.5" />
                   Vider
@@ -1198,7 +1198,7 @@ function CheckoutView({
                       </div>
                       <div className="min-w-0 flex-1">
                         <p className="truncate text-[12.5px] font-bold text-boutique-900">{p.nom}</p>
-                        <p className="mt-0.5 text-[11.5px] text-boutique-400 tabular">
+                        <p className="mt-0.5 text-[11.5px] font-semibold text-boutique-600 tabular">
                           {fmt(p.prix)} × {p.quantite}
                         </p>
                       </div>
@@ -1209,34 +1209,34 @@ function CheckoutView({
                   ))}
                 </ul>
 
-                <div className="space-y-2 border-t border-boutique-200 px-5 py-4 text-sm">
-                  <div className="flex justify-between text-boutique-500">
+                <div className="space-y-2 border-t border-boutique-300 px-5 py-4 text-sm">
+                  <div className="flex justify-between font-medium text-boutique-700">
                     <span>Sous-total</span>
                     <span className="tabular">{fmt(totalArticles)}</span>
                   </div>
                   {form.mode_recuperation === "livraison" ? (
-                    <div className="flex justify-between text-boutique-500">
+                    <div className="flex justify-between font-medium text-boutique-700">
                       <span>
                         Livraison
                         {gratuite && (
-                          <span className="ml-1 font-bold text-forest-600">(offerte)</span>
+                          <span className="ml-1 font-bold text-forest-700">(offerte)</span>
                         )}
                       </span>
                       <span className="tabular">
                         {gratuite ? (
-                          <s className="text-boutique-300">{fmt(frais)}</s>
+                          <s className="text-boutique-600">{fmt(frais)}</s>
                         ) : (
                           fmt(fraisEffectifs)
                         )}
                       </span>
                     </div>
                   ) : (
-                    <div className="flex justify-between text-boutique-500">
+                    <div className="flex justify-between font-medium text-boutique-700">
                       <span>Retrait en boutique</span>
-                      <span className="font-bold text-forest-600">Gratuit</span>
+                      <span className="font-bold text-forest-700">Gratuit</span>
                     </div>
                   )}
-                  <div className="flex items-end justify-between border-t border-boutique-200 pt-3">
+                  <div className="flex items-end justify-between border-t border-boutique-300 pt-3">
                     <span className="font-display text-base font-extrabold text-boutique-900">
                       Total
                     </span>
@@ -1246,7 +1246,7 @@ function CheckoutView({
                   </div>
                 </div>
 
-                <div className="border-t border-boutique-200 bg-boutique-50 p-5">
+                <div className="border-t border-boutique-300 bg-boutique-100 p-5">
                   <button
                     type="submit"
                     disabled={envoi}
@@ -1254,7 +1254,7 @@ function CheckoutView({
                   >
                     {envoi ? (
                       <>
-                        <span className="h-4 w-4 animate-spin rounded-full border-2 border-boutique-400/40 border-t-boutique-50" />
+                        <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
                         Traitement…
                       </>
                     ) : form.mode_paiement === "en_ligne" ? (
@@ -1280,7 +1280,7 @@ function CheckoutView({
                     </svg>
                     Commander par WhatsApp
                   </button>
-                  <p className="mt-3 flex items-center justify-center gap-1.5 text-center text-[11px] text-boutique-400">
+                  <p className="mt-3 flex items-center justify-center gap-1.5 text-center text-[11px] font-semibold text-boutique-600">
                     <LockClosedIcon className="h-3.5 w-3.5 flex-none" />
                     Montants recalculés et vérifiés côté serveur
                   </p>
@@ -1339,7 +1339,7 @@ function ConfirmationView({ commande, api, slug }) {
 
   return (
     <section className="mx-auto max-w-2xl px-4 py-6 sm:px-8 animate-pop-in">
-      <div className="overflow-hidden rounded-3xl border border-boutique-200/70 bg-white shadow-card">
+      <div className="overflow-hidden rounded-3xl border border-boutique-300 bg-white shadow-card">
         {/* En-tête coloré selon l'état */}
         <div
           className={`relative overflow-hidden px-6 pt-12 pb-10 text-center text-white ${
@@ -1373,7 +1373,7 @@ function ConfirmationView({ commande, api, slug }) {
                   ? `Commande ${etat.statut_libelle?.toLowerCase()}`
                   : "Commande enregistrée !"}
             </h1>
-            <p className="mt-2 text-[15px] text-white/80">
+            <p className="mt-2 text-[15px] font-medium text-white">
               Référence{" "}
               <span className="rounded-lg bg-white/15 px-2 py-0.5 font-mono text-sm font-bold ring-1 ring-inset ring-white/20">
                 {etat.reference}
@@ -1387,11 +1387,11 @@ function ConfirmationView({ commande, api, slug }) {
 
         <div className="p-6 sm:p-8">
           {/* Récapitulatif (montants SERVEUR — §4.7-2) */}
-          <div className="space-y-2.5 rounded-2xl bg-boutique-50 p-5 text-sm ring-1 ring-inset ring-boutique-200">
+          <div className="space-y-2.5 rounded-2xl bg-boutique-100 p-5 text-sm ring-1 ring-inset ring-boutique-300">
             {[
               { l: "Articles", v: fmt(etat.montant_articles), c: "" },
               { l: "TVA", v: fmt(etat.tva), c: "", si: Number(etat.tva) > 0 },
-              { l: "Remise", v: `− ${fmt(etat.remise)}`, c: "text-forest-600", si: Number(etat.remise) > 0 },
+              { l: "Remise", v: `− ${fmt(etat.remise)}`, c: "text-forest-700", si: Number(etat.remise) > 0 },
               {
                 l: "Livraison",
                 v: fmt(etat.frais_livraison),
@@ -1401,12 +1401,12 @@ function ConfirmationView({ commande, api, slug }) {
             ]
               .filter((x) => x.si !== false)
               .map((x) => (
-                <div key={x.l} className={`flex justify-between text-boutique-500`}>
+                <div key={x.l} className="flex justify-between font-semibold text-boutique-800">
                   <span>{x.l}</span>
                   <span className={`tabular ${x.c}`}>{x.v}</span>
                 </div>
               ))}
-            <div className="flex items-end justify-between border-t border-boutique-200 pt-3">
+            <div className="flex items-end justify-between border-t border-boutique-300 pt-3">
               <span className="font-display text-base font-extrabold text-boutique-900">Total</span>
               <span className="font-display text-2xl font-extrabold text-forest-700 tabular">
                 {fmt(etat.montant_total)}
@@ -1438,7 +1438,7 @@ function ConfirmationView({ commande, api, slug }) {
                     type="button"
                     onClick={verifierPaiement}
                     disabled={verification}
-                    className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-boutique-200 bg-white px-6 py-3.5 text-[13px] font-bold text-boutique-700 transition-colors hover:bg-boutique-50 disabled:opacity-60"
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-boutique-300 bg-white px-6 py-3.5 text-[13px] font-bold text-boutique-800 transition-colors hover:bg-boutique-100 disabled:opacity-60"
                   >
                     <ArrowPathIcon
                       className={`h-4 w-4 ${verification ? "animate-spin" : ""}`}
@@ -1451,13 +1451,13 @@ function ConfirmationView({ commande, api, slug }) {
                   type="button"
                   onClick={verifierPaiement}
                   disabled={verification}
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-boutique-200 bg-white px-6 py-3.5 text-[13px] font-bold text-boutique-700 transition-colors hover:bg-boutique-50 disabled:opacity-60"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-boutique-300 bg-white px-6 py-3.5 text-[13px] font-bold text-boutique-800 transition-colors hover:bg-boutique-100 disabled:opacity-60"
                 >
                   <ArrowPathIcon className={`h-4 w-4 ${verification ? "animate-spin" : ""}`} />
                   {verification ? "Vérification…" : "Vérifier l'état du paiement"}
                 </button>
               )}
-              <p className="text-center text-[11px] text-boutique-400">
+              <p className="text-center text-[11px] font-semibold text-boutique-600">
                 Vérification automatique toutes les 5 s · montant recalculé côté serveur
               </p>
             </div>
@@ -1491,7 +1491,7 @@ function ConfirmationView({ commande, api, slug }) {
                   </a>
                 </div>
               ) : (
-                <p className="mt-1 text-[13px] text-forest-700">
+                <p className="mt-1 text-[13px] font-semibold text-forest-800">
                   Génération en cours — actualisation automatique…
                 </p>
               )}
@@ -1501,7 +1501,7 @@ function ConfirmationView({ commande, api, slug }) {
           <div className="mt-6 flex flex-wrap justify-center gap-2">
             <Link
               to={`/commande/suivi?reference=${encodeURIComponent(etat.reference)}`}
-              className="inline-flex items-center gap-2 rounded-full border border-boutique-200 bg-white px-5 py-3 text-[13px] font-bold text-boutique-700 transition-colors hover:bg-boutique-100"
+              className="inline-flex items-center gap-2 rounded-full border border-boutique-300 bg-white px-5 py-3 text-[13px] font-bold text-boutique-800 transition-colors hover:bg-boutique-100"
             >
               <TruckIcon className="h-4 w-4" />
               Suivre ma commande
@@ -1509,7 +1509,7 @@ function ConfirmationView({ commande, api, slug }) {
             {slug && (
               <Link
                 to={`/boutique/${slug}`}
-                className="inline-flex items-center gap-2 rounded-full px-5 py-3 text-[13px] font-bold text-boutique-500 transition-colors hover:bg-boutique-100 hover:text-boutique-900"
+                className="inline-flex items-center gap-2 rounded-full px-5 py-3 text-[13px] font-bold text-boutique-800 transition-colors hover:bg-boutique-100 hover:text-boutique-950"
               >
                 <ArrowLeftIcon className="h-4 w-4" />
                 Retour à la boutique
@@ -1711,7 +1711,7 @@ export default function Boutique() {
   // ----------------------------- États -----------------------------
   if (chargement) {
     return (
-      <div className="min-h-screen bg-boutique-50">
+      <div className="min-h-screen boutique-page">
         <BandeauAnnonce activite={data?.activite} />
         <div className="mx-auto max-w-[1400px] px-4 py-10 sm:px-8">
           <div className="lg-skeleton h-4 w-48" />
@@ -1721,7 +1721,7 @@ export default function Boutique() {
             {Array.from({ length: 8 }).map((_, i) => (
               <div
                 key={i}
-                className="overflow-hidden rounded-2xl border border-boutique-200/70 bg-white"
+                className="overflow-hidden rounded-2xl border border-boutique-300 bg-white"
               >
                 <div className="lg-skeleton aspect-square w-full rounded-none" />
                 <div className="space-y-2.5 p-4">
@@ -1739,15 +1739,15 @@ export default function Boutique() {
 
   if (erreur) {
     return (
-      <div className="grid min-h-screen place-items-center bg-boutique-50 p-6">
-        <div className="max-w-md rounded-3xl border border-boutique-200/70 bg-white p-10 text-center shadow-card">
-          <span className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-amber-50 text-amber-500">
+      <div className="grid min-h-screen place-items-center bg-boutique-100 p-6">
+        <div className="max-w-md rounded-3xl border border-boutique-300 bg-white p-10 text-center shadow-card">
+          <span className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-amber-100 text-amber-700">
             <ExclamationTriangleIcon className="h-8 w-8" />
           </span>
           <h1 className="mt-5 font-display text-xl font-extrabold tracking-tight text-boutique-900">
             Boutique indisponible
           </h1>
-          <p className="mt-2 text-sm text-boutique-500">{erreur}</p>
+          <p className="mt-2 text-sm font-medium text-boutique-700">{erreur}</p>
           <button
             type="button"
             className="mt-6 inline-flex items-center gap-2 rounded-full bg-boutique-900 px-6 py-3 text-sm font-bold text-boutique-50 transition-colors hover:bg-boutique-800"
@@ -1765,7 +1765,7 @@ export default function Boutique() {
   const seuil = Number(vitrine?.livraison_gratuite_des || 0);
 
   return (
-    <div className="min-h-screen bg-boutique-50 font-sans text-boutique-900">
+    <div className="min-h-screen boutique-page font-sans">
       <BandeauAnnonce activite={activite} vitrine={vitrine} paiements={paiements} />
 
       {/* ══════════════ ENTÊTE + RAIL (un seul bloc collant) ══════════════
@@ -1785,7 +1785,7 @@ export default function Boutique() {
           />
 
           {/* ── Rail des catégories ── */}
-          <div className="border-t border-boutique-200 bg-boutique-50/92 backdrop-blur-xl">
+          <div className="border-t border-boutique-300 bg-boutique-100">
             <div className="mx-auto max-w-[1400px] px-4 sm:px-8">
               <div ref={railCategories} className="flex items-center gap-3 overflow-x-auto py-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                 {categories.map((cat) => {
@@ -1799,12 +1799,12 @@ export default function Boutique() {
                       aria-pressed={actif}
                       className={`flex flex-none items-center gap-1.5 rounded-full border px-4 py-2 text-[12.5px] font-bold whitespace-nowrap transition-all duration-200 ${
                         actif
-                          ? "border-boutique-900 bg-boutique-900 text-boutique-50 shadow-soft"
-                          : "border-boutique-200 bg-white text-boutique-600 hover:border-boutique-300 hover:bg-boutique-100"
+                          ? "border-boutique-900 bg-boutique-900 text-white shadow-soft"
+                          : "border-boutique-300 bg-white text-boutique-800 hover:border-boutique-500 hover:bg-boutique-100"
                       }`}
                     >
                       {cat.nom}
-                      <span className={`tabular ${actif ? "text-boutique-300" : "text-boutique-400"}`}>
+                      <span className={`tabular ${actif ? "text-boutique-100" : "text-boutique-700"}`}>
                         {cat.n}
                       </span>
                     </button>
@@ -1837,7 +1837,7 @@ export default function Boutique() {
             <Hero data={data} />
 
             <div className="mx-auto max-w-[1400px] px-4 sm:px-8">
-              <div className="border-b border-boutique-200 pb-8">
+              <div className="border-b border-boutique-300 pb-8">
                 <BandeauConfiance items={avantages({ vitrine, paiements })} />
               </div>
             </div>
@@ -1849,7 +1849,7 @@ export default function Boutique() {
                   <h2 className="font-display text-xl font-extrabold tracking-tight text-boutique-900">
                     {categorieFiltre === "Tous" ? "Tout le catalogue" : categorieFiltre}
                   </h2>
-                  <p className="mt-0.5 text-[13px] text-boutique-500">
+                  <p className="mt-0.5 text-[13px] font-medium text-boutique-700">
                     {produitsFiltres.length} article{produitsFiltres.length > 1 ? "s" : ""}
                     {recherche && ` pour « ${recherche} »`}
                     {nbPages > 1 && ` · page ${page} sur ${nbPages}`}
@@ -1891,7 +1891,7 @@ export default function Boutique() {
                     (recherche || categorieFiltre !== "Tous") && (
                       <button
                         type="button"
-                        className="inline-flex items-center gap-2 rounded-full border border-boutique-200 bg-white px-5 py-3 text-[13px] font-bold text-boutique-700 transition-colors hover:bg-boutique-100"
+                        className="inline-flex items-center gap-2 rounded-full border border-boutique-300 bg-white px-5 py-3 text-[13px] font-bold text-boutique-800 transition-colors hover:bg-boutique-100"
                         onClick={() => {
                           setRecherche("");
                           setCategorieFiltre("Tous");

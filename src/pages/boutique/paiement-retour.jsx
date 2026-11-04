@@ -30,7 +30,7 @@ const TERMINALES = [...PAYES, "ANNULEE", "REMBOURSEE", "ECHOUEE"];
 const principal = (extra = "") =>
   `inline-flex w-full items-center justify-center gap-2 rounded-full bg-boutique-900 px-6 py-3.5 text-sm font-bold text-boutique-50 shadow-soft transition-all duration-200 hover:bg-boutique-800 hover:shadow-lift active:scale-[0.98] disabled:opacity-60 ${extra}`;
 const secondaire = (extra = "") =>
-  `inline-flex w-full items-center justify-center gap-2 rounded-full border border-boutique-200 bg-white px-6 py-3.5 text-[13px] font-bold text-boutique-700 transition-colors hover:bg-boutique-50 disabled:opacity-60 ${extra}`;
+  `inline-flex w-full items-center justify-center gap-2 rounded-full border border-boutique-300 bg-white px-6 py-3.5 text-[13px] font-bold text-boutique-800 transition-colors hover:bg-boutique-100 disabled:opacity-60 ${extra}`;
 
 export default function PaiementRetour() {
   const [params] = useSearchParams();
@@ -101,11 +101,11 @@ export default function PaiementRetour() {
       : "bg-boutique-deep";
 
   return (
-    <div className="flex min-h-screen flex-col bg-boutique-50 font-sans text-boutique-900">
+    <div className="flex min-h-screen flex-col boutique-page font-sans">
       <BarreVitrine />
 
       <main className="flex flex-1 items-center justify-center px-4 py-10 sm:py-14">
-        <div className="w-full max-w-lg animate-pop-in overflow-hidden rounded-3xl border border-boutique-200/70 bg-white shadow-card">
+        <div className="w-full max-w-lg animate-pop-in overflow-hidden rounded-3xl border border-boutique-300 bg-white shadow-card">
           {/* ══════════════ Bannière ══════════════ */}
           <div className={`relative overflow-hidden px-6 py-11 text-center text-white ${ton}`}>
             <div aria-hidden="true" className="pointer-events-none absolute inset-0">
@@ -146,16 +146,16 @@ export default function PaiementRetour() {
               </h1>
 
               {(resultat || reference) && (
-                <p className="mt-3 text-[14px] text-white/75">
+                <p className="mt-3 text-[14px] font-medium text-white">
                   Référence{" "}
-                  <span className="rounded-lg bg-white/15 px-2 py-0.5 font-mono text-[13px] font-bold ring-1 ring-inset ring-white/20">
+                  <span className="rounded-lg bg-white/15 px-2 py-0.5 font-mono text-[13px] font-bold ring-1 ring-inset ring-white/25">
                     {resultat?.reference || reference}
                   </span>
                 </p>
               )}
 
               {resultat && enAttente && (
-                <p className="mx-auto mt-2 max-w-sm text-[13px] text-white/65">
+                <p className="mx-auto mt-2 max-w-sm text-[13px] font-medium text-white">
                   Nous interrogeons FedaPay — cette page s'actualise automatiquement, inutile de
                   recharger.
                 </p>
@@ -185,7 +185,7 @@ export default function PaiementRetour() {
               <>
                 {resultat.recu_url ? (
                   <div className="rounded-2xl bg-forest-50 p-5 ring-1 ring-inset ring-forest-100">
-                    <p className="flex items-center justify-center gap-2 text-sm font-extrabold text-forest-800">
+                    <p className="flex items-center justify-center gap-2 text-sm font-extrabold text-forest-900">
                       <DocumentTextIcon className="h-5 w-5 shrink-0" />
                       Votre reçu est prêt
                     </p>
@@ -202,7 +202,7 @@ export default function PaiementRetour() {
                       <a
                         href={`${API}${resultat.recu_url}`}
                         download
-                        className="inline-flex items-center gap-1.5 rounded-full border border-boutique-200 bg-white px-4 py-2.5 text-[12.5px] font-bold text-boutique-800 transition-colors hover:bg-boutique-50"
+                        className="inline-flex items-center gap-1.5 rounded-full border border-boutique-300 bg-white px-4 py-2.5 text-[12.5px] font-bold text-boutique-900 transition-colors hover:bg-boutique-100"
                       >
                         <ArrowDownTrayIcon className="h-4 w-4" />
                         Télécharger (PDF)
@@ -248,7 +248,7 @@ export default function PaiementRetour() {
               </button>
             )}
 
-            <p className="flex items-start gap-2 pt-2 text-[11px] leading-snug text-boutique-400">
+            <p className="flex items-start gap-2 pt-2 text-[11px] leading-snug font-semibold text-boutique-600">
               <LockClosedIcon className="mt-px h-3.5 w-3.5 flex-none" />
               <span>
                 Le statut est confirmé par notre serveur auprès de FedaPay — il ne peut pas être
