@@ -3,6 +3,7 @@ import { NavLink } from "react-router-dom";
 import { XMarkIcon, ChevronRightIcon, SparklesIcon } from "@heroicons/react/24/outline";
 import { IconButton } from "@material-tailwind/react";
 import { useMaterialTailwindController, setOpenSidenav } from "@/context";
+import { estSuperAdmin } from "@/utils/auth";
 import { useEffect, useState } from "react";
 
 /* ===========================================================================
@@ -15,6 +16,7 @@ import { useEffect, useState } from "react";
 function grouperPages(pages) {
   const enLigne = ["Commandes en ligne", "Livraisons", "Paiements", "Paramètres boutique"];
   return {
+    plateforme: pages.filter((p) => p.name === "Gérer les entreprises"),
     general: pages.filter((p) => ["Dashboard", "Opération de Vente"].includes(p.name)),
     gestion: pages.filter((p) =>
       ["Client", "Produit", "Catégorie", "Unité", "Stock", "Fournisseur"].includes(p.name)
@@ -23,11 +25,14 @@ function grouperPages(pages) {
       ["Statistique/Comptabilité", "Vente"].includes(p.name)
     ),
     enligne: pages.filter((p) => enLigne.includes(p.name)),
-    admin: pages.filter((p) => ["Notifications", "Utilisateurs"].includes(p.name)),
+    admin: pages.filter((p) =>
+      ["Notifications", "Utilisateurs", "Mon profil"].includes(p.name)
+    ),
   };
 }
 
 const SECTION_LABELS = {
+  plateforme: "Plateforme",
   general: "Pilotage",
   gestion: "Gestion",
   finances: "Ventes & comptabilité",
@@ -38,7 +43,7 @@ const SECTION_LABELS = {
 export function Sidenav({ brandImg, routes }) {
   const [controller, dispatch] = useMaterialTailwindController();
   const { openSidenav, sidenavColor, sidenavType } = controller;
-  const [userStatus, setUserStatus] = useState(null);
+  const [userStatus, setUserStatus] = useState(() => (estSuperAdmin() ? "SuperAdmin" : null));
   const [nouvellesCommandes, setNouvellesCommandes] = useState(0);
 
   // ── Thème du menu latéral (personnalisation) ───────────────
@@ -76,6 +81,12 @@ export function Sidenav({ brandImg, routes }) {
 
   const fetchUser = async () => {
     try {
+      // Le JWT du super administrateur est la source de vérité : il doit
+      // toujours voir le menu « Gérer les entreprises ».
+      if (estSuperAdmin()) {
+        setUserStatus("SuperAdmin");
+        return;
+      }
       const token = localStorage.getItem("token");
       if (!token) return;
       const r = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/utilisateur/user`, {
@@ -261,6 +272,7 @@ export function Sidenav({ brandImg, routes }) {
               const g = grouperPages(pages);
               return (
                 <ul key="sections" className="flex flex-col">
+                  {rendreSection(g.plateforme, "plateforme")}
                   {rendreSection(g.general, "general")}
                   {rendreSection(g.gestion, "gestion")}
                   {rendreSection(g.finances, "finances")}

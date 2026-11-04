@@ -77,6 +77,7 @@ export function Profile() {
 
         // Lien dédié de la boutique de l'entreprise connectée (source de vérité, isolé par entreprise)
         const eid = decoded?.entreprise_id;
+        let lien = null;
         if (decoded && !decoded.super_admin && eid) {
           try {
             const res = await fetch(`${API}/api/v1/activite/mon-lien`, {
@@ -84,7 +85,7 @@ export function Profile() {
             });
             if (res.ok) {
               const json = await res.json();
-              setLienBoutique(json.lien || null);
+              lien = json.lien || null;
             }
           } catch (e) {
             /* non bloquant : le lien sera construit depuis le slug du JWT */
@@ -92,9 +93,10 @@ export function Profile() {
         }
 
         // Fallback : construire le lien depuis le slug stocké dans le JWT
-        if (!lienBoutique && decoded?.entreprise_slug) {
-          setLienBoutique(`${window.location.origin}/boutique/${decoded.entreprise_slug}`);
+        if (!lien && decoded?.entreprise_slug) {
+          lien = `${window.location.origin}/boutique/${decoded.entreprise_slug}`;
         }
+        setLienBoutique(lien);
       } catch (e) {
         console.error("Erreur chargement profil:", e);
       } finally {

@@ -37,7 +37,7 @@ export function lireRole() {
 
 export function estSuperAdmin() {
   const token = lireToken();
-  return !!token?.super_admin;
+  return !!token?.super_admin || token?.role === "SuperAdmin";
 }
 
 export function lireUtilisateurId() {

@@ -147,7 +147,7 @@ export const routes = [
       // ─── Super Admin (visible uniquement aux super admins) ───
       {
         icon: <ServerStackIcon {...icon} />,
-        name: "Super Admin",
+        name: "Gérer les entreprises",
         path: "/superadmin",
         element: <SuperAdmin />,
         superAdminOnly: true,
