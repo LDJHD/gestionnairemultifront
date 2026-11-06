@@ -112,10 +112,15 @@ h1, h2, h3, h4, h5, h6, .font-display {
   }
   .lg-input {
     /* text-base (16px) sur mobile : évite le zoom automatique iOS Safari au focus ;
-       sm:text-sm pour l'ergonomie desktop. */
-    @apply w-full rounded-xl border border-ink-200 bg-white px-3.5 py-2.5 text-base sm:text-sm text-ink-800
+       sm:text-sm pour l'ergonomie desktop.
+       min-w-0 : empêche un champ de déborder de son conteneur mobile. */
+    @apply w-full min-w-0 rounded-xl border border-ink-200 bg-white px-3.5 py-2.5 text-base sm:text-sm text-ink-800
       shadow-xs outline-none transition-all duration-200 placeholder:text-ink-400
       focus:border-brand-400 focus:ring-4 focus:ring-brand-500/[0.12];
+  }
+  /* Champ de fichier : bordure dédiée, visible au mobile */
+  .lg-input-file {
+    @apply lg-input flex min-w-0 items-center gap-2 text-[13px];
   }
   .lg-input:disabled { @apply cursor-not-allowed bg-ink-50 text-ink-400; }
   .lg-input-error { @apply border-red-300 focus:border-red-400 focus:ring-red-500/[0.12]; }
@@ -136,6 +141,20 @@ h1, h2, h3, h4, h5, h6, .font-display {
     @apply inline-flex select-none items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm
       font-semibold whitespace-nowrap transition-all duration-200 active:scale-[.97]
       disabled:pointer-events-none disabled:opacity-50;
+  }
+  /* Champ de formulaire mobile : file interne qui ne déborde jamais */
+  .lg-field {
+    @apply min-w-0;
+  }
+  .lg-field-label {
+    @apply lg-label;
+  }
+  /* Conteneur d'entrée avec bouton : ne chevauche JAMAIS */
+  .lg-input-bouton {
+    @apply flex min-w-0 items-start gap-2;
+  }
+  .lg-input-bouton .lg-input {
+    @apply flex-1 min-w-0;
   }
   .lg-btn-primary {
     @apply lg-btn bg-brand-gradient text-white shadow-glow hover:brightness-[1.07] hover:shadow-lift;
@@ -280,6 +299,59 @@ h1, h2, h3, h4, h5, h6, .font-display {
   textarea,
   select {
     font-size: 16px;
+  }
+}
+
+/* Formulaires mobiles : plus aucun champ ne chevauche ni ne disparaît.
+   Règles collectives appliquées à TOUTE modale et TOUT champ :
+   - les grilles retombent toujours à 1 colonne sur petit écran ;
+   - les champs large (col-span-2) ne débordent plus ;
+   - les listes déroulantes internes restent cliquables et ne cachent
+     plus le champ suivant. */
+@media (max-width: 767px) {
+  /* Toute grille mobile passe en 1 colonne */
+  .lg-form-grid > *,
+  form .grid {
+    grid-template-columns: 1fr !important;
+  }
+  /* Champ large : prend toute la largeur en mobile */
+  .col-span-2 {
+    grid-column: span 1 / span 1 !important;
+  }
+  /* PriceUnitForm : prix + unité empilés, pas côte à côte écrasés */
+  .price-unit-row {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 0.75rem !important;
+    align-items: start !important;
+  }
+  .price-unit-row .w-1\/2 {
+    width: 100% !important;
+  }
+  /* Champ code-barre + bouton Générer : le champ prend toute la ligne */
+  .lg-input-bouton {
+    display: block !important;
+  }
+  .lg-input-bouton .lg-btn,
+  .lg-input-bouton button {
+    width: 100% !important;
+    margin-top: 0.5rem !important;
+  }
+  /* Listes déroulantes de catégorie : ne recouvrent plus le formulaire */
+  .categorie-liste {
+    position: relative !important;
+    max-height: 12rem !important;
+  }
+  /* Photo : image et input empilés */
+  .photo-ligne {
+    display: block !important;
+  }
+  .photo-ligne img {
+    margin-bottom: 0.75rem;
+  }
+  /* Suppléments : pile verticalement */
+  .supplement-ligne {
+    grid-template-columns: 1fr !important;
   }
 }
 

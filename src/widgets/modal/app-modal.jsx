@@ -61,22 +61,22 @@ export function AppModal({
             transition
             className="fixed inset-0 bg-ink-900/50 backdrop-blur-sm transition-opacity duration-300 data-[closed]:opacity-0"
           />
-          <div className="fixed inset-0 z-10 overflow-y-auto">
-            <div className="flex min-h-full items-end justify-center sm:items-center sm:p-5">
+          <div className="fixed inset-0 z-10 overflow-y-auto overscroll-contain">
+            <div className="flex min-h-full items-end justify-center sm:items-center sm:p-4 md:p-5">
               <DialogPanel
                 transition
-                className={`relative w-full transform overflow-hidden rounded-t-3xl bg-white text-left shadow-lift transition-all duration-300 data-[closed]:translate-y-8 data-[closed]:opacity-0 sm:my-8 sm:rounded-3xl ${largeur}`}
+                className={`relative w-full max-w-full transform overflow-hidden rounded-t-3xl bg-white text-left shadow-lift transition-all duration-300 data-[closed]:translate-y-8 data-[closed]:opacity-0 sm:my-8 sm:rounded-3xl sm:max-w-full ${largeur}`}
               >
                 {/* Croix de fermeture */}
                 <button
                   type="button"
                   onClick={() => setOpen(false)}
                   aria-label="Fermer la fenêtre"
-                  className="absolute right-4 top-4 z-10 grid h-8 w-8 place-items-center rounded-xl text-ink-400 transition-colors hover:bg-ink-100 hover:text-ink-900"
+                  className="absolute right-4 top-4 z-10 grid h-8 w-8 place-items-center rounded-xl bg-white text-ink-500 shadow-xs ring-1 ring-inset ring-ink-200 transition-colors hover:bg-ink-100 hover:text-ink-900"
                 >
                   <XMarkIcon strokeWidth={2.5} className="h-5 w-5" />
                 </button>
-                <div className="max-h-[92vh] overflow-y-auto p-6">
+                <div className="max-h-[94dvh] overflow-y-auto overscroll-contain p-4 pb-8 sm:p-6">
                   <Forme handleformclick={fermer} {...propsForme} />
                 </div>
               </DialogPanel>

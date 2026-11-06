@@ -54,7 +54,7 @@ export default function PriceUnitForm({ onChange, charge }) {
   };
 
   return (
-    <div className="p-4 border rounded-lg shadow-md bg-white">
+    <div className="min-w-0 rounded-xl border border-ink-200 bg-white p-4 shadow-xs">
       <h3 className="mb-2 font-display text-base font-extrabold text-ink-900">
         Informations sur les produits
       </h3>
@@ -63,47 +63,53 @@ export default function PriceUnitForm({ onChange, charge }) {
         <p className="mb-2 text-[13px] text-ink-500">Aucun champ ajouté.</p>
       ) : (
         fields.map((item) => (
-          <div key={item.id} className="flex items-center gap-4 mb-2">
-            <div className="w-1/2">
+          <div key={item.id} className="price-unit-row mb-3 grid min-w-0 grid-cols-1 gap-3 sm:grid-cols-2">
+            <div className="lg-field min-w-0">
               <label className="lg-label">Prix</label>
               <input
                 type="number"
+                inputMode="decimal"
                 value={item.prix}
                 onChange={(e) => handleInputChange(item.id, "prix", e.target.value)}
-                className="lg-input"
+                className="lg-input min-w-0"
                 placeholder="0.00"
               />
             </div>
-            <div className="w-1/2">
-              <label className="lg-label">Unité</label>
-              <select
-                value={item.unit}
-                onChange={(e) => handleInputChange(item.id, "unit", e.target.value)}
-                className="lg-input"
+            <div className="lg-field flex min-w-0 items-end gap-2">
+              <div className="min-w-0 flex-1">
+                <label className="lg-label">Unité</label>
+                <select
+                  value={item.unit}
+                  onChange={(e) => handleInputChange(item.id, "unit", e.target.value)}
+                  className="lg-select min-w-0"
+                >
+                  <option value="">Sélectionner</option>
+                  {unit.map((unit) => (
+                    <option key={unit.id} value={unit.id}>
+                      {unit.nom}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <button
+                type="button"
+                onClick={() => handleRemoveField(item.id)}
+                aria-label="Retirer ce champ"
+                className="grid h-10 w-10 shrink-0 place-items-center rounded-xl text-red-500 transition-colors hover:bg-red-50 hover:text-red-700"
               >
-                <option value="">Sélectionner</option>
-                {unit.map((unit) => (
-                  <option key={unit.id} value={unit.id}>
-                    {unit.nom}
-                  </option>
-                ))}
-              </select>
+                <TrashIcon className="h-5 w-5" />
+              </button>
             </div>
-            <button
-              onClick={() => handleRemoveField(item.id)}
-              className="text-red-500 hover:text-red-700 transition"
-            >
-              <TrashIcon className="h-6 w-6" />
-            </button>
           </div>
         ))
       )}
 
       <button
+        type="button"
         onClick={handleAddField}
-        className="mt-2 flex items-center gap-2 text-[13px] font-semibold text-brand-600 transition-colors hover:text-brand-800"
+        className="mt-2 inline-flex items-center gap-2 rounded-xl px-3 py-2 text-[13px] font-semibold text-brand-700 transition-colors hover:bg-brand-50"
       >
-        <PlusIcon className="h-6 w-6" />
+        <PlusIcon className="h-5 w-5" />
         Ajouter un autre
       </button>
     </div>

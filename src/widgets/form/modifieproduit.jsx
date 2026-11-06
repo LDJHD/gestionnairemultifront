@@ -524,7 +524,7 @@ export function ModifieProduit({ ProductId, handleformclick }) {
  </button>
  </form> */}
 
-      <form className="w-full" onSubmit={handleSubmit}>
+      <form className="lg-form-grid w-full" onSubmit={handleSubmit}>
         <div className="mb-5 flex items-start justify-between gap-4 border-b border-ink-100 pb-5">
           <h2 className="font-display text-xl font-extrabold tracking-tight text-ink-900">
             Modifier un Produit
@@ -654,45 +654,46 @@ export function ModifieProduit({ ProductId, handleformclick }) {
             />
           </div>
 
-          {/* Description (col-span-2 pour occuper toute la largeur) */}
-          <div className="col-span-2">
+          {/* Description — pleine largeur sur desktop, empilée en mobile */}
+          <div className="sm:col-span-2">
             <label className="lg-label">Description</label>
             <textarea
               name="description"
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               placeholder="Description"
-              className="lg-input"
+              className="lg-input min-h-[96px]"
             />
           </div>
 
-          {/* Photo du produit */}
-          <div className="col-span-2">
+          {/* Photo du produit — image et champ empilés en mobile */}
+          <div className="sm:col-span-2">
             <label className="lg-label">Photo du produit</label>
-            <div className="flex items-center gap-4">
+            <div className="photo-ligne flex min-w-0 flex-col items-start gap-3 sm:flex-row sm:items-center sm:gap-4">
               {formData.image && (
                 <img
                   src={`${import.meta.env.VITE_API_URL}/${formData.image}`}
                   alt="Photo"
-                  className="mb-2 h-24 w-24 rounded-xl object-cover"
+                  className="mb-1 h-24 w-24 shrink-0 rounded-xl object-cover ring-1 ring-inset ring-ink-200"
                 />
               )}
               <input
                 type="file"
                 accept="image/*"
                 onChange={uploaderImage}
-                className="lg-input"
+                className="lg-input min-w-0 flex-1 text-[13px]"
               />
             </div>
           </div>
 
-          {/* Enregistrement de stock */}
-          <div className="col-span-2">
+          {/* Enregistrement de stock — quantité puis stock actuel en dessous en mobile */}
+          <div className="sm:col-span-2">
             <label className="lg-label">Enregistrement de stock</label>
-            <div className="flex items-center gap-4">
-              <div className="flex-1">
+            <div className="lg-input-bouton flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
+              <div className="min-w-0 flex-1">
                 <input
                   type="number"
+                  inputMode="numeric"
                   min="0"
                   name="entree_stock"
                   value={formData.entree_stock}
@@ -700,10 +701,10 @@ export function ModifieProduit({ ProductId, handleformclick }) {
                     setFormData({ ...formData, entree_stock: e.target.value })
                   }
                   placeholder="Quantité à ajouter"
-                  className="lg-input"
+                  className="lg-input min-w-0"
                 />
               </div>
-              <p className="text-[12px] text-ink-500">
+              <p className="shrink-0 text-[12px] font-semibold text-ink-600">
                 Stock actuel :{" "}
                 <span className="font-bold text-ink-800 tabular">
                   {stockActuel == null ? "—" : stockActuel}
@@ -713,15 +714,15 @@ export function ModifieProduit({ ProductId, handleformclick }) {
           </div>
         </div>
 
-        {/* Suppléments */}
-        <h3 className="text-lg font-bold mt-6">Suppléments</h3>
+        {/* Suppléments — un par ligne en mobile, deux champs côte à côte en desktop */}
+        <h3 className="mt-6 font-display text-base font-extrabold text-ink-900">Suppléments</h3>
         {supplements.map((supplement, index) => (
-          <div key={index} className="mt-2 grid w-full grid-cols-1 gap-3 sm:grid-cols-2">
+          <div key={index} className="supplement-ligne mt-3 grid w-full min-w-0 grid-cols-1 gap-3 rounded-xl border border-ink-200 bg-ink-50/60 p-3 sm:grid-cols-2">
             <select
               name="unit"
               value={supplement.unit_id}
               onChange={(e) => handleInputChange(index, "unit", e.target.value)}
-              className="lg-input"
+              className="lg-select min-w-0"
             >
               <option>Sélectionner</option>
               {unit.map((unit) => (
@@ -733,29 +734,32 @@ export function ModifieProduit({ ProductId, handleformclick }) {
 
             <input
               type="number"
+              inputMode="decimal"
               name="prix"
               value={supplement.prix}
               onChange={(e) => handleInputChange(index, "prix", e.target.value)}
-              className="lg-input"
+              className="lg-input min-w-0"
               placeholder="Prix"
             />
 
             <button
               type="button"
               onClick={() => handleRemoveSupplement(index, supplement.id)}
-              className="lg-btn-danger"
+              aria-label="Retirer ce supplément"
+              className="lg-btn-danger w-full sm:col-span-2 sm:w-auto"
             >
-              <TrashIcon className="h-6 w-6" />
+              <TrashIcon className="h-5 w-5" />
+              <span>Retirer</span>
             </button>
           </div>
         ))}
 
-        <button type="button" onClick={handleAddField} className="lg-btn-primary mt-4">
+        <button type="button" onClick={handleAddField} className="lg-btn-primary mt-4 w-full sm:w-auto">
           Ajouter un champ
         </button>
 
         {/* Bouton de soumission */}
-        <button type="submit" className="lg-btn-primary mt-4 w-full">
+        <button type="submit" className="lg-btn-primary lg-btn-lg mt-4 w-full py-3.5 text-base">
           Mettre à jour le produit
         </button>
       </form>

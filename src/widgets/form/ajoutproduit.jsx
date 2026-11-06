@@ -562,7 +562,7 @@ export function AjoutProduit({ handleformclick, handletoast }) {
  </button>
  </div>
  </form> */}
-      <form className="w-full max-w-6xl mx-auto" onSubmit={handleSubmit}>
+      <form className="lg-form-grid w-full mx-auto" onSubmit={handleSubmit}>
         <div className="border-b border-ink-100 pb-5">
           <h2 className="font-display text-xl font-extrabold tracking-tight text-ink-900">
             Ajouter un Produit
@@ -572,8 +572,9 @@ export function AjoutProduit({ handleformclick, handletoast }) {
           </p>
         </div>
 
-        {/* Grid pour afficher 2 champs par ligne */}
-        <div className="mt-5 grid w-full grid-cols-1 gap-4 md:grid-cols-2">
+        {/* Grille : 1 colonne sur mobile, 2 colonnes à partir du desktop moyen.
+            Le champ code-barre + bouton Générer ne chevauche plus jamais. */}
+        <div className="mt-5 grid w-full grid-cols-1 gap-4 sm:grid-cols-2">
           {/* <div>
  <label htmlFor="code_barre" className="lg-label">
  Code barre
@@ -590,11 +591,11 @@ export function AjoutProduit({ handleformclick, handletoast }) {
  />
  </div> */}
 
-          <div className="flex items-center gap-2">
-            <div className="w-full">
-              <label htmlFor="code_barre" className="lg-label">
-                Code barre
-              </label>
+          <div className="lg-field min-w-0">
+            <label htmlFor="code_barre" className="lg-label">
+              Code barre
+            </label>
+            <div className="lg-input-bouton flex min-w-0 items-start gap-2">
               <input
                 required
                 type="text"
@@ -602,19 +603,18 @@ export function AjoutProduit({ handleformclick, handletoast }) {
                 id="code_barre"
                 value={formData.code_barre}
                 onChange={handleInputChange}
-                className="lg-input"
+                className="lg-input min-w-0 flex-1"
                 placeholder="Ex: 123456789"
               />
+              {/* Bouton pour générer le code — pleine largeur sous le champ en mobile */}
+              <button
+                type="button"
+                onClick={genererCodeUnique}
+                className="lg-btn shrink-0 bg-blue-600 text-white hover:bg-blue-700"
+              >
+                Générer
+              </button>
             </div>
-
-            {/* Bouton pour générer le code */}
-            <button
-              type="button"
-              onClick={genererCodeUnique}
-              className="mt-6 px-4 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition duration-300"
-            >
-              Générer
-            </button>
           </div>
 
           <div>
@@ -653,9 +653,9 @@ export function AjoutProduit({ handleformclick, handletoast }) {
  ))}
  </select>
  </div> */}
-          <div>
-            <label htmlFor="produit_id" className="lg-label">
-              Categorie
+          <div className="lg-field relative min-w-0">
+            <label htmlFor="categorie_id" className="lg-label">
+              Catégorie
             </label>
             <input
               type="text"
@@ -663,63 +663,69 @@ export function AjoutProduit({ handleformclick, handletoast }) {
               name="categorie_id"
               value={selectedCategorie ? selectedCategorie.nom : formData.categorie_id}
               onChange={handleInputChange}
-              onFocus={() => setIsDropdownOpenCategorie(true)} // Ouvrir la liste déroulante
-              placeholder="Rechercher votre categorie"
-              className="lg-input"
+              onFocus={() => setIsDropdownOpenCategorie(true)}
+              onBlur={() => setTimeout(() => setIsDropdownOpenCategorie(false), 200)}
+              placeholder="Rechercher votre catégorie"
+              className="lg-input min-w-0"
+              autoComplete="off"
             />
             {isDropdownOpenCategorie && (
-              <ul className="mt-2 max-h-40 overflow-auto rounded-xl border border-ink-200 bg-white p-2">
+              <ul className="categorie-liste relative z-20 mt-2 max-h-40 overflow-auto rounded-xl border border-ink-200 bg-white p-2 shadow-lift">
                 {filteredCategorie.map((categorie) => (
                   <li
                     key={categorie.id}
                     onClick={() => handleCategorieSelect(categorie)}
-                    className="lg-btn-neutral cursor-pointer"
+                    className="lg-btn-neutral w-full cursor-pointer justify-start text-left"
                   >
                     {categorie.nom}
                   </li>
                 ))}
                 {filteredCategorie.length === 0 && (
-                  <li className="text-[13px] text-ink-500">Aucune categorie trouvé</li>
+                  <li className="px-2 py-2 text-[13px] text-ink-500">Aucune catégorie trouvée</li>
                 )}
               </ul>
             )}
           </div>
 
-          <div>
+          <div className="lg-field min-w-0">
             <label htmlFor="prix" className="lg-label">
               Prix de l'unité
             </label>
             <input
               type="number"
+              inputMode="decimal"
               name="prix"
               required
               id="prix"
               value={formData.prix}
               onChange={handleInputChange}
-              className="lg-input"
+              className="lg-input min-w-0"
               placeholder="0.00"
             />
           </div>
 
-          <PriceUnitForm onChange={setPriceUnitFields} charge={charge} />
+          <div className="sm:col-span-2">
+            <PriceUnitForm onChange={setPriceUnitFields} charge={charge} />
+          </div>
 
-          <div>
+          <div className="lg-field min-w-0">
             <label htmlFor="prix_achat" className="lg-label">
               Prix Achat
             </label>
             <input
               type="number"
+              inputMode="decimal"
               name="prix_achat"
               required
               id="prix_achat"
               value={formData.prix_achat}
               onChange={handleInputChange}
-              className="lg-input"
+              className="lg-input min-w-0"
               placeholder="0.00"
             />
           </div>
 
-          <div>
+          <div className="lg-field min-w-0">
             <label htmlFor="taxation" className="lg-label">
               Taxation
             </label>
@@ -729,7 +735,7 @@ export function AjoutProduit({ handleformclick, handletoast }) {
               required
               value={formData.taxation}
               onChange={(e) => setFormData({ ...formData, taxation: e.target.value })}
-              className="lg-input"
+              className="lg-select min-w-0"
             >
               <option value="">Sélectionnez une taxation</option>
               <option>A</option>
@@ -742,24 +748,25 @@ export function AjoutProduit({ handleformclick, handletoast }) {
             </select>
           </div>
 
-          <div>
+          <div className="lg-field min-w-0">
             <label htmlFor="quantite_stock" className="lg-label">
               Quantité Stock
             </label>
             <input
               type="number"
+              inputMode="numeric"
               name="quantite_stock"
               required
               id="quantite_stock"
               value={formData.quantite_stock}
               onChange={handleInputChange}
-              className="lg-input"
+              className="lg-input min-w-0"
               placeholder="100"
             />
           </div>
 
-          <div>
-            <label className="text-ink-800" htmlFor="dateexpi">
+          <div className="lg-field min-w-0">
+            <label className="lg-label" htmlFor="dateexpi">
               Date Expiration
             </label>
             <input
@@ -769,11 +776,11 @@ export function AjoutProduit({ handleformclick, handletoast }) {
               value={formData.dateexpi || ""}
               onChange={handleInputChange}
               placeholder="Date expiration"
-              className="lg-input"
+              className="lg-input min-w-0"
             />
           </div>
 
-          <div className="col-span-2">
+          <div className="sm:col-span-2">
             <label htmlFor="description" className="lg-label">
               Description
             </label>
@@ -789,23 +796,28 @@ export function AjoutProduit({ handleformclick, handletoast }) {
           </div>
 
           {/* Photo du produit */}
-          <div className="col-span-2">
+          <div className="sm:col-span-2">
             <label className="lg-label">Photo du produit</label>
-            <div className="flex items-center gap-4">
+            <div className="photo-ligne flex min-w-0 flex-col items-start gap-3 sm:flex-row sm:items-center sm:gap-4">
               {formData.image && (
                 <img
                   src={`${import.meta.env.VITE_API_URL}/${formData.image}`}
-                  alt="Photo"
-                  className="mb-2 h-24 w-24 rounded-xl object-cover"
+                  alt="Photo du produit"
+                  className="mb-1 h-24 w-24 shrink-0 rounded-xl object-cover ring-1 ring-inset ring-ink-200"
                 />
               )}
-              <input type="file" accept="image/*" onChange={uploaderImage} className="lg-input" />
+              <input
+                type="file"
+                accept="image/*"
+                onChange={uploaderImage}
+                className="lg-input min-w-0 flex-1 text-[13px]"
+              />
             </div>
           </div>
         </div>
 
         <div className="mt-6">
-          <button type="submit" className="lg-btn-primary lg-btn-lg w-full">
+          <button type="submit" className="lg-btn-primary lg-btn-lg w-full py-3.5 text-base">
             Ajouter le Produit
           </button>
         </div>
@@ -814,36 +826,38 @@ export function AjoutProduit({ handleformclick, handletoast }) {
       {/* Modal affiche */}
 
       {showModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="w-full max-w-lg">
-            <h2 className="text-xl font-bold text-ink-800 mb-4">Produits existants</h2>
+        <div className="fixed inset-0 z-[100] flex items-end justify-center bg-black/50 p-3 sm:items-center sm:p-5">
+          <div className="w-full max-w-lg rounded-3xl bg-white p-4 shadow-lift sm:p-6">
+            <h2 className="mb-4 text-xl font-bold text-ink-900">Produits existants</h2>
 
-            <table className="w-full border-collapse border border-ink-200">
-              <thead>
-                <tr className="bg-ink-100">
-                  <th className="rounded-xl border border-ink-200 p-2">Nom</th>
-                  <th className="rounded-xl border border-ink-200 p-2">Prix</th>
-                  <th className="rounded-xl border border-ink-200 p-2">Code Barre</th>
-                </tr>
-              </thead>
-              <tbody>
-                {produitsExistants.map((produit) => (
-                  <tr key={produit.id}>
-                    <td className="rounded-xl border border-ink-200 p-2">{produit.nom}</td>
-                    <td className="rounded-xl border border-ink-200 p-2">{produit.prix} FCFA</td>
-                    <td className="rounded-xl border border-ink-200 p-2">{produit.code_barre}</td>
+            <div className="lg-table-wrap max-h-64 overflow-y-auto rounded-xl border border-ink-200">
+              <table className="w-full min-w-[420px] border-collapse">
+                <thead>
+                  <tr className="bg-ink-100 text-left text-[11px] font-bold tracking-wide text-ink-500 uppercase">
+                    <th className="border-b border-ink-200 p-2">Nom</th>
+                    <th className="border-b border-ink-200 p-2">Prix</th>
+                    <th className="border-b border-ink-200 p-2">Code Barre</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {produitsExistants.map((produit) => (
+                    <tr key={produit.id}>
+                      <td className="border-b border-ink-100 p-2 text-[13px] font-semibold text-ink-800">{produit.nom}</td>
+                      <td className="border-b border-ink-100 p-2 text-[13px] tabular text-ink-700">{produit.prix} FCFA</td>
+                      <td className="border-b border-ink-100 p-2 font-mono text-[12px] text-ink-600">{produit.code_barre}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
 
-            <div className="flex justify-end mt-4">
-              <button onClick={() => setShowModal(false)} className="lg-btn-neutral mr-4">
+            <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:justify-end">
+              <button onClick={() => setShowModal(false)} className="lg-btn-neutral w-full sm:w-auto">
                 Annuler
               </button>
               <button
                 onClick={confirmerAjout}
-                className="px-4 py-2 bg-blue-600 text-white rounded-md"
+                className="lg-btn w-full bg-blue-600 text-white hover:bg-blue-700 sm:w-auto"
               >
                 Confirmer l'ajout
               </button>
