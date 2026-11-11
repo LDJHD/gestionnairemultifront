@@ -252,7 +252,8 @@ export function Configurator() {
                 key={c}
                 type="button"
                 onClick={() => choisirCouleurBoutique(c)}
-                className={`h-6 w-6 rounded-full border-2 transition-transform hover:scale-110 ${
+                title={c}
+                className={`h-7 w-7 rounded-full border-2 ring-1 ring-inset ring-ink-200 transition-transform hover:scale-110 ${
                   couleurPerso === c ? "border-ink-900" : "border-transparent"
                 }`}
                 style={{ backgroundColor: c }}

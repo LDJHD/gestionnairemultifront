@@ -236,7 +236,19 @@ h1, h2, h3, h4, h5, h6, .font-display {
      toujours *-700 et au-dessus.
      ========================================================================= */
   .boutique-page {
-    background: linear-gradient(to bottom, #f3ede0 0%, #fdf9ef 28%, #fdf9ef 72%, #f3ede0 100%);
+    /* Les jetons sont posés par utils/themeBoutique.js à partir de la couleur
+       choisie par le gestionnaire. Les valeurs de repli sont l'identité
+       d'origine, pour éviter tout flash avant l'injection du thème. */
+    background:
+      radial-gradient(900px 420px at 8% 0%, var(--boutique-voile, rgba(15, 118, 110, 0.08)) 0%, transparent 62%),
+      radial-gradient(760px 400px at 100% 0%, var(--boutique-voile, rgba(15, 118, 110, 0.06)) 0%, transparent 58%),
+      linear-gradient(
+        to bottom,
+        var(--boutique-fond, #f3ede0) 0%,
+        var(--boutique-fond-clair, #fdf9ef) 26%,
+        var(--boutique-fond-clair, #fdf9ef) 74%,
+        var(--boutique-fond, #f3ede0) 100%
+      );
     @apply text-boutique-800;
   }
   /* Texte courant et secondaires : jamais plus clair que 700. */
@@ -244,8 +256,19 @@ h1, h2, h3, h4, h5, h6, .font-display {
   .boutique-texte-fort { @apply text-boutique-800; }
   /* Fond clair garanti pour en-têtes et barres fines (ou fonds saturés). */
   .boutique-barre-claire {
-    background: #f3ede0;
+    background: var(--boutique-barre, #f3ede0);
     @apply border-b border-boutique-300 shadow-soft;
+  }
+  /* Filet supérieur dégradé : donne du relief aux pieds de page. */
+  .boutique-filet-accent {
+    background: linear-gradient(
+      90deg,
+      var(--boutique-fond, #f3ede0) 0%,
+      var(--boutique-bordure, #ddc7a3) 22%,
+      var(--boutique-accent, #0f766e) 50%,
+      var(--boutique-bordure, #ddc7a3) 78%,
+      var(--boutique-fond, #f3ede0) 100%
+    );
   }
 
   /* ---------- Lien de navigation latérale ---------- */
@@ -266,6 +289,10 @@ h1, h2, h3, h4, h5, h6, .font-display {
 }
 .lg-clamp-3 {
   display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+}
+/* Ombre douce portée par le texte (initiales des tuiles produits). */
+.drop-sm {
+  filter: drop-shadow(0 1px 2px rgb(15 23 42 / 0.28));
 }
 
 /* Adoucir les headers Material Tailwind existants */
@@ -298,7 +325,9 @@ h1, h2, h3, h4, h5, h6, .font-display {
   input:not([type="checkbox"]):not([type="radio"]),
   textarea,
   select {
-    font-size: 16px;
+    /* !important : les utilitaires Tailwind `text-sm` (spécificité de classe)
+       battaient cette règle et réactivaient le zoom iOS. */
+    font-size: 16px !important;
   }
 }
 

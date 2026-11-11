@@ -49,16 +49,16 @@ export const fmt = (n) => `${Number(n || 0).toLocaleString("fr-FR")} F`;
  * 1. TEINTES PAR CATÉGORIE
  * =========================================================================== */
 
-/** Dégradés disponibles pour les visuels générés (fond + dégradé). */
+/** Dégradés disponibles pour les visuels générés (fond + dégradé + texte). */
 const TONS = [
-  { from: "from-boutique-200", to: "to-boutique-400", ink: "text-boutique-700", chip: "bg-boutique-300/60 text-boutique-800" },
-  { from: "from-boutique-200", to: "to-boutique-400", ink: "text-boutique-800", chip: "bg-boutique-300 text-boutique-900" },
-  { from: "from-amber-50", to: "to-amber-200", ink: "text-amber-700", chip: "bg-amber-100 text-amber-800" },
-  { from: "from-rose-50", to: "to-rose-200", ink: "text-rose-700", chip: "bg-rose-100 text-rose-700" },
-  { from: "from-sky-50", to: "to-sky-200", ink: "text-sky-700", chip: "bg-sky-100 text-sky-700" },
-  { from: "from-violet-50", to: "to-violet-200", ink: "text-violet-700", chip: "bg-violet-100 text-violet-700" },
-  { from: "from-emerald-50", to: "to-emerald-200", ink: "text-emerald-700", chip: "bg-emerald-100 text-emerald-700" },
-  { from: "from-orange-50", to: "to-orange-200", ink: "text-orange-700", chip: "bg-orange-100 text-orange-800" },
+  { from: "from-boutique-500", to: "to-boutique-700", ink: "text-boutique-800", chip: "bg-boutique-300/60 text-boutique-800", sur: "text-white" },
+  { from: "from-boutique-600", to: "to-boutique-800", ink: "text-boutique-900", chip: "bg-boutique-300 text-boutique-900", sur: "text-white" },
+  { from: "from-amber-100", to: "to-amber-300", ink: "text-amber-800", chip: "bg-amber-100 text-amber-900", sur: "text-amber-900" },
+  { from: "from-rose-100", to: "to-rose-300", ink: "text-rose-800", chip: "bg-rose-100 text-rose-900", sur: "text-rose-900" },
+  { from: "from-sky-100", to: "to-sky-300", ink: "text-sky-800", chip: "bg-sky-100 text-sky-900", sur: "text-sky-900" },
+  { from: "from-violet-100", to: "to-violet-300", ink: "text-violet-800", chip: "bg-violet-100 text-violet-900", sur: "text-violet-900" },
+  { from: "from-emerald-100", to: "to-emerald-300", ink: "text-emerald-800", chip: "bg-emerald-100 text-emerald-900", sur: "text-emerald-900" },
+  { from: "from-orange-100", to: "to-orange-300", ink: "text-orange-800", chip: "bg-orange-100 text-orange-900", sur: "text-orange-900" },
 ];
 
 /** Icône décorative déterministe selon le nom de la catégorie. */
@@ -138,6 +138,11 @@ export function TuileVisuel({ produit, api, className = "", taille = "normale" }
         aria-hidden="true"
         className={`absolute -right-6 -bottom-8 rounded-full bg-white/25 blur-2xl ${gros ? "h-40 w-40" : "h-24 w-24"}`}
       />
+      {/* Léger relief : haut plus lumineux, bas plus profond. */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-black/[0.12]"
+      />
 
       {src ? (
         <img
@@ -149,11 +154,11 @@ export function TuileVisuel({ produit, api, className = "", taille = "normale" }
       ) : (
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
           <span
-            className={`font-display font-extrabold tracking-tight text-white drop-sm ${gros ? "text-6xl" : "text-4xl"}`}
+            className={`font-display font-extrabold tracking-tight drop-sm ${ton.sur} ${gros ? "text-6xl" : "text-4xl"}`}
           >
             {initiales(produit.nom)}
           </span>
-          <Icone className={`text-white/70 ${gros ? "h-9 w-9" : "h-6 w-6"}`} />
+          <Icone className={`opacity-60 ${ton.sur} ${gros ? "h-9 w-9" : "h-6 w-6"}`} />
         </div>
       )}
     </div>
@@ -278,7 +283,7 @@ export function EnteteVitrine({
         <div className="relative order-last hidden w-full max-w-md flex-1 md:order-none md:mx-auto md:block">
           <MagnifyingGlassIcon className="pointer-events-none absolute top-1/2 left-4 h-[18px] w-[18px] -translate-y-1/2 text-boutique-700" />
           <input
-            className="w-full rounded-full border border-boutique-300 bg-white py-2.5 pr-4 pl-11 text-sm font-semibold text-boutique-900 shadow-xs transition-shadow outline-none placeholder:font-normal placeholder:text-boutique-600 focus:border-boutique-500 focus:ring-4 focus:ring-boutique-300/50"
+            className="w-full rounded-full border border-boutique-300 bg-white py-2.5 pr-4 pl-11 text-base font-semibold text-boutique-900 shadow-xs transition-shadow outline-none placeholder:font-normal placeholder:text-boutique-600 focus:border-boutique-500 focus:ring-4 focus:ring-boutique-300/50 sm:text-sm"
             placeholder="Rechercher un article, une marque…"
             aria-label="Rechercher un article"
             value={recherche}
@@ -302,7 +307,7 @@ export function EnteteVitrine({
           <span className="relative">
             <ShoppingCartIcon className="h-[18px] w-[18px]" />
             {nombreArticles > 0 && (
-              <span className="absolute -top-2 -right-2.5 grid h-[18px] min-w-[18px] place-items-center rounded-full bg-boutique-900 px-1 text-[10px] font-extrabold text-boutique-50 tabular ring-2 ring-boutique-50">
+              <span className="absolute -top-2 -right-2.5 grid h-[18px] min-w-[18px] place-items-center rounded-full bg-white px-1 text-[10px] font-extrabold text-boutique-900 tabular shadow-xs ring-2 ring-boutique-900">
                 {nombreArticles}
               </span>
             )}
@@ -316,7 +321,7 @@ export function EnteteVitrine({
         <div className="relative mx-auto max-w-[1400px]">
           <MagnifyingGlassIcon className="pointer-events-none absolute top-1/2 left-4 h-[18px] w-[18px] -translate-y-1/2 text-boutique-700" />
           <input
-            className="w-full rounded-full border border-boutique-300 bg-white py-2.5 pr-4 pl-11 text-sm font-semibold text-boutique-900 outline-none placeholder:font-normal placeholder:text-boutique-600 focus:border-boutique-500 focus:ring-4 focus:ring-boutique-300/50"
+            className="w-full rounded-full border border-boutique-300 bg-white py-2.5 pr-4 pl-11 text-base font-semibold text-boutique-900 outline-none placeholder:font-normal placeholder:text-boutique-600 focus:border-boutique-500 focus:ring-4 focus:ring-boutique-300/50 sm:text-sm"
             placeholder="Rechercher un article, une marque…"
             aria-label="Rechercher un article"
             value={recherche}
@@ -335,7 +340,8 @@ export function EnteteVitrine({
 export function PiedVitrine({ activite, vitrine, paiements }) {
   const annee = new Date().getFullYear();
   return (
-    <footer className="mt-24 border-t border-boutique-300 bg-boutique-100">
+    <footer className="mt-24 bg-boutique-100">
+      <div aria-hidden="true" className="boutique-filet-accent h-1 w-full" />
       <div className="mx-auto max-w-[1400px] px-4 py-14 sm:px-8">
         <div className="grid gap-10 lg:grid-cols-12">
           <div className="lg:col-span-4">
@@ -510,7 +516,7 @@ export function SqueletteGrille({ nombre = 8 }) {
 /** Bouton principal espresso, cohérent avec l'identité de la vitrine. */
 export function BoutonVitrine({ children, className = "", variante = "principal", ...props }) {
   const base =
-    "inline-flex items-center justify-center gap-2 rounded-full font-bold transition-all duration-200 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50";
+    "inline-flex items-center justify-center gap-2 rounded-full font-bold transition-all duration-200 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-boutique-500/30";
   const variantes = {
     principal: "bg-boutique-900 text-boutique-50 shadow-soft hover:bg-boutique-800 hover:shadow-lift",
     clair: "border border-boutique-300 bg-white text-boutique-800 hover:border-boutique-500 hover:bg-boutique-100",
@@ -575,7 +581,7 @@ export function IconeSecteur({ secteur = "", className = "h-6 w-6" }) {
  */
 export function BarreSticky({ children }) {
   return (
-    <div className="sticky top-0 z-40 shadow-[0_1px_0_0_rgb(216_200_173/0.9)]">
+    <div className="sticky top-0 z-40 border-b border-boutique-300">
       {children}
     </div>
   );
@@ -618,7 +624,7 @@ export function SelecteurTri({ valeur, options, onChange }) {
         aria-label="Trier les articles"
         value={valeur}
         onChange={(e) => onChange(e.target.value)}
-        className="appearance-none rounded-full border border-boutique-200 bg-white py-2 pr-9 pl-3.5 text-[12.5px] font-bold text-boutique-700 outline-none transition-colors hover:border-boutique-300 focus:border-boutique-300 focus:ring-4 focus:ring-boutique-200/50"
+        className="appearance-none rounded-full border border-boutique-300 bg-white py-2.5 pr-9 pl-3.5 text-[12.5px] font-bold text-boutique-800 outline-none transition-colors hover:border-boutique-500 focus:border-boutique-500 focus:ring-4 focus:ring-boutique-300/40"
       >
         {options.map((o) => (
           <option key={o.valeur} value={o.valeur}>

@@ -122,21 +122,22 @@ function Hero({ data }) {
   const plafond = Number(vitrine?.frais_livraison_defaut || 0);
 
   return (
-    <section className="relative overflow-hidden bg-boutique-deep text-boutique-100">
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-        <div className="absolute -top-40 -left-24 h-[26rem] w-[26rem] rounded-full bg-forest-500/20 blur-[100px]" />
-        <div className="absolute -right-32 -bottom-32 h-[30rem] w-[30rem] rounded-full bg-boutique-500/25 blur-[110px]" />
-        <div
-          className="absolute inset-0 opacity-[0.55]"
-          style={{
-            backgroundImage:
-              "radial-gradient(circle at 1px 1px, rgba(255,255,255,.10) 1px, transparent 0)",
-            backgroundSize: "30px 30px",
-          }}
-        />
-      </div>
+    <div className="mx-auto max-w-[1400px] px-4 pt-5 sm:px-8 sm:pt-7">
+      <section className="relative overflow-hidden rounded-3xl bg-boutique-deep text-boutique-100 shadow-lift">
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+          <div className="absolute -top-40 -left-24 h-[26rem] w-[26rem] rounded-full bg-forest-500/20 blur-[100px]" />
+          <div className="absolute -right-32 -bottom-32 h-[30rem] w-[30rem] rounded-full bg-boutique-500/25 blur-[110px]" />
+          <div
+            className="absolute inset-0 opacity-[0.55]"
+            style={{
+              backgroundImage:
+                "radial-gradient(circle at 1px 1px, rgba(255,255,255,.10) 1px, transparent 0)",
+              backgroundSize: "30px 30px",
+            }}
+          />
+        </div>
 
-      <div className="relative mx-auto grid max-w-[1400px] items-center gap-12 px-4 py-16 sm:px-8 lg:grid-cols-12 lg:gap-16 lg:py-24">
+        <div className="relative grid items-center gap-10 px-5 py-12 sm:px-9 sm:py-16 lg:grid-cols-12 lg:gap-14 lg:px-14 lg:py-20">
         {/* Colonne éditoriale */}
         <div className="lg:col-span-6 xl:col-span-6">
           <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3.5 py-1.5 text-[11px] font-bold tracking-[0.16em] text-boutique-200 uppercase backdrop-blur">
@@ -268,8 +269,9 @@ function Hero({ data }) {
             ))}
           </div>
         </div>
-      </div>
-    </section>
+        </div>
+      </section>
+    </div>
   );
 }
 
@@ -312,7 +314,7 @@ function CarteProduit({ produit, api, onApercu, onAjouter, ajoute }) {
           <p className="mt-1 truncate text-[11.5px] font-medium text-boutique-600">{produit.description}</p>
         )}
 
-        <div className="mt-auto flex items-end justify-between gap-2 pt-4">
+        <div className="mt-auto flex flex-col gap-2.5 pt-4 sm:flex-row sm:items-end sm:justify-between sm:gap-2">
           <p className="font-display text-[17px] leading-none font-extrabold tracking-tight text-forest-800 tabular">
             {prix > 0 ? fmt(prix) : "—"}
           </p>
@@ -322,7 +324,7 @@ function CarteProduit({ produit, api, onApercu, onAjouter, ajoute }) {
             disabled={!dispo}
             onClick={() => onAjouter(produit)}
             aria-label={`Ajouter ${produit.nom} au panier`}
-            className={`inline-flex h-9 flex-none items-center gap-1.5 rounded-full px-3.5 text-[12px] font-bold transition-all duration-200 active:scale-[0.96] ${
+            className={`inline-flex h-10 w-full flex-none items-center justify-center gap-1.5 rounded-full px-3.5 text-[12px] font-bold transition-all duration-200 active:scale-[0.96] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-boutique-500/30 sm:h-9 sm:w-auto ${
               dispo
                 ? ajoute
                   ? "bg-boutique-600 text-boutique-50 shadow-soft"
