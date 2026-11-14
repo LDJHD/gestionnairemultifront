@@ -1840,7 +1840,7 @@ export default function Boutique() {
           <>
             <Hero data={data} />
 
-            <div className="mx-auto max-w-[1400px] px-4 sm:px-8">
+            <div className="mx-auto max-w-[1400px] px-4 pt-7 sm:px-8 sm:pt-9">
               <div className="border-b border-boutique-300 pb-8">
                 <BandeauConfiance items={avantages({ vitrine, paiements })} />
               </div>
