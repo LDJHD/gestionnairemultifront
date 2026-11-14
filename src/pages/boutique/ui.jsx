@@ -149,6 +149,10 @@ export function TuileVisuel({ produit, api, className = "", taille = "normale" }
           src={src}
           alt={produit.nom}
           loading="lazy"
+          onError={(e) => {
+            // Image absente / URL cassée : on garde le visuel généré.
+            e.currentTarget.style.display = "none";
+          }}
           className="absolute inset-0 h-full w-full object-cover"
         />
       ) : (

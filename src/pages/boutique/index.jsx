@@ -180,18 +180,19 @@ function Hero({ data }) {
           </div>
 
           {/* Localisation de la boutique */}
-          {(localisation?.adresse || localisation?.ville || localisation?.latitude) && (
+          {Boolean(localisation?.adresse || localisation?.ville || localisation?.latitude) && (
             <div className="mt-8 flex flex-wrap items-center gap-3 rounded-xl border border-white/20 bg-white/10 px-4 py-4 backdrop-blur-sm">
               <MapPinIcon className="h-5 w-5 text-boutique-100 flex-none" />
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-boutique-100">
                   {localisation.adresse || localisation.ville}
                 </p>
-                {localisation.ville && localisation.adresse && (
-                  <p className="text-[12px] text-boutique-200/70">
-                    {localisation.adresse}, {localisation.ville}
-                  </p>
-                )}
+                {localisation.adresse &&
+                  localisation.ville &&
+                  localisation.adresse.trim().toLowerCase() !==
+                    localisation.ville.trim().toLowerCase() && (
+                    <p className="text-[12px] text-boutique-200/70">{localisation.ville}</p>
+                  )}
               </div>
               <button
                 type="button"

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import {
   Cog6ToothIcon,
   CreditCardIcon,
@@ -20,6 +20,17 @@ import {
 } from "@heroicons/react/24/outline";
 
 const API = import.meta.env.VITE_API_URL;
+
+/** Recentre la carte quand les coordonnées changent (bouton « Position exacte »). */
+function RecentrerCarte({ latitude, longitude }) {
+  const carte = useMap();
+  useEffect(() => {
+    if (Number.isFinite(latitude) && Number.isFinite(longitude)) {
+      carte.setView([latitude, longitude], 16, { animate: true });
+    }
+  }, [carte, latitude, longitude]);
+  return null;
+}
 
 /* ===========================================================================
    « LE GESTIONNAIRE » — PARAMÈTRES BOUTIQUE EN LIGNE (gestionnaire en chef)
@@ -100,6 +111,8 @@ export default function ParametresBoutique() {
     latitude: "",
     longitude: "",
   });
+  const [positionEtat, setPositionEtat] = useState("idle"); // idle | chargement | ok | erreur
+  const [positionMessage, setPositionMessage] = useState("");
 
   // Lien public de la boutique : FRONT/boutique/:slug
   // Source de vérité : l'endpoint dédié /api/v1/activite/mon-lien (isolé par entreprise)
@@ -176,11 +189,16 @@ export default function ParametresBoutique() {
           email_gestionnaire: json.email_gestionnaire || "",
         });
         setZones((json.zones || []).map((z) => ({ nom: z.nom, frais: z.frais })));
+        const latInit = json.localisation?.latitude;
+        const lngInit = json.localisation?.longitude;
         setLocalisation({
           adresse: json.localisation?.adresse || "",
           ville: json.localisation?.ville || "",
-          latitude: json.localisation?.latitude != null ? String(json.localisation.latitude) : "",
-          longitude: json.localisation?.longitude != null ? String(json.localisation.longitude) : "",
+          // 0,0 = coordonnées non renseignées (valeur par défaut en base)
+          latitude:
+            latInit != null && Number(latInit) !== 0 ? String(latInit) : "",
+          longitude:
+            lngInit != null && Number(lngInit) !== 0 ? String(lngInit) : "",
         });
 
         // Récupération du lien dédié de l'entreprise connectée (source de vérité, isolé par entreprise)
@@ -206,6 +224,38 @@ export default function ParametresBoutique() {
   const maj = (champ, valeur) => setParams((p) => ({ ...p, [champ]: valeur }));
 
   const majLoc = (champ, valeur) => setLocalisation((l) => ({ ...l, [champ]: valeur }));
+
+  /** Bouton « Position exacte » : GPS du téléphone / ordinateur → carte. */
+  const prendrePositionExacte = () => {
+    if (!navigator.geolocation) {
+      setPositionEtat("erreur");
+      setPositionMessage("La géolocalisation n'est pas disponible sur ce navigateur.");
+      return;
+    }
+    setPositionEtat("chargement");
+    setPositionMessage("Recherche de la position exacte…");
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const lat = Number(pos.coords.latitude.toFixed(7));
+        const lng = Number(pos.coords.longitude.toFixed(7));
+        setLocalisation((l) => ({ ...l, latitude: String(lat), longitude: String(lng) }));
+        setPositionEtat("ok");
+        setPositionMessage(
+          `Position exacte relevée (précision ±${Math.round(pos.coords.accuracy)} m). Enregistrez pour la publier sur la boutique.`
+        );
+      },
+      (err) => {
+        const messages = {
+          1: "Autorisation refusée. Activez la localisation dans les réglages du navigateur.",
+          2: "Position indisponible. Vérifiez que le GPS / Wi-Fi est activé.",
+          3: "Délai dépassé. Réessayez dans un endroit mieux couvert.",
+        };
+        setPositionEtat("erreur");
+        setPositionMessage(messages[err.code] || "Impossible de récupérer la position exacte.");
+      },
+      { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 }
+    );
+  };
 
   // Règle §4.6 en direct
   const regleLive = params?.en_ligne && params?.a_la_livraison
@@ -748,18 +798,49 @@ export default function ParametresBoutique() {
               </div>
             </div>
 
+            {/* Position exacte : GPS du téléphone / ordinateur */}
+            <div className="flex flex-wrap items-center gap-3">
+              <button
+                type="button"
+                onClick={prendrePositionExacte}
+                disabled={positionEtat === "chargement"}
+                className="inline-flex items-center gap-2 rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-bold text-white shadow-soft transition-all hover:bg-brand-700 hover:shadow-lift active:scale-[0.98] disabled:cursor-wait disabled:opacity-60"
+              >
+                <MapPinIcon className="h-4 w-4" />
+                {positionEtat === "chargement" ? "Localisation en cours…" : "Position exacte"}
+              </button>
+              {positionMessage && (
+                <p
+                  className={`min-w-0 flex-1 text-[12.5px] font-medium ${
+                    positionEtat === "erreur"
+                      ? "text-red-600"
+                      : positionEtat === "ok"
+                        ? "text-forest-700"
+                        : "text-ink-500"
+                  }`}
+                  role="status"
+                >
+                  {positionMessage}
+                </p>
+              )}
+            </div>
+
             {/* Carte */}
             <div className="rounded-xl border border-ink-200 overflow-hidden">
               {localisation.latitude && localisation.longitude ? (
                 <MapContainer
                   center={[Number(localisation.latitude), Number(localisation.longitude)]}
-                  zoom={15}
+                  zoom={16}
                   className="w-full h-64"
                   style={{ height: "260px" }}
                 >
                   <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  />
+                  <RecentrerCarte
+                    latitude={Number(localisation.latitude)}
+                    longitude={Number(localisation.longitude)}
                   />
                   <Marker position={[Number(localisation.latitude), Number(localisation.longitude)]}>
                     <Popup>
