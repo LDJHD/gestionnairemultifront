@@ -238,7 +238,7 @@ function Hero({ data }) {
 
         {/* Mosaïque de catégories */}
         <div className="lg:col-span-6">
-          <div className="grid grid-cols-3 gap-3 sm:gap-4">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-2 lg:gap-3 xl:grid-cols-3 xl:gap-4">
             {topCategories.map(([cat, n], i) => (
               <a
                 key={cat}
@@ -250,7 +250,9 @@ function Hero({ data }) {
                     ?.scrollIntoView({ behavior: "smooth", block: "center" });
                 }}
                 className={`group relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 shadow-lift backdrop-blur transition-transform duration-300 hover:-translate-y-1 ${
-                  i === 0 ? "col-span-2 row-span-2 aspect-square" : "aspect-square"
+                  i === 0
+                    ? "aspect-square sm:col-span-2 sm:row-span-2 lg:col-span-1 lg:row-span-1 xl:col-span-2 xl:row-span-2"
+                    : "aspect-square"
                 }`}
               >
                 <TuileVisuel
