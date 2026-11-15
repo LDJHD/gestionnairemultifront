@@ -140,6 +140,7 @@ export function Modifiefournisseur({ fournisseurId, handleformclick }) {
               className="h-5 w-5"
             >
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+              Modifier
             </svg>
           </button>
         </div>
