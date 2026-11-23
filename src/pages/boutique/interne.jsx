@@ -284,7 +284,7 @@ export default function BoutiqueInterne() {
                 ✕
               </button>
               <div className="h-[70vh] w-[70vw] max-w-[700px]">
-                <TuileVisuel produit={imageApercu} api="" className="h-full w-full" taille="grande" />
+                <TuileVisuel produit={imageApercu} api={API} className="h-full w-full" taille="grande" />
               </div>
               <div className="border-t border-ink-100 px-5 py-3">
                 <p className="font-display font-bold text-ink-900">{imageApercu.nom}</p>
@@ -323,7 +323,7 @@ function LigneProduit({ produit, onAjouter }) {
             className="h-12 w-12 flex-none overflow-hidden rounded-lg bg-ink-100 transition-transform hover:scale-105"
             aria-label={`Agrandir l'image de ${produit.nom}`}
           >
-            <TuileVisuel produit={produit} api="" className="h-full w-full" taille="petite" />
+            <TuileVisuel produit={produit} api={API} className="h-full w-full" taille="petite" />
           </button>
           <div>
             <p className="font-semibold text-ink-800 text-[13px]">{produit.nom}</p>
