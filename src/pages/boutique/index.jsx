@@ -103,184 +103,57 @@ function avantages({ vitrine, paiements }) {
 /* ===========================================================================
  * 1. HÉROS ÉDITORIAL
  * =========================================================================== */
+/* ===========================================================================
+ * 1. HÉROS — SIMPLE & PROFESSIONNEL
+ * =========================================================================== */
 function Hero({ data }) {
-  const { activite, vitrine, paiements, produits, localisation } = data;
-
-  // Mosaïque des plus grandes catégories → donne un ancrage visuel au héros
-  // même quand le catalogue n'a aucune photo.
-  const topCategories = useMemo(() => {
-    const compte = new Map();
-    for (const p of produits) {
-      const c = (p.categorie || "").trim();
-      if (!c) continue;
-      compte.set(c, (compte.get(c) || 0) + 1);
-    }
-    return [...compte.entries()].sort((a, b) => b[1] - a[1]).slice(0, 6);
-  }, [produits]);
-
-  const enStock = produits.filter((p) => !p.en_rupture).length;
-  const plafond = Number(vitrine?.frais_livraison_defaut || 0);
+  const { activite, vitrine, localisation } = data;
 
   return (
-    <div className="mx-auto max-w-[1400px] px-4 pt-5 sm:px-8 sm:pt-7">
-      <section className="relative overflow-hidden rounded-3xl bg-boutique-deep text-boutique-100 shadow-lift">
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-          <div className="absolute -top-40 -left-24 h-[26rem] w-[26rem] rounded-full bg-forest-500/20 blur-[100px]" />
-          <div className="absolute -right-32 -bottom-32 h-[30rem] w-[30rem] rounded-full bg-boutique-500/25 blur-[110px]" />
-          <div
-            className="absolute inset-0 opacity-[0.55]"
-            style={{
-              backgroundImage:
-                "radial-gradient(circle at 1px 1px, rgba(255,255,255,.10) 1px, transparent 0)",
-              backgroundSize: "30px 30px",
-            }}
-          />
-        </div>
-
-        <div className="relative grid items-center gap-10 px-5 py-12 sm:px-9 sm:py-16 lg:grid-cols-12 lg:gap-14 lg:px-14 lg:py-20">
-        {/* Colonne éditoriale */}
-        <div className="lg:col-span-6 xl:col-span-6">
-          <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3.5 py-1.5 text-[11px] font-bold tracking-[0.16em] text-boutique-200 uppercase backdrop-blur">
-            <SparklesIcon className="h-3.5 w-3.5 text-forest-300" />
-            Boutique officielle · Le Gestionnaire
-          </span>
-
-          <h1 className="mt-6 font-display text-[38px] leading-[1.05] font-extrabold tracking-tight text-white sm:text-6xl">
-            {activite.nom}
-          </h1>
-
-          <p className="mt-5 max-w-xl text-[15px] leading-relaxed text-boutique-100 sm:text-base">
-            {produits.length} article{produits.length > 1 ? "s" : ""} en catalogue
-            {topCategories.length > 0 && (
-              <>
-                {" "}
-                — {topCategories.length} grandes familles de produits
-              </>
-            )}
-            {vitrine?.livraison_active
-              ? ", livrés chez vous ou à retirer en boutique."
-              : ", disponibles en retrait en boutique."}
-          </p>
-
-          <div className="mt-8 flex flex-wrap items-center gap-3">
-            <a
-              href="#catalogue"
-              className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3.5 text-sm font-bold text-boutique-900 shadow-lift transition-all duration-200 hover:-translate-y-0.5 hover:shadow-glow active:scale-[0.98]"
-            >
-              Découvrir le catalogue
-              <ArrowRightIcon className="h-4 w-4" />
-            </a>
-            <Link
-              to="/commande/suivi"
-              className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/5 px-6 py-3.5 text-sm font-bold text-white backdrop-blur transition-all duration-200 hover:border-white/50 hover:bg-white/10"
-            >
-              <TruckIcon className="h-[18px] w-[18px]" />
-              Suivre ma commande
-            </Link>
+    <div className="mx-auto max-w-[1400px] px-4 pt-6 sm:px-8 sm:pt-8">
+      <section className="relative overflow-hidden rounded-2xl bg-boutique-deep px-6 py-12 text-boutique-100 shadow-card sm:px-10 sm:py-16">
+        <div className="relative flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+          <div className="max-w-2xl">
+            <p className="text-[11px] font-bold tracking-[0.18em] text-boutique-200/80 uppercase">
+              Boutique officielle
+            </p>
+            <h1 className="mt-2 font-display text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
+              {activite.nom}
+            </h1>
+            <p className="mt-3 text-[15px] leading-relaxed text-boutique-100/90">
+              {vitrine?.livraison_active
+                ? "Livraison à domicile ou retrait en boutique."
+                : "Disponible en retrait en boutique."}
+            </p>
+            <div className="mt-6 flex flex-wrap items-center gap-3">
+              <a
+                href="#catalogue"
+                className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-bold text-boutique-900 shadow-soft transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lift active:scale-[0.98]"
+              >
+                Voir le catalogue
+                <ArrowRightIcon className="h-4 w-4" />
+              </a>
+              <Link
+                to="/commande/suivi"
+                className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/5 px-5 py-2.5 text-sm font-bold text-white transition-all duration-200 hover:border-white/50 hover:bg-white/10"
+              >
+                Suivre ma commande
+              </Link>
+            </div>
           </div>
 
-          {/* Localisation de la boutique */}
-          {Boolean(localisation?.adresse || localisation?.ville || localisation?.latitude) && (
-            <div className="mt-8 flex flex-wrap items-center gap-3 rounded-xl border border-white/20 bg-white/10 px-4 py-4 backdrop-blur-sm">
-              <MapPinIcon className="h-5 w-5 text-boutique-100 flex-none" />
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-boutique-100">
-                  {localisation.adresse || localisation.ville}
-                </p>
-                {localisation.adresse &&
-                  localisation.ville &&
-                  localisation.adresse.trim().toLowerCase() !==
-                    localisation.ville.trim().toLowerCase() && (
-                    <p className="text-[12px] text-boutique-200/70">{localisation.ville}</p>
-                  )}
-              </div>
-              <button
-                type="button"
-                onClick={() => {
-                  const destination =
-                    localisation.latitude && localisation.longitude
-                      ? `${localisation.latitude},${localisation.longitude}`
-                      : encodeURIComponent(
-                          `${localisation.adresse || ""}, ${localisation.ville || ""}`
-                        );
-                  window.open(
-                    `https://www.google.com/maps/dir/?api=1&destination=${destination}`,
-                    "_blank"
-                  );
-                }}
-                className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-2.5 text-sm font-bold text-boutique-100 transition-all hover:bg-white/20 hover:border-white/50 active:scale-[0.98]"
-              >
-                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-                Itinéraire
-              </button>
+          {Boolean(localisation?.adresse || localisation?.ville) && (
+            <div className="flex items-center gap-2 text-[13px] text-boutique-100/80">
+              <MapPinIcon className="h-4 w-4 flex-none" />
+              <span>{localisation.adresse || localisation.ville}</span>
             </div>
           )}
-
-          <dl className="mt-10 grid max-w-lg grid-cols-2 gap-6 border-t border-white/10 pt-7 sm:grid-cols-3">
-            {[
-              { v: String(produits.length), l: "Références" },
-              { v: String(enStock), l: "En stock" },
-              { v: plafond > 0 ? fmt(plafond) : "—", l: "Livraison dès" },
-            ].map((s) => (
-              <div key={s.l}>
-                <dt className="font-display text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
-                  {s.v}
-                </dt>
-                <dd className="mt-1 text-[11.5px] font-bold tracking-wider text-boutique-100 uppercase">
-                  {s.l}
-                </dd>
-              </div>
-            ))}
-          </dl>
-        </div>
-
-        {/* Mosaïque de catégories */}
-        <div className="lg:col-span-6">
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-2 lg:gap-3 xl:grid-cols-3 xl:gap-4">
-            {topCategories.map(([cat, n], i) => (
-              <a
-                key={cat}
-                href="#catalogue"
-                onClick={(e) => {
-                  e.preventDefault();
-                  document
-                    .querySelector(`[data-cat="${CSS.escape(cat)}"]`)
-                    ?.scrollIntoView({ behavior: "smooth", block: "center" });
-                }}
-                className={`group relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 shadow-lift backdrop-blur transition-transform duration-300 hover:-translate-y-1 ${
-                  i === 0
-                    ? "aspect-square sm:col-span-2 sm:row-span-2 lg:col-span-1 lg:row-span-1 xl:col-span-2 xl:row-span-2"
-                    : "aspect-square"
-                }`}
-              >
-                <TuileVisuel
-                  produit={{ nom: cat, categorie: cat }}
-                  api={API}
-                  className="absolute inset-0 h-full w-full"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-boutique-950/85 via-boutique-950/15 to-transparent" />
-                <div className="absolute inset-x-0 bottom-0 p-3 sm:p-4">
-                  <p className="truncate text-[12.5px] font-extrabold tracking-tight text-white sm:text-sm">
-                    {cat}
-                  </p>
-                  <p className="mt-0.5 text-[10.5px] font-bold text-white/90 tabular">{n} réf.</p>
-                </div>
-              </a>
-            ))}
-          </div>
-        </div>
         </div>
       </section>
     </div>
   );
 }
 
-/* ===========================================================================
- * 2. CARTE ARTICLE
- * =========================================================================== */
 function CarteProduit({ produit, api, onApercu, onAjouter, ajoute }) {
   const dispo = !produit.en_rupture && Number(produit.stock_disponible) > 0;
   const prix = Number(produit.prix || 0);
