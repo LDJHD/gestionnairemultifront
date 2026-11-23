@@ -991,7 +991,6 @@ function CheckoutView({
                   <input
                     id="c_adr"
                     className="w-full rounded-xl border border-boutique-300 bg-white px-4 py-3 text-sm font-semibold text-boutique-900 outline-none transition-all placeholder:font-normal placeholder:text-boutique-600 focus:border-boutique-500 focus:bg-white focus:ring-4 focus:ring-boutique-300/50"
-                    required
                     value={form.adresse_livraison}
                     name="adresse_livraison"
                     onChange={majForm}
@@ -1253,7 +1252,11 @@ function CheckoutView({
                   <button
                     type="submit"
                     disabled={envoi}
-                    className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-boutique-900 px-6 py-4 text-sm font-bold text-boutique-50 shadow-soft transition-all duration-200 hover:bg-boutique-800 hover:shadow-lift active:scale-[0.98] disabled:opacity-60"
+                    className={`inline-flex w-full items-center justify-center gap-2 rounded-full px-6 py-4 text-sm font-bold shadow-soft transition-all duration-200 active:scale-[0.98] disabled:opacity-60 ${
+                      form.mode_paiement === "a_la_livraison"
+                        ? "bg-ink-400 text-white hover:bg-ink-500"
+                        : "bg-boutique-900 text-boutique-50 hover:bg-boutique-800 hover:shadow-lift"
+                    }`}
                   >
                     {envoi ? (
                       <>
@@ -1417,13 +1420,7 @@ function ConfirmationView({ commande, api, slug }) {
             </div>
           </div>
 
-          {/* Paiement à la livraison (règles §4.6) */}
-          {etat.mode_paiement === "a_la_livraison" && !payee && !annulee && (
-            <div className="mt-4 flex items-start gap-2.5 rounded-xl bg-amber-50 p-4 text-[13px] font-bold text-amber-800 ring-1 ring-inset ring-amber-200">
-              <BanknotesIcon className="h-5 w-5 shrink-0 text-amber-600" />
-              <span>Vous réglerez {fmt(etat.montant_total)} au livreur à la réception.</span>
-            </div>
-          )}
+          {/* Paiement à la livraison : message supprimé après commande */}
 
           {/* Paiement en ligne en attente → checkout FedaPay + vérification */}
           {etat.mode_paiement === "en_ligne" && !payee && !annulee && (

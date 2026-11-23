@@ -633,6 +633,7 @@ export function ModifieProduit({ ProductId, handleformclick }) {
               className="lg-input"
             >
               <option value="">Sélectionnez une taxation</option>
+              <option value="AUCUNE">Aucune (pas de TVA)</option>
               <option>A</option>
               <option>B</option>
               <option>C</option>

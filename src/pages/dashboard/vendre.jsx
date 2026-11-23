@@ -224,7 +224,7 @@ const fetchStockValue = async (id) => {
         0
       );
       const aib = selectedProducts.reduce((acc, p) => {
-        if (!["B", "D"].includes(p.taxation) && formData.aib !== "N/A") {
+        if (p.taxation !== "AUCUNE" && !["B", "D"].includes(p.taxation) && formData.aib !== "N/A") {
           const tauxAib = formData.aib === "A" ? 0.01 : formData.aib === "B" ? 0.05 : 0;
           return acc + prixNb(p) * quantiteNb(p) * tauxAib;
         }

@@ -738,6 +738,7 @@ export function AjoutProduit({ handleformclick, handletoast }) {
               className="lg-select min-w-0"
             >
               <option value="">Sélectionnez une taxation</option>
+              <option value="AUCUNE">Aucune (pas de TVA)</option>
               <option>A</option>
               <option>B</option>
               <option>C</option>
