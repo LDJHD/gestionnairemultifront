@@ -14,12 +14,12 @@ import { useEffect, useState } from "react";
    =========================================================================== */
 
 function grouperPages(pages) {
-  const enLigne = ["Commandes en ligne", "Livraisons", "Paiements", "Paramètres boutique"];
+  const enLigne = ["Commandes en ligne", "Livraisons", "Paiements", "Paramètres boutique", "Commandes internes"];
   return {
     plateforme: pages.filter((p) => p.name === "Gérer les entreprises"),
     general: pages.filter((p) => ["Dashboard", "Opération de Vente"].includes(p.name)),
     gestion: pages.filter((p) =>
-      ["Client", "Produit", "Catégorie", "Unité", "Stock", "Fournisseur"].includes(p.name)
+      ["Client", "Produit", "Catégorie", "Unité", "Stock", "Fournisseur", "Portefeuille"].includes(p.name)
     ),
     finances: pages.filter((p) =>
       ["Statistique/Comptabilité", "Vente"].includes(p.name)

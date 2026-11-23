@@ -297,7 +297,7 @@ function CarteProduit({ produit, api, onApercu, onAjouter, ajoute }) {
         <TuileVisuel produit={produit} api={api} className="absolute inset-0 h-full w-full transition-transform duration-500 group-hover:scale-105" />
 
         <PastilleStock produit={produit} className="absolute top-3 left-3 z-20" />
-        <PastilleCategorie categorie={produit.categorie} className="absolute top-3 right-3 z-20" />
+        <PastilleCategorie categorie={produit.categorie} className="absolute top-3 right-3 z-20 hidden sm:inline-flex" />
 
         {/* Voile pour la lisibilité */}
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent" />

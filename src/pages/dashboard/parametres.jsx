@@ -122,6 +122,20 @@ export default function ParametresBoutique() {
     ? `${window.location.origin}/boutique/${boutique.slug}`
     : null;
 
+  const lienInterne = boutique.slug
+    ? `${window.location.origin}/boutique/${boutique.slug}/interne`
+    : null;
+
+  const copierLienInterne = async () => {
+    if (!lienInterne) return;
+    try {
+      await navigator.clipboard.writeText(lienInterne);
+      toast.success("Lien interne copié !");
+    } catch {
+      toast.info(lienInterne);
+    }
+  };
+
   const copierLien = async () => {
     if (!lienBoutique) return;
     try {
@@ -419,6 +433,35 @@ export default function ParametresBoutique() {
                 Copier le lien
               </button>
             </div>
+
+            {/* Lien interne */}
+            {lienInterne && (
+              <div className="mt-6 rounded-xl border border-ink-200 bg-ink-50/60 p-4">
+                <p className="mb-2 text-[12px] font-semibold text-ink-600">
+                  Lien personnalisé — commande interne (personnel de l'entreprise)
+                </p>
+                <div className="flex flex-col gap-3 sm:flex-row">
+                  <input
+                    type="text"
+                    readOnly
+                    value={lienInterne}
+                    onFocus={(e) => e.target.select()}
+                    className="lg-input flex-1"
+                  />
+                  <button
+                    type="button"
+                    onClick={copierLienInterne}
+                    className="lg-btn-neutral flex-none"
+                  >
+                    <LinkIcon className="h-4 w-4" />
+                    Copier le lien interne
+                  </button>
+                </div>
+                <p className="mt-2 text-[11px] text-ink-400">
+                  Page de gestion interne pour le personnel : recherche, quantités, validation et encaissement.
+                </p>
+              </div>
+            )}
 
             <p className="mt-4 text-[12px] font-semibold text-ink-500">
               Partager sur les réseaux
