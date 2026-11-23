@@ -286,53 +286,51 @@ function CarteProduit({ produit, api, onApercu, onAjouter, ajoute }) {
   const prix = Number(produit.prix || 0);
 
   return (
-    <article className="group flex flex-col overflow-hidden rounded-2xl border border-boutique-300 bg-white shadow-xs transition-all duration-300 hover:-translate-y-1 hover:border-boutique-500 hover:shadow-lift">
+    <article className="group relative overflow-hidden rounded-2xl border border-boutique-300 bg-boutique-950 shadow-xs transition-all duration-300 hover:-translate-y-1 hover:border-boutique-500 hover:shadow-lift">
+      {/* Image plein cadre */}
       <button
         type="button"
         onClick={() => onApercu(produit)}
         aria-label={`Aperçu de ${produit.nom}`}
-        className="relative block aspect-square w-full overflow-hidden"
+        className="relative block aspect-[4/5] w-full overflow-hidden"
       >
-        <TuileVisuel produit={produit} api={api} className="absolute inset-0 h-full w-full" />
+        <TuileVisuel produit={produit} api={api} className="absolute inset-0 h-full w-full transition-transform duration-500 group-hover:scale-105" />
 
-        <PastilleStock produit={produit} className="absolute top-3 left-3" />
+        <PastilleStock produit={produit} className="absolute top-3 left-3 z-20" />
+        <PastilleCategorie categorie={produit.categorie} className="absolute top-3 right-3 z-20" />
 
-        {/* Appel à l'action au survol (desktop) / toujours visible (mobile) */}
-        <span className="absolute inset-x-3 bottom-3 flex translate-y-2 justify-center opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 max-sm:translate-y-0 max-sm:opacity-100">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-2 text-[11.5px] font-bold text-boutique-950 shadow-soft ring-1 ring-inset ring-boutique-300">
+        {/* Voile pour la lisibilité */}
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent" />
+
+        {/* Aperçu rapide au survol */}
+        <span className="absolute inset-x-3 top-1/2 -translate-y-1/2 flex justify-center opacity-0 transition-all duration-300 group-hover:opacity-100 max-sm:opacity-100">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-white/90 px-3.5 py-2 text-[11.5px] font-bold text-boutique-950 shadow-soft backdrop-blur-sm">
             <EyeIcon className="h-3.5 w-3.5" />
             Aperçu rapide
           </span>
         </span>
       </button>
 
-      <div className="flex flex-1 flex-col p-4">
-        <PastilleCategorie categorie={produit.categorie} />
-
-        <h3 className="mt-2 min-h-[2.6rem] text-[13.5px] leading-snug font-bold text-boutique-900 lg-clamp-2">
+      {/* Overlay : nom + prix + bouton */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 p-4">
+        <h3 className="text-[14px] leading-snug font-bold text-white drop-shadow-md lg-clamp-2">
           {produit.nom || "Article sans nom"}
         </h3>
-
-        {produit.description && (
-          <p className="mt-1 truncate text-[11.5px] font-medium text-boutique-600">{produit.description}</p>
-        )}
-
-        <div className="mt-auto flex flex-col gap-2.5 pt-4 sm:flex-row sm:items-end sm:justify-between sm:gap-2">
-          <p className="font-display text-[17px] leading-none font-extrabold tracking-tight text-forest-800 tabular">
+        <div className="mt-2 flex items-end justify-between gap-2">
+          <p className="font-display text-[18px] leading-none font-extrabold tracking-tight text-white tabular drop-shadow-md">
             {prix > 0 ? fmt(prix) : "—"}
           </p>
-
           <button
             type="button"
             disabled={!dispo}
-            onClick={() => onAjouter(produit)}
+            onClick={(e) => { e.stopPropagation(); onAjouter(produit); }}
             aria-label={`Ajouter ${produit.nom} au panier`}
-            className={`inline-flex h-10 w-full flex-none items-center justify-center gap-1.5 rounded-full px-3.5 text-[12px] font-bold transition-all duration-200 active:scale-[0.96] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-boutique-500/30 sm:h-9 sm:w-auto ${
+            className={`pointer-events-auto inline-flex h-9 items-center justify-center gap-1.5 rounded-full px-3.5 text-[12px] font-bold transition-all duration-200 active:scale-[0.96] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/40 ${
               dispo
                 ? ajoute
-                  ? "bg-boutique-600 text-boutique-50 shadow-soft"
-                  : "bg-boutique-900 text-boutique-50 hover:bg-boutique-800"
-                : "cursor-not-allowed bg-boutique-200 text-boutique-600"
+                  ? "bg-white text-boutique-900 shadow-soft"
+                  : "bg-boutique-600 text-white shadow-glow hover:bg-boutique-500"
+                : "cursor-not-allowed bg-white/30 text-white/70"
             }`}
           >
             {dispo ? (

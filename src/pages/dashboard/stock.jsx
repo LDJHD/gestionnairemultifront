@@ -224,9 +224,9 @@ export function Stock() {
                       {stock.quantite_stock ?? "—"}
                     </td>
                     <td className="lg-td text-right font-semibold tabular text-ink-800">
-                      {stock.quantite_stock && stock.vendu
-                        ? stock.quantite_stock - stock.vendu
-                        : "_"}
+                      {stock.quantite_stock != null
+                        ? Math.max(0, Number(stock.quantite_stock) - Number(stock.vendu || 0))
+                        : "—"}
                     </td>
                     <td className="lg-td text-[13px] text-ink-500">
                       {stock.date_creation || "—"}

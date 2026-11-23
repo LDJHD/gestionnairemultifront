@@ -7,6 +7,9 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
+      strategies: "injectManifest",
+      srcDir: "src",
+      filename: "sw.js",
       registerType: "autoUpdate",
       // En dev, on installe un SW « no-op » : il ne met rien en cache mais il
       // neutralise un éventuel SW de production resté actif (sinon page blanche).

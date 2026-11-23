@@ -22,7 +22,7 @@
 
 const CLE = "lg-couleur-boutique";
 const ID_STYLE = "lg-theme-boutique";
-export const COULEUR_DEFAUT = "#0f766e";
+export const COULEUR_DEFAUT = "#64748b";
 
 /* Rampe tonale : chaque palier vise une LUMINANCE relative précise (et non
    une simple luminosité HSL). C'est ce qui garantit le même contraste pour

@@ -240,8 +240,8 @@ h1, h2, h3, h4, h5, h6, .font-display {
        choisie par le gestionnaire. Les valeurs de repli sont l'identité
        d'origine, pour éviter tout flash avant l'injection du thème. */
     background:
-      radial-gradient(900px 420px at 8% 0%, var(--boutique-voile, rgba(15, 118, 110, 0.08)) 0%, transparent 62%),
-      radial-gradient(760px 400px at 100% 0%, var(--boutique-voile, rgba(15, 118, 110, 0.06)) 0%, transparent 58%),
+      radial-gradient(900px 420px at 8% 0%, var(--boutique-voile, rgba(100, 116, 139, 0.08)) 0%, transparent 62%),
+      radial-gradient(760px 400px at 100% 0%, var(--boutique-voile, rgba(100, 116, 139, 0.06)) 0%, transparent 58%),
       linear-gradient(
         to bottom,
         var(--boutique-fond, #f3ede0) 0%,
@@ -265,7 +265,7 @@ h1, h2, h3, h4, h5, h6, .font-display {
       90deg,
       var(--boutique-fond, #f3ede0) 0%,
       var(--boutique-bordure, #ddc7a3) 22%,
-      var(--boutique-accent, #0f766e) 50%,
+      var(--boutique-accent, #64748b) 50%,
       var(--boutique-bordure, #ddc7a3) 78%,
       var(--boutique-fond, #f3ede0) 100%
     );

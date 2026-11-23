@@ -11,6 +11,8 @@ import Boutique from "./pages/boutique";
 import SuiviCommande from "./pages/boutique/suivi";
 import PaiementRetour from "./pages/boutique/paiement-retour";
 import ErrorBoundary from "@/components/ErrorBoundary";
+import AssistantIA from "@/components/AssistantIA";
+import PushPrompt from "@/components/PushPrompt";
 
 function App() {
   return (
@@ -34,6 +36,8 @@ function App() {
       <Route path="*" element={<Navigate to="/dashboard/home" replace />} />
       <Route path="/" element={<Navigate to="/auth/sign-in" replace />} />
       </Routes>
+      <AssistantIA />
+      <PushPrompt />
     </ErrorBoundary>
   );
 }

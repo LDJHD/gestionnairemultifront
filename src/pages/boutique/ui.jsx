@@ -196,11 +196,11 @@ export function PastilleStock({ produit, className = "" }) {
   );
 }
 
-export function PastilleCategorie({ categorie }) {
+export function PastilleCategorie({ categorie, className = "" }) {
   if (!categorie) return null;
   const ton = tonCategorie(categorie);
   return (
-    <span className={`inline-flex max-w-full items-center gap-1.5 text-[10.5px] font-bold tracking-[0.12em] uppercase ${ton.ink}`}>
+    <span className={`inline-flex max-w-full items-center gap-1.5 text-[10.5px] font-bold tracking-[0.12em] uppercase ${ton.ink} ${className}`}>
       <span className={`h-1.5 w-1.5 flex-none rounded-full ${ton.chip.split(" ")[0]}`} />
       <span className="truncate">{categorie}</span>
     </span>

@@ -34,6 +34,7 @@ import User from "./pages/dashboard/user";
 import CommandesEnLigne from "./pages/dashboard/commandes";
 import Livraisons from "./pages/dashboard/livraisons";
 import Paiements from "./pages/dashboard/paiements";
+import Portefeuille from "./pages/dashboard/portefeuille";
 import ParametresBoutique from "./pages/dashboard/parametres";
 import SuperAdmin from "./pages/dashboard/superadmin";
 
@@ -76,6 +77,12 @@ export const routes = [
         name: "Paiements",
         path: "/paiements",
         element: <Paiements />,
+      },
+      {
+        icon: <BanknotesIcon {...icon} />,
+        name: "Portefeuille",
+        path: "/portefeuille",
+        element: <Portefeuille />,
       },
       {
         icon: <Cog6ToothIcon {...icon} />,
