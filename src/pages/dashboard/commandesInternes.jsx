@@ -23,7 +23,7 @@ export default function CommandesInternes() {
     }
   };
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); window.__lgRefresh = load; return () => { window.__lgRefresh = null; }; }, []);
 
   const changerStatut = async (id, statut) => {
     try {

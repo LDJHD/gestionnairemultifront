@@ -135,6 +135,8 @@ export function Stock() {
   // Appel de fetchstocks lors du chargement du composant
   useEffect(() => {
     fetchstocks();
+    window.__lgRefresh = fetchstocks;
+    return () => { window.__lgRefresh = null; };
   }, []);
 
   const total = stock.length;

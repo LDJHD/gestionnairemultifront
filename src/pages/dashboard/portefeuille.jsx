@@ -26,7 +26,7 @@ export default function Portefeuille() {
     }
   };
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); window.__lgRefresh = load; return () => { window.__lgRefresh = null; }; }, []);
 
   const submit = async (e) => {
     e.preventDefault();

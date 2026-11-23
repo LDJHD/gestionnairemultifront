@@ -136,6 +136,8 @@ export function Client() {
   // Appel de fetchclients lors du chargement du composant
   useEffect(() => {
     fetchclients();
+    window.__lgRefresh = fetchclients;
+    return () => { window.__lgRefresh = null; };
   }, []);
 
 

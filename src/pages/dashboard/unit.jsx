@@ -130,6 +130,8 @@ import { Tabs } from "@material-tailwind/react";
     // Appel de fetchunits lors du chargement du composant
     useEffect(() => {
       fetchunits();
+      window.__lgRefresh = fetchunits;
+      return () => { window.__lgRefresh = null; };
     }, []);
   
     const total = unit.length;

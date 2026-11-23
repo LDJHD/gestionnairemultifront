@@ -132,6 +132,8 @@ import { Tabs } from "@material-tailwind/react";
     // Appel de fetchcategories lors du chargement du composant
     useEffect(() => {
       fetchcategories();
+      window.__lgRefresh = fetchcategories;
+      return () => { window.__lgRefresh = null; };
     }, []);
   
     // Liste filtrée par la recherche (nom de la catégorie)

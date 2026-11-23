@@ -139,6 +139,8 @@ import Modaleditfournisseur from "@/widgets/modal/modaleditfournisseur";
     // Appel de fetchfournisseurs lors du chargement du composant
     useEffect(() => {
       fetchfournisseurs();
+      window.__lgRefresh = fetchfournisseurs;
+      return () => { window.__lgRefresh = null; };
     }, []);
   
     const total = fournisseursFiltres.length;

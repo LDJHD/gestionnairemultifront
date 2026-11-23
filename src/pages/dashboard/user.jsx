@@ -150,6 +150,8 @@ export function User() {
 
     useEffect(() => {
         fetchUsers();
+        window.__lgRefresh = fetchUsers;
+        return () => { window.__lgRefresh = null; };
     }, []);
 
     

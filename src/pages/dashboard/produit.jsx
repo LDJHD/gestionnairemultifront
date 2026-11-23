@@ -80,6 +80,8 @@ export function Produit() {
   // Appel de fetchProducts lors du chargement du composant
   useEffect(() => {
     fetchProducts();
+    window.__lgRefresh = fetchProducts;
+    return () => { window.__lgRefresh = null; };
   }, []);
 
   const displayproducts = productsstore.length > 0 ? productsstore : products;

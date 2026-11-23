@@ -28,7 +28,13 @@ export function AppModal({
 
   const fermer = () => {
     setOpen(false);
-    // Recharge la page pour refléter la modification (comportement historique).
+    // Rafraîchissement en temps réel si la page a enregistré une fonction
+    // de rechargement (évite le reload complet de la page).
+    if (typeof window.__lgRefresh === "function") {
+      try { window.__lgRefresh(); } catch (e) { /* ignore */ }
+      return;
+    }
+    // Comportement historique : recharge complète.
     window.location.reload();
   };
 
