@@ -394,3 +394,47 @@ h1, h2, h3, h4, h5, h6, .font-display {
   }
   body { background: #fff !important; background-image: none !important; }
 }
+/* ==========================================================================
+   MODE SOMBRE — INTERFACE (back-office)
+   ========================================================================== */
+.dark body {
+  background-color: #0f172a;
+  background-image: none;
+  color: #e2e8f0;
+}
+.dark .lg-card {
+  background-color: #1e293b;
+  border-color: #334155;
+  color: #e2e8f0;
+}
+.dark .lg-input,
+.dark .lg-select {
+  background-color: #1e293b;
+  border-color: #475569;
+  color: #e2e8f0;
+}
+.dark .lg-input::placeholder { color: #64748b; }
+.dark .lg-table :where(thead th) {
+  background-color: #0f172a;
+  border-color: #334155;
+  color: #94a3b8;
+}
+.dark .lg-table tbody tr {
+  border-color: #334155;
+}
+.dark .lg-table tbody tr:hover { background-color: rgba(99, 102, 241, 0.08); }
+.dark .lg-td { color: #e2e8f0; }
+.dark .lg-page-title { color: #f1f5f9; }
+.dark .lg-page-sub { color: #94a3b8; }
+.dark .lg-label { color: #cbd5e1; }
+.dark .lg-btn-neutral {
+  background-color: #1e293b;
+  color: #e2e8f0;
+  border-color: #475569;
+}
+.dark .lg-btn-neutral:hover { background-color: #334155; }
+.dark .lg-btn-ghost { color: #cbd5e1; }
+.dark .lg-btn-ghost:hover { background-color: #1e293b; color: #f1f5f9; }
+.dark .lg-badge-neutral { background-color: #334155; color: #cbd5e1; border-color: #475569; }
+.dark ::selection { background: rgba(99, 102, 241, 0.35); color: #f1f5f9; }
+

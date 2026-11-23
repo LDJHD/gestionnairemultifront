@@ -32,6 +32,9 @@
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       crossorigin=""
     />
+    <script>
+      (function(){ try { if (localStorage.getItem('lg-dark-mode') === '1') document.documentElement.classList.add('dark'); } catch(e){} })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

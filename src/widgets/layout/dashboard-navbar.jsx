@@ -14,6 +14,8 @@ import {
   UserCircleIcon,
   Cog6ToothIcon,
   BellIcon,
+  MoonIcon,
+  SunIcon,
   Bars3Icon,
   ArrowRightOnRectangleIcon,
   ShoppingBagIcon,
@@ -49,6 +51,15 @@ const SECTIONS_BREADCRUMB = {
 };
 
 export function DashboardNavbar() {
+  const [darkMode, setDarkMode] = useState(() => {
+    try { return localStorage.getItem("lg-dark-mode") === "1"; } catch { return false; }
+  });
+  useEffect(() => {
+    const root = document.documentElement;
+    if (darkMode) root.classList.add("dark");
+    else root.classList.remove("dark");
+    try { localStorage.setItem("lg-dark-mode", darkMode ? "1" : "0"); } catch {}
+  }, [darkMode]);
   const setProductsstore = useProductStore((state) => state.setProductsstore);
   const { setventesstore } = useventeStore();
 
@@ -336,6 +347,21 @@ export function DashboardNavbar() {
               )}
             </IconButton>
           </Link>
+
+          {/* Mode sombre */}
+          <IconButton
+            variant="text"
+            ripple={false}
+            className="rounded-xl"
+            onClick={() => setDarkMode((v) => !v)}
+            aria-label="Basculer le mode sombre"
+          >
+            {darkMode ? (
+              <SunIcon className="h-[21px] w-[21px] text-amber-400" />
+            ) : (
+              <MoonIcon className="h-[21px] w-[21px] text-ink-500" />
+            )}
+          </IconButton>
 
           {/* Notifications */}
           <Menu placement="bottom-end">
