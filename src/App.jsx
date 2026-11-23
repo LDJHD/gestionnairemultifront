@@ -8,7 +8,7 @@ import Vendre from "./pages/dashboard/vendre";
 import { SignUp } from "./pages/auth";
 import { ResetPassword } from "./pages/auth/reset-password";
 import Boutique from "./pages/boutique";
-import SuiviCommande from "./pages/boutique/suivi";
+import BoutiqueInterne from "./pages/boutique/interne";import SuiviCommande from "./pages/boutique/suivi";
 import PaiementRetour from "./pages/boutique/paiement-retour";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import AssistantIA from "@/components/AssistantIA";
@@ -30,6 +30,7 @@ function App() {
 
       {/* Espace client public — boutique en ligne (nouveaux modules) */}
       <Route path="/boutique/:slug" element={<Boutique />} />
+      <Route path="/boutique/:slug/interne" element={<BoutiqueInterne />} />
       <Route path="/commande/suivi" element={<SuiviCommande />} />
       <Route path="/paiement/retour" element={<PaiementRetour />} />
 

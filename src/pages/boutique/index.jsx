@@ -303,7 +303,7 @@ function CarteProduit({ produit, api, onApercu, onAjouter, ajoute }) {
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent" />
 
         {/* Aperçu rapide au survol */}
-        <span className="absolute inset-x-3 top-1/2 -translate-y-1/2 flex justify-center opacity-0 transition-all duration-300 group-hover:opacity-100 max-sm:opacity-100">
+        <span className="absolute inset-x-3 top-1/2 -translate-y-1/2 hidden justify-center opacity-0 transition-all duration-300 group-hover:opacity-100 sm:flex">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-white/90 px-3.5 py-2 text-[11.5px] font-bold text-boutique-950 shadow-soft backdrop-blur-sm">
             <EyeIcon className="h-3.5 w-3.5" />
             Aperçu rapide
@@ -312,12 +312,12 @@ function CarteProduit({ produit, api, onApercu, onAjouter, ajoute }) {
       </button>
 
       {/* Overlay : nom + prix + bouton */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 p-4">
-        <h3 className="text-[14px] leading-snug font-bold text-white drop-shadow-md lg-clamp-2">
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 p-3 sm:p-4">
+        <h3 className="text-[13px] sm:text-[14px] leading-snug font-bold text-white drop-shadow-md lg-clamp-2">
           {produit.nom || "Article sans nom"}
         </h3>
-        <div className="mt-2 flex items-end justify-between gap-2">
-          <p className="font-display text-[18px] leading-none font-extrabold tracking-tight text-white tabular drop-shadow-md">
+        <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+          <p className="font-display text-[16px] sm:text-[18px] leading-none font-extrabold tracking-tight text-white tabular drop-shadow-md">
             {prix > 0 ? fmt(prix) : "—"}
           </p>
           <button
@@ -325,7 +325,7 @@ function CarteProduit({ produit, api, onApercu, onAjouter, ajoute }) {
             disabled={!dispo}
             onClick={(e) => { e.stopPropagation(); onAjouter(produit); }}
             aria-label={`Ajouter ${produit.nom} au panier`}
-            className={`pointer-events-auto inline-flex h-9 items-center justify-center gap-1.5 rounded-full px-3.5 text-[12px] font-bold transition-all duration-200 active:scale-[0.96] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/40 ${
+            className={`pointer-events-auto inline-flex h-9 w-full sm:w-auto items-center justify-center gap-1.5 rounded-full px-3.5 text-[11px] sm:text-[12px] font-bold whitespace-nowrap transition-all duration-200 active:scale-[0.96] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/40 ${
               dispo
                 ? ajoute
                   ? "bg-white text-boutique-900 shadow-soft"

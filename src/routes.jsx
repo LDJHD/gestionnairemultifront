@@ -13,6 +13,7 @@ import {
   ReceiptPercentIcon,
   Squares2X2Icon, // Vente
   InboxStackIcon, // Commandes en ligne
+  ClipboardDocumentListIcon,
   BanknotesIcon, // Paiements
   Cog6ToothIcon, // Paramètres boutique
 } from "@heroicons/react/24/solid";
@@ -32,6 +33,7 @@ import Unit from "./pages/dashboard/unit";
 import Notifications from "./pages/dashboard/notifications";
 import User from "./pages/dashboard/user";
 import CommandesEnLigne from "./pages/dashboard/commandes";
+import CommandesInternes from "./pages/dashboard/commandesInternes";
 import Livraisons from "./pages/dashboard/livraisons";
 import Paiements from "./pages/dashboard/paiements";
 import Portefeuille from "./pages/dashboard/portefeuille";
@@ -65,6 +67,12 @@ export const routes = [
         name: "Commandes en ligne",
         path: "/commandes",
         element: <CommandesEnLigne />,
+      },
+      {
+        icon: <ClipboardDocumentListIcon {...icon} />,
+        name: "Commandes internes",
+        path: "/commandes-internes",
+        element: <CommandesInternes />,
       },
       {
         icon: <TruckIcon {...icon} />,
