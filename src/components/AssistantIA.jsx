@@ -145,6 +145,9 @@ export default function AssistantIA() {
 
   const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
   if (!token) return null;
+  // Ne pas afficher sur la boutique en ligne ni sur la gestion interne
+  const path = typeof window !== "undefined" ? window.location.pathname : "";
+  if (path.startsWith("/boutique")) return null;
 
   const envoyer = (e) => {
     e?.preventDefault();
