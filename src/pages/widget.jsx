@@ -50,6 +50,12 @@ export default function WidgetView() {
       secteur={contenu.secteur}
       champs={contenu.champs || []}
       boutiqueNom={contenu.boutique_nom || data.titre || "Boutique"}
+      slogan={contenu.slogan}
+      imagePrincipale={contenu.image_principale}
+      telephone={contenu.telephone}
+      adresse={contenu.adresse}
+      pied={contenu.pied}
+      qrCode={data.qr_code}
       onPrint={() => window.print()}
     />
   );
