@@ -39,7 +39,8 @@ export default function Widgets() {
       setTemplate("moderne");
     } catch (e) {
       console.error(e);
-      alert("Erreur lors de la génération");
+      const msg = e?.response?.data?.erreur || e?.message || "Erreur lors de la génération";
+      alert(msg);
     } finally {
       setLoading(false);
     }
