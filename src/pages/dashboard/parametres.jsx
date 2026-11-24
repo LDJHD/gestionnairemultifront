@@ -136,6 +136,21 @@ export default function ParametresBoutique() {
     }
   };
 
+  const copierPosition = async () => {
+    const lien = localisation.latitude && localisation.longitude
+      ? `https://www.google.com/maps?q=${localisation.latitude},${localisation.longitude}`
+      : localisation.adresse || localisation.ville
+      ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((localisation.adresse || "") + " " + (localisation.ville || ""))}`
+      : null;
+    if (!lien) return;
+    try {
+      await navigator.clipboard.writeText(lien);
+      toast.success("Lien de position copié !");
+    } catch {
+      toast.info(lien);
+    }
+  };
+
   const copierLien = async () => {
     if (!lienBoutique) return;
     try {
@@ -201,6 +216,9 @@ export default function ParametresBoutique() {
           delai_reservation_minutes: json.delai_reservation_minutes ?? 30,
           whatsapp_gestionnaire: json.whatsapp_gestionnaire || "",
           email_gestionnaire: json.email_gestionnaire || "",
+          template_boutique: json.template_boutique || "classique",
+          hero_affiche: json.hero_affiche == null ? 1 : Number(json.hero_affiche),
+          hero_fond: json.hero_fond == null ? 1 : Number(json.hero_fond),
         });
         setZones((json.zones || []).map((z) => ({ nom: z.nom, frais: z.frais })));
         const latInit = json.localisation?.latitude;
@@ -979,6 +997,16 @@ export default function ParametresBoutique() {
             ) : null}
           </div>
         </section>
+
+            {(localisation.latitude && localisation.longitude) || (localisation.adresse || localisation.ville) ? (
+              <button
+                type="button"
+                onClick={copierPosition}
+                className="inline-flex items-center gap-2 rounded-xl border border-ink-200 bg-white px-4 py-2.5 text-sm font-bold text-ink-700 shadow-xs transition-all hover:bg-ink-50 active:scale-[0.98]"
+              >
+                Copier le lien de position
+              </button>
+            ) : null}
 
         {/* ══════════════ Barre d'action ══════════════ */}
         <div className="sticky bottom-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-ink-200/80 bg-white/90 p-3.5 shadow-lift backdrop-blur-xl">

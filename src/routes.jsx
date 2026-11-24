@@ -16,6 +16,7 @@ import {
   ClipboardDocumentListIcon,
   BanknotesIcon, // Paiements
   Cog6ToothIcon, // Paramètres boutique
+  QrCodeIcon,
 } from "@heroicons/react/24/solid";
 
 import { Home, Profile, Tables, Client } from "@/pages/dashboard";
@@ -37,6 +38,7 @@ import CommandesInternes from "./pages/dashboard/commandesInternes";
 import Livraisons from "./pages/dashboard/livraisons";
 import Paiements from "./pages/dashboard/paiements";
 import Portefeuille from "./pages/dashboard/portefeuille";
+import Widgets from "./pages/dashboard/widgets";
 import ParametresBoutique from "./pages/dashboard/parametres";
 import SuperAdmin from "./pages/dashboard/superadmin";
 
@@ -91,6 +93,12 @@ export const routes = [
         name: "Portefeuille",
         path: "/portefeuille",
         element: <Portefeuille />,
+      },
+      {
+        icon: <QrCodeIcon {...icon} />,
+        name: "Widgets",
+        path: "/widgets",
+        element: <Widgets />,
       },
       {
         icon: <Cog6ToothIcon {...icon} />,

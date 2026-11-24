@@ -443,7 +443,15 @@ h1, h2, h3, h4, h5, h6, .font-display {
    BOUTIQUE 2 — MODÈLE MODERNE (premium)
    ========================================================================== */
 .boutique-moderne.boutique-page {
-  background: #f8fafc;
+  background: #ffffff;
+}
+.boutique-moderne .lg-card,
+.boutique-moderne article {
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px 0 rgba(0,0,0,0.06);
+}
+.boutique-moderne .font-display {
+  letter-spacing: -0.02em;
 }
 .boutique-moderne .lg-card,
 .boutique-moderne article {

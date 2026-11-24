@@ -26,7 +26,7 @@ function grouperPages(pages) {
     ),
     enligne: pages.filter((p) => enLigne.includes(p.name)),
     admin: pages.filter((p) =>
-      ["Notifications", "Utilisateurs", "Mon profil"].includes(p.name)
+      ["Notifications", "Utilisateurs", "Mon profil", "Widgets"].includes(p.name)
     ),
   };
 }

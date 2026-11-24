@@ -1707,7 +1707,7 @@ export default function Boutique() {
         {/* ══════════════ CATALOGUE ══════════════ */}
         {vue === "catalogue" && (
           <>
-            {data?.vitrine?.template_boutique !== "minimal" && data?.vitrine?.hero_affiche !== 0 && (
+            {data?.vitrine?.template_boutique === "classique" && data?.vitrine?.hero_affiche !== 0 && (
               <Hero data={data} heroFond={data?.vitrine?.hero_fond} />
             )}
             {data?.vitrine?.template_boutique === "minimal" && (
