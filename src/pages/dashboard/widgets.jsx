@@ -1,8 +1,27 @@
 import { useState, useEffect } from "react";
-import { QrCodeIcon, PlusIcon, TrashIcon, ArrowDownTrayIcon } from "@heroicons/react/24/outline";
+import { QrCodeIcon, PlusIcon, TrashIcon, ArrowDownTrayIcon, PhotoIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import axios from "axios";
+import WidgetRender from "../../components/WidgetRender";
 
 const API = import.meta.env.VITE_API_URL;
+
+const MODELES = {
+  menu: [
+    { value: "moderne", label: "Moderne", desc: "Dégradé indigo → émeraude, cartes arrondies, pastilles de prix." },
+    { value: "elegant", label: "Élégant (luxe)", desc: "Fond sombre, monogramme doré, lignes fines, typographie raffinée." },
+    { value: "minimal", label: "Minimal", desc: "Fond blanc, typographie discrète, séparateurs fins, aucune carte." },
+    { value: "gourmet", label: "Gourmet (or & noir)", desc: "Menu gastronomique noir & or avec lignes de points." },
+    { value: "digital", label: "Digital (sombre)", desc: "Fond nuit, accents cyan, grille de cartes compactes." },
+    { value: "bistro", label: "Bistro (chaleureux)", desc: "Fond crème, bandeau orange, cartes à liseré." },
+    { value: "restaurant", label: "Restaurant", desc: "Fond ambré, médaillon QR, cartes plat/prix." },
+  ],
+  affiche: [
+    { value: "promo", label: "Promotionnelle", desc: "Affiche rose/violet, titre géant, visuels en alternance." },
+    { value: "supermarche", label: "Supermarché", desc: "Bandeau bleu/cyan, grille produits 3 colonnes, prix en pastille." },
+    { value: "affiche_luxe", label: "Affiche luxe", desc: "Poster violet encadré, tuiles visuelles, typographie majuscule." },
+    { value: "affiche", label: "Affiche (défaut)", desc: "Poster rose/orange, lignes alternées, prix XXL." },
+  ],
+};
 
 export default function Widgets() {
   const [items, setItems] = useState([]);
@@ -18,12 +37,24 @@ export default function Widgets() {
     try {
       const res = await axios.get(`${API}/api/v1/widget/list`, { headers });
       setItems(res.data || []);
-    } catch (e) { console.error(e); }
+    } catch (e) {
+      console.error(e);
+    }
   };
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => {
+    load();
+  }, []);
 
-  const ajouterChamp = () => setChamps((c) => [...c, { label: "", value: "" }]);
+  const modeles = MODELES[type] || MODELES.menu;
+  const modeleChoisi = modeles.find((m) => m.value === template) || modeles[0];
+
+  const changerType = (v) => {
+    setType(v);
+    setTemplate(v === "affiche" ? "promo" : "moderne");
+  };
+
+  const ajouterChamp = () => setChamps((c) => [...c, { label: "", value: "", image: "" }]);
   const majChamp = (i, k, v) => setChamps((c) => c.map((x, idx) => (idx === i ? { ...x, [k]: v } : x)));
   const supprimerChamp = (i) => setChamps((c) => c.filter((_, idx) => idx !== i));
 
@@ -35,9 +66,7 @@ export default function Widgets() {
       const res = await axios.post(`${API}/api/v1/produit/upload-image`, fd, {
         headers: { ...headers, "Content-Type": "multipart/form-data" },
       });
-      if (res.data?.image) {
-        majChamp(i, "image", res.data.image);
-      }
+      if (res.data?.image) majChamp(i, "image", res.data.image);
     } catch (e) {
       console.error(e);
       alert("Échec de l'upload de l'image");
@@ -47,13 +76,16 @@ export default function Widgets() {
   const generer = async () => {
     setLoading(true);
     try {
-      const contenu = { template, champs: champs.filter((c) => c.label.trim()) };
+      const contenu = {
+        template,
+        champs: champs.filter((c) => String(c.label || "").trim()),
+      };
       const res = await axios.post(`${API}/api/v1/widget/create`, { type, titre, contenu }, { headers });
       if (!res.data?.ok) throw new Error("Erreur");
       await load();
       setTitre("");
       setChamps([{ label: "", value: "", image: "" }]);
-      setTemplate("moderne");
+      setTemplate(type === "affiche" ? "promo" : "moderne");
     } catch (e) {
       console.error(e);
       const msg = e?.response?.data?.erreur || e?.message || "Erreur lors de la génération";
@@ -68,7 +100,9 @@ export default function Widgets() {
     try {
       await axios.post(`${API}/api/v1/widget/delete`, { id }, { headers });
       await load();
-    } catch (e) { console.error(e); }
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   const telecharger = (url) => {
@@ -78,6 +112,16 @@ export default function Widgets() {
     a.target = "_blank";
     a.click();
   };
+
+  const champsRemplis = champs.filter((c) => String(c.label || "").trim());
+  const champsApercu =
+    champsRemplis.length > 0
+      ? champsRemplis
+      : [
+          { label: "Exemple de plat", value: "1 500 F", image: "" },
+          { label: "Autre article", value: "2 000 F", image: "" },
+          { label: "Boisson", value: "500 F", image: "" },
+        ];
 
   return (
     <div className="mt-6 mb-10 flex flex-col gap-6 animate-fade-in">
@@ -92,7 +136,7 @@ export default function Widgets() {
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
             <label className="lg-label">Type</label>
-            <select className="lg-select" value={type} onChange={(e) => setType(e.target.value)}>
+            <select className="lg-select" value={type} onChange={(e) => changerType(e.target.value)}>
               <option value="menu">Menu</option>
               <option value="affiche">Affiche</option>
             </select>
@@ -100,21 +144,13 @@ export default function Widgets() {
           <div>
             <label className="lg-label">Modèle</label>
             <select className="lg-select" value={template} onChange={(e) => setTemplate(e.target.value)}>
-              <optgroup label="Menus">
-                <option value="moderne">Moderne</option>
-                <option value="elegant">Élégant (luxe)</option>
-                <option value="minimal">Minimal</option>
-                <option value="gourmet">Gourmet (or & noir)</option>
-                <option value="digital">Digital (sombre)</option>
-                <option value="bistro">Bistro (chaleureux)</option>
-              </optgroup>
-              <optgroup label="Affiches">
-                <option value="promo">Promotionnelle</option>
-                <option value="supermarche">Supermarché</option>
-                <option value="affiche_luxe">Affiche luxe</option>
-                <option value="affiche">Affiche (défaut)</option>
-              </optgroup>
+              {modeles.map((m) => (
+                <option key={m.value} value={m.value}>
+                  {m.label}
+                </option>
+              ))}
             </select>
+            <p className="mt-1.5 text-[11px] leading-snug text-ink-400">{modeleChoisi?.desc}</p>
           </div>
         </div>
         <div>
@@ -135,19 +171,29 @@ export default function Widgets() {
                 <div className="flex gap-2">
                   <input className="lg-input flex-1" placeholder="Libellé (ex: Plat)" value={c.label} onChange={(e) => majChamp(i, "label", e.target.value)} />
                   <input className="lg-input flex-1" placeholder="Valeur (ex: 1500 F)" value={c.value} onChange={(e) => majChamp(i, "value", e.target.value)} />
-                  <button type="button" onClick={() => supprimerChamp(i)} className="grid h-10 w-10 place-items-center rounded-xl text-ink-400 hover:bg-red-50 hover:text-red-600">
+                  <button type="button" onClick={() => supprimerChamp(i)} className="grid h-10 w-10 flex-none place-items-center rounded-xl text-ink-400 hover:bg-red-50 hover:text-red-600">
                     <TrashIcon className="h-4 w-4" />
                   </button>
                 </div>
-                <div className="flex gap-2">
-                  <input className="lg-input flex-1" placeholder="URL image (optionnel)" value={c.image || ""} onChange={(e) => majChamp(i, "image", e.target.value)} />
-                  <label className="lg-btn-neutral lg-btn-sm cursor-pointer">
+
+                {/* Image : upload uniquement (optionnel) */}
+                {c.image ? (
+                  <div className="flex items-center gap-3">
+                    <img src={c.image.startsWith("http") ? c.image : `${API}/${c.image}`} alt="" className="h-20 w-20 rounded-lg object-cover border border-ink-200" />
+                    <label className="lg-btn-neutral lg-btn-sm cursor-pointer">
+                      <input type="file" accept="image/*" className="hidden" onChange={(e) => uploaderImageChamp(i, e.target.files?.[0])} />
+                      <PhotoIcon className="h-4 w-4" /> Remplacer
+                    </label>
+                    <button type="button" onClick={() => majChamp(i, "image", "")} className="grid h-9 w-9 place-items-center rounded-lg text-ink-400 hover:bg-red-50 hover:text-red-600" title="Retirer l'image">
+                      <XMarkIcon className="h-4 w-4" />
+                    </button>
+                  </div>
+                ) : (
+                  <label className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-ink-300 bg-ink-50/40 py-3 text-[12px] font-semibold text-ink-500 transition hover:border-brand-400 hover:bg-brand-50/40 hover:text-brand-600">
                     <input type="file" accept="image/*" className="hidden" onChange={(e) => uploaderImageChamp(i, e.target.files?.[0])} />
-                    📷 Upload
+                    <PhotoIcon className="h-5 w-5" />
+                    Ajouter une image (optionnel)
                   </label>
-                </div>
-                {c.image && (
-                  <img src={c.image.startsWith("http") ? c.image : `${API}/${c.image}`} alt="" className="h-20 w-20 rounded-lg object-cover border border-ink-200" />
                 )}
               </div>
             ))}
@@ -161,66 +207,20 @@ export default function Widgets() {
         </div>
       </div>
 
-      {/* Aperçu en direct */}
+      {/* Aperçu en direct — même moteur de rendu que la page publique */}
       <div className="lg-card p-6">
-        <h2 className="font-display text-lg font-bold text-ink-900 mb-4">Aperçu du modèle sélectionné</h2>
-        <div className="rounded-2xl border border-ink-200 overflow-hidden">
-          <div className={`p-6 ${
-            template === "elegant" ? "bg-slate-900" :
-            template === "minimal" ? "bg-white" :
-            template === "gourmet" ? "bg-stone-900" :
-            template === "digital" ? "bg-slate-950" :
-            template === "bistro" ? "bg-orange-50" :
-            template === "promo" ? "bg-pink-50" :
-            template === "supermarche" ? "bg-slate-50" :
-            template === "affiche_luxe" ? "bg-purple-900" :
-            template === "affiche" ? "bg-rose-50" :
-            "bg-slate-50"
-          }`}>
-            <p className={`text-[10px] font-bold tracking-[0.3em] uppercase mb-2 ${
-              template === "elegant" || template === "gourmet" || template === "digital" || template === "affiche_luxe" ? "text-amber-400/60" : "text-ink-400"
-            }`}>Boutique démo</p>
-            <h3 className={`font-display text-xl font-extrabold tracking-tight ${
-              template === "elegant" ? "text-amber-100" :
-              template === "gourmet" ? "text-amber-50" :
-              template === "digital" ? "text-cyan-50" :
-              template === "affiche_luxe" ? "text-purple-100" :
-              "text-ink-900"
-            }`}>{titre || "Titre du widget"}</h3>
-            <div className="mt-4 space-y-2">
-              {champs.filter(c => c.label.trim()).length === 0 && (
-                <p className="text-[12px] text-ink-400">Ajoutez des champs pour voir l'aperçu.</p>
-              )}
-              {champs.filter(c => c.label.trim()).map((c, i) => (
-                <div key={i} className={`flex items-center justify-between rounded-lg px-3 py-2 ${
-                  template === "elegant" ? "bg-slate-800/60" :
-                  template === "gourmet" ? "border-b border-amber-900/30" :
-                  template === "digital" ? "bg-slate-900/60" :
-                  template === "minimal" ? "border-b border-ink-100" :
-                  template === "bistro" ? "bg-white border border-orange-200/60" :
-                  template === "promo" ? "bg-pink-50/50" :
-                  template === "supermarche" ? "bg-white shadow-sm" :
-                  template === "affiche_luxe" ? "bg-purple-900/20" :
-                  "bg-white border border-slate-100"
-                }`}>
-                  <span className={`text-[12px] ${
-                    template === "elegant" ? "text-amber-200/80" :
-                    template === "gourmet" ? "text-amber-100/80" :
-                    template === "digital" ? "text-cyan-200/70" :
-                    template === "affiche_luxe" ? "text-purple-200/80" :
-                    "text-ink-600"
-                  }`}>{c.label}</span>
-                  <span className={`text-[13px] font-bold ${
-                    template === "elegant" ? "text-amber-100" :
-                    template === "gourmet" ? "text-amber-400" :
-                    template === "digital" ? "text-cyan-100" :
-                    template === "affiche_luxe" ? "text-purple-100" :
-                    "text-ink-900"
-                  }`}>{c.value || "—"}</span>
-                </div>
-              ))}
-            </div>
-          </div>
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <h2 className="font-display text-lg font-bold text-ink-900">Aperçu du modèle sélectionné</h2>
+          <span className="lg-badge-brand">{modeleChoisi?.label}</span>
+        </div>
+        <div className="max-h-[560px] overflow-y-auto rounded-2xl border border-ink-200">
+          <WidgetRender
+            titre={titre || "Titre du widget"}
+            type={type}
+            template={template}
+            champs={champsApercu}
+            boutiqueNom="Votre boutique"
+          />
         </div>
       </div>
 
@@ -235,47 +235,55 @@ export default function Widgets() {
               <tr>
                 <th>Titre</th>
                 <th>Type</th>
+                <th>Modèle</th>
                 <th>QR Code</th>
                 <th className="!text-right">Actions</th>
               </tr>
             </thead>
             <tbody>
               {items.length === 0 && (
-                <tr><td colSpan={4} className="lg-td text-center text-ink-400">Aucun widget créé.</td></tr>
-              )}
-              {items.map((w) => (
-                <tr key={w.id}>
-                  <td className="lg-td font-semibold text-ink-800">{w.titre || "—"}</td>
-                  <td className="lg-td">
-                    <span className="lg-badge-brand">{w.type}</span>
-                  </td>
-                  <td className="lg-td">
-                    {w.qr_code && (
-                      <img src={`${API}/${w.qr_code}`} alt="QR" className="h-16 w-16 rounded-lg border border-ink-200" />
-                    )}
-                  </td>
-                  <td className="lg-td text-right">
-                    <div className="flex items-center justify-end gap-2">
-                      {w.qr_code && (
-                        <button onClick={() => telecharger(w.qr_code)} className="lg-btn-neutral lg-btn-sm" title="Télécharger le QR">
-                          <ArrowDownTrayIcon className="h-4 w-4" /> QR
-                        </button>
-                      )}
-                      <a
-                        href={`${window.location.origin}/widget/${w.id}`}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="lg-btn-soft lg-btn-sm"
-                      >
-                        Voir
-                      </a>
-                      <button onClick={() => supprimer(w.id)} className="lg-btn-danger lg-btn-sm" title="Supprimer">
-                        <TrashIcon className="h-4 w-4" />
-                      </button>
-                    </div>
-                  </td>
+                <tr>
+                  <td colSpan={5} className="lg-td text-center text-ink-400">Aucun widget créé.</td>
                 </tr>
-              ))}
+              )}
+              {items.map((w) => {
+                let tpl = "";
+                try {
+                  const c = typeof w.contenu === "string" ? JSON.parse(w.contenu) : w.contenu;
+                  tpl = c?.template || "";
+                } catch (e) {
+                  tpl = "";
+                }
+                const libelleModele =
+                  [...MODELES.menu, ...MODELES.affiche].find((m) => m.value === tpl)?.label || tpl || "—";
+                return (
+                  <tr key={w.id}>
+                    <td className="lg-td font-semibold text-ink-800">{w.titre || "—"}</td>
+                    <td className="lg-td">
+                      <span className="lg-badge-brand">{w.type}</span>
+                    </td>
+                    <td className="lg-td text-ink-500">{libelleModele}</td>
+                    <td className="lg-td">
+                      {w.qr_code && <img src={`${API}/${w.qr_code}`} alt="QR" className="h-16 w-16 rounded-lg border border-ink-200" />}
+                    </td>
+                    <td className="lg-td text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        {w.qr_code && (
+                          <button onClick={() => telecharger(w.qr_code)} className="lg-btn-neutral lg-btn-sm" title="Télécharger le QR">
+                            <ArrowDownTrayIcon className="h-4 w-4" /> QR
+                          </button>
+                        )}
+                        <a href={`${window.location.origin}/widget/${w.id}`} target="_blank" rel="noreferrer" className="lg-btn-soft lg-btn-sm">
+                          Voir
+                        </a>
+                        <button onClick={() => supprimer(w.id)} className="lg-btn-danger lg-btn-sm" title="Supprimer">
+                          <TrashIcon className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
