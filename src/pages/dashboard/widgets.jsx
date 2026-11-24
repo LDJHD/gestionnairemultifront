@@ -9,7 +9,7 @@ export default function Widgets() {
   const [type, setType] = useState("menu");
   const [template, setTemplate] = useState("moderne");
   const [titre, setTitre] = useState("");
-  const [champs, setChamps] = useState([{ label: "", value: "" }]);
+  const [champs, setChamps] = useState([{ label: "", value: "", image: "" }]);
   const [loading, setLoading] = useState(false);
   const token = localStorage.getItem("token");
   const headers = { Authorization: `Bearer ${token}` };
@@ -35,7 +35,7 @@ export default function Widgets() {
       if (!res.data?.ok) throw new Error("Erreur");
       await load();
       setTitre("");
-      setChamps([{ label: "", value: "" }]);
+      setChamps([{ label: "", value: "", image: "" }]);
       setTemplate("moderne");
     } catch (e) {
       console.error(e);
@@ -83,9 +83,20 @@ export default function Widgets() {
           <div>
             <label className="lg-label">Modèle</label>
             <select className="lg-select" value={template} onChange={(e) => setTemplate(e.target.value)}>
-              <option value="moderne">Moderne</option>
-              <option value="elegant">Élégant</option>
-              <option value="minimal">Minimal</option>
+              <optgroup label="Menus">
+                <option value="moderne">Moderne</option>
+                <option value="elegant">Élégant (luxe)</option>
+                <option value="minimal">Minimal</option>
+                <option value="gourmet">Gourmet (or & noir)</option>
+                <option value="digital">Digital (sombre)</option>
+                <option value="bistro">Bistro (chaleureux)</option>
+              </optgroup>
+              <optgroup label="Affiches">
+                <option value="promo">Promotionnelle</option>
+                <option value="supermarche">Supermarché</option>
+                <option value="affiche_luxe">Affiche luxe</option>
+                <option value="affiche">Affiche (défaut)</option>
+              </optgroup>
             </select>
           </div>
         </div>
@@ -101,14 +112,20 @@ export default function Widgets() {
               <PlusIcon className="h-4 w-4" /> Ajouter un champ
             </button>
           </div>
-          <div className="space-y-2">
+          <div className="space-y-3">
             {champs.map((c, i) => (
-              <div key={i} className="flex gap-2">
-                <input className="lg-input flex-1" placeholder="Libellé" value={c.label} onChange={(e) => majChamp(i, "label", e.target.value)} />
-                <input className="lg-input flex-1" placeholder="Valeur" value={c.value} onChange={(e) => majChamp(i, "value", e.target.value)} />
-                <button type="button" onClick={() => supprimerChamp(i)} className="grid h-10 w-10 place-items-center rounded-xl text-ink-400 hover:bg-red-50 hover:text-red-600">
-                  <TrashIcon className="h-4 w-4" />
-                </button>
+              <div key={i} className="rounded-xl border border-ink-200 p-3 space-y-2">
+                <div className="flex gap-2">
+                  <input className="lg-input flex-1" placeholder="Libellé (ex: Plat)" value={c.label} onChange={(e) => majChamp(i, "label", e.target.value)} />
+                  <input className="lg-input flex-1" placeholder="Valeur (ex: 1500 F)" value={c.value} onChange={(e) => majChamp(i, "value", e.target.value)} />
+                  <button type="button" onClick={() => supprimerChamp(i)} className="grid h-10 w-10 place-items-center rounded-xl text-ink-400 hover:bg-red-50 hover:text-red-600">
+                    <TrashIcon className="h-4 w-4" />
+                  </button>
+                </div>
+                <input className="lg-input" placeholder="URL image (optionnel)" value={c.image || ""} onChange={(e) => majChamp(i, "image", e.target.value)} />
+                {c.image && (
+                  <img src={c.image.startsWith("http") ? c.image : `${API}/${c.image}`} alt="" className="h-20 w-20 rounded-lg object-cover border border-ink-200" />
+                )}
               </div>
             ))}
           </div>

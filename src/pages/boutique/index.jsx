@@ -154,6 +154,52 @@ function Hero({ data, heroFond = 1 }) {
   );
 }
 
+/* ===========================================================================
+ * HÉROS MODERNE (Boutique 2)
+ * =========================================================================== */
+function HeroModerne({ data }) {
+  const { activite, vitrine, localisation, produits } = data;
+  return (
+    <div className="mx-auto max-w-[1400px] px-4 pt-6 sm:px-8 sm:pt-8">
+      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-900 px-8 py-16 text-white shadow-2xl sm:px-12 sm:py-20">
+        <div className="relative z-10 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+          <div className="max-w-xl">
+            <p className="text-[11px] font-bold tracking-[0.25em] text-indigo-300 uppercase">Boutique officielle</p>
+            <h1 className="mt-3 font-display text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
+              {activite.nom}
+            </h1>
+            <p className="mt-4 text-[15px] leading-relaxed text-slate-300">
+              {produits.length} article{produits.length > 1 ? "s" : ""} disponible{produits.length > 1 ? "s" : ""}.
+              {vitrine?.livraison_active ? " Livraison à domicile ou retrait en boutique." : " Retrait en boutique."}
+            </p>
+            <div className="mt-8 flex flex-wrap items-center gap-3">
+              <a
+                href="#catalogue"
+                className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-bold text-slate-900 shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl active:scale-[0.98]"
+              >
+                Explorer le catalogue
+                <ArrowRightIcon className="h-4 w-4" />
+              </a>
+              <Link
+                to="/commande/suivi"
+                className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-6 py-3 text-sm font-bold text-white backdrop-blur transition-all duration-200 hover:border-white/40 hover:bg-white/10"
+              >
+                Suivre ma commande
+              </Link>
+            </div>
+          </div>
+          {Boolean(localisation?.adresse || localisation?.ville) && (
+            <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-[13px] text-slate-300 backdrop-blur">
+              <MapPinIcon className="h-4 w-4 flex-none text-indigo-300" />
+              <span>{localisation.adresse || localisation.ville}</span>
+            </div>
+          )}
+        </div>
+      </section>
+    </div>
+  );
+}
+
 function CarteProduit({ produit, api, onApercu, onAjouter, ajoute }) {
   const dispo = !produit.en_rupture && Number(produit.stock_disponible) > 0;
   const prix = Number(produit.prix || 0);
@@ -1720,15 +1766,7 @@ export default function Boutique() {
             )}
 
             {data?.vitrine?.template_boutique === "moderne" && (
-              <div className="mx-auto max-w-[1400px] px-4 pt-8 sm:px-8">
-                <div className="border-b border-boutique-200 pb-6">
-                  <p className="text-[11px] font-bold tracking-[0.2em] text-boutique-500 uppercase">Boutique</p>
-                  <h1 className="mt-1 font-display text-3xl font-extrabold tracking-tight text-boutique-900 sm:text-4xl">
-                    {data?.activite?.nom}
-                  </h1>
-                  <p className="mt-2 text-[14px] text-boutique-600">Découvrez notre sélection de produits</p>
-                </div>
-              </div>
+              <HeroModerne data={data} />
             )}
 
             <div className="mx-auto max-w-[1400px] px-4 pt-7 sm:px-8 sm:pt-9">
