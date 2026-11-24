@@ -438,3 +438,18 @@ h1, h2, h3, h4, h5, h6, .font-display {
 .dark .lg-badge-neutral { background-color: #334155; color: #cbd5e1; border-color: #475569; }
 .dark ::selection { background: rgba(99, 102, 241, 0.35); color: #f1f5f9; }
 
+
+/* ==========================================================================
+   BOUTIQUE 2 — MODÈLE MODERNE (premium)
+   ========================================================================== */
+.boutique-moderne.boutique-page {
+  background: #f8fafc;
+}
+.boutique-moderne .lg-card,
+.boutique-moderne article {
+  border-radius: 1rem;
+}
+.boutique-moderne .font-display {
+  letter-spacing: -0.03em;
+}
+

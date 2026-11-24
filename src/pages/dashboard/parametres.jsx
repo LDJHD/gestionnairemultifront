@@ -463,6 +463,47 @@ export default function ParametresBoutique() {
               </div>
             )}
 
+            {/* Modèle & affichage du hero */}
+            <div className="mt-6 rounded-xl border border-ink-200 p-4 space-y-4">
+              <div>
+                <h3 className="font-display text-[13px] font-extrabold text-ink-900">Modèle de boutique</h3>
+                <p className="text-[12px] text-ink-500">Choisissez l'apparence de votre boutique en ligne.</p>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2">
+                {[
+                  { v: "classique", label: "Classique", desc: "Hero avec dégradé + catalogue" },
+                  { v: "minimal", label: "Minimal (pro)", desc: "Sans hero, catalogue direct" },
+                  { v: "moderne", label: "Boutique 2 (premium)", desc: "Design moderne, épuré et professionnel" },
+                ].map((t) => (
+                  <button
+                    key={t.v}
+                    type="button"
+                    onClick={() => maj("template_boutique", t.v)}
+                    className={`rounded-xl border-2 p-4 text-left transition-all ${
+                      (params?.template_boutique || "classique") === t.v
+                        ? "border-brand-500 bg-brand-50"
+                        : "border-ink-200 bg-white hover:border-brand-200"
+                    }`}
+                  >
+                    <p className="font-display text-[13px] font-bold text-ink-900">{t.label}</p>
+                    <p className="text-[11px] text-ink-500">{t.desc}</p>
+                  </button>
+                ))}
+              </div>
+              <Interrupteur
+                checked={!!params?.hero_affiche}
+                onChange={() => maj("hero_affiche", params?.hero_affiche ? 0 : 1)}
+                label="Afficher le hero"
+                description="Masque la section hero en haut de la boutique."
+              />
+              <Interrupteur
+                checked={!!params?.hero_fond}
+                onChange={() => maj("hero_fond", params?.hero_fond ? 0 : 1)}
+                label="Fond du hero"
+                description="Désactive le fond coloré du hero (mode clair)."
+              />
+            </div>
+
             <p className="mt-4 text-[12px] font-semibold text-ink-500">
               Partager sur les réseaux
             </p>

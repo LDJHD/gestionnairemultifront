@@ -106,12 +106,12 @@ function avantages({ vitrine, paiements }) {
 /* ===========================================================================
  * 1. HÉROS — SIMPLE & PROFESSIONNEL
  * =========================================================================== */
-function Hero({ data }) {
+function Hero({ data, heroFond = 1 }) {
   const { activite, vitrine, localisation } = data;
 
   return (
     <div className="mx-auto max-w-[1400px] px-4 pt-6 sm:px-8 sm:pt-8">
-      <section className="relative overflow-hidden rounded-2xl bg-boutique-deep px-6 py-12 text-boutique-100 shadow-card sm:px-10 sm:py-16">
+      <section className={`relative overflow-hidden rounded-2xl px-6 py-12 shadow-card sm:px-10 sm:py-16 ${heroFond ? "bg-boutique-deep text-boutique-100" : "bg-white text-boutique-900 border border-boutique-200"}`}>
         <div className="relative flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
           <div className="max-w-2xl">
             <p className="text-[11px] font-bold tracking-[0.18em] text-boutique-200/80 uppercase">
@@ -1638,7 +1638,7 @@ export default function Boutique() {
   const seuil = Number(vitrine?.livraison_gratuite_des || 0);
 
   return (
-    <div className="min-h-screen boutique-page font-sans">
+    <div className={`min-h-screen boutique-page font-sans ${data?.vitrine?.template_boutique === "moderne" ? "boutique-moderne" : ""}`}>
       <BandeauAnnonce activite={activite} vitrine={vitrine} paiements={paiements} />
 
       {/* ══════════════ ENTÊTE + RAIL (un seul bloc collant) ══════════════
@@ -1707,7 +1707,29 @@ export default function Boutique() {
         {/* ══════════════ CATALOGUE ══════════════ */}
         {vue === "catalogue" && (
           <>
-            <Hero data={data} />
+            {data?.vitrine?.template_boutique !== "minimal" && data?.vitrine?.hero_affiche !== 0 && (
+              <Hero data={data} heroFond={data?.vitrine?.hero_fond} />
+            )}
+            {data?.vitrine?.template_boutique === "minimal" && (
+              <div className="mx-auto max-w-[1400px] px-4 pt-6 sm:px-8">
+                <h1 className="font-display text-2xl font-extrabold tracking-tight text-boutique-900">
+                  {data?.activite?.nom}
+                </h1>
+                <p className="mt-1 text-[13px] text-boutique-600">Catalogue de la boutique</p>
+              </div>
+            )}
+
+            {data?.vitrine?.template_boutique === "moderne" && (
+              <div className="mx-auto max-w-[1400px] px-4 pt-8 sm:px-8">
+                <div className="border-b border-boutique-200 pb-6">
+                  <p className="text-[11px] font-bold tracking-[0.2em] text-boutique-500 uppercase">Boutique</p>
+                  <h1 className="mt-1 font-display text-3xl font-extrabold tracking-tight text-boutique-900 sm:text-4xl">
+                    {data?.activite?.nom}
+                  </h1>
+                  <p className="mt-2 text-[14px] text-boutique-600">Découvrez notre sélection de produits</p>
+                </div>
+              </div>
+            )}
 
             <div className="mx-auto max-w-[1400px] px-4 pt-7 sm:px-8 sm:pt-9">
               <div className="border-b border-boutique-300 pb-8">
