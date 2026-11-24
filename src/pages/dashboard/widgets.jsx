@@ -27,6 +27,23 @@ export default function Widgets() {
   const majChamp = (i, k, v) => setChamps((c) => c.map((x, idx) => (idx === i ? { ...x, [k]: v } : x)));
   const supprimerChamp = (i) => setChamps((c) => c.filter((_, idx) => idx !== i));
 
+  const uploaderImageChamp = async (i, fichier) => {
+    if (!fichier) return;
+    try {
+      const fd = new FormData();
+      fd.append("image", fichier);
+      const res = await axios.post(`${API}/api/v1/produit/upload-image`, fd, {
+        headers: { ...headers, "Content-Type": "multipart/form-data" },
+      });
+      if (res.data?.image) {
+        majChamp(i, "image", res.data.image);
+      }
+    } catch (e) {
+      console.error(e);
+      alert("Échec de l'upload de l'image");
+    }
+  };
+
   const generer = async () => {
     setLoading(true);
     try {
@@ -122,7 +139,13 @@ export default function Widgets() {
                     <TrashIcon className="h-4 w-4" />
                   </button>
                 </div>
-                <input className="lg-input" placeholder="URL image (optionnel)" value={c.image || ""} onChange={(e) => majChamp(i, "image", e.target.value)} />
+                <div className="flex gap-2">
+                  <input className="lg-input flex-1" placeholder="URL image (optionnel)" value={c.image || ""} onChange={(e) => majChamp(i, "image", e.target.value)} />
+                  <label className="lg-btn-neutral lg-btn-sm cursor-pointer">
+                    <input type="file" accept="image/*" className="hidden" onChange={(e) => uploaderImageChamp(i, e.target.files?.[0])} />
+                    📷 Upload
+                  </label>
+                </div>
                 {c.image && (
                   <img src={c.image.startsWith("http") ? c.image : `${API}/${c.image}`} alt="" className="h-20 w-20 rounded-lg object-cover border border-ink-200" />
                 )}
@@ -135,6 +158,69 @@ export default function Widgets() {
           <button onClick={generer} disabled={loading} className="lg-btn-primary">
             <QrCodeIcon className="h-4 w-4" /> {loading ? "Génération…" : "Générer le widget + QR code"}
           </button>
+        </div>
+      </div>
+
+      {/* Aperçu en direct */}
+      <div className="lg-card p-6">
+        <h2 className="font-display text-lg font-bold text-ink-900 mb-4">Aperçu du modèle sélectionné</h2>
+        <div className="rounded-2xl border border-ink-200 overflow-hidden">
+          <div className={`p-6 ${
+            template === "elegant" ? "bg-slate-900" :
+            template === "minimal" ? "bg-white" :
+            template === "gourmet" ? "bg-stone-900" :
+            template === "digital" ? "bg-slate-950" :
+            template === "bistro" ? "bg-orange-50" :
+            template === "promo" ? "bg-pink-50" :
+            template === "supermarche" ? "bg-slate-50" :
+            template === "affiche_luxe" ? "bg-purple-900" :
+            template === "affiche" ? "bg-rose-50" :
+            "bg-slate-50"
+          }`}>
+            <p className={`text-[10px] font-bold tracking-[0.3em] uppercase mb-2 ${
+              template === "elegant" || template === "gourmet" || template === "digital" || template === "affiche_luxe" ? "text-amber-400/60" : "text-ink-400"
+            }`}>Boutique démo</p>
+            <h3 className={`font-display text-xl font-extrabold tracking-tight ${
+              template === "elegant" ? "text-amber-100" :
+              template === "gourmet" ? "text-amber-50" :
+              template === "digital" ? "text-cyan-50" :
+              template === "affiche_luxe" ? "text-purple-100" :
+              "text-ink-900"
+            }`}>{titre || "Titre du widget"}</h3>
+            <div className="mt-4 space-y-2">
+              {champs.filter(c => c.label.trim()).length === 0 && (
+                <p className="text-[12px] text-ink-400">Ajoutez des champs pour voir l'aperçu.</p>
+              )}
+              {champs.filter(c => c.label.trim()).map((c, i) => (
+                <div key={i} className={`flex items-center justify-between rounded-lg px-3 py-2 ${
+                  template === "elegant" ? "bg-slate-800/60" :
+                  template === "gourmet" ? "border-b border-amber-900/30" :
+                  template === "digital" ? "bg-slate-900/60" :
+                  template === "minimal" ? "border-b border-ink-100" :
+                  template === "bistro" ? "bg-white border border-orange-200/60" :
+                  template === "promo" ? "bg-pink-50/50" :
+                  template === "supermarche" ? "bg-white shadow-sm" :
+                  template === "affiche_luxe" ? "bg-purple-900/20" :
+                  "bg-white border border-slate-100"
+                }`}>
+                  <span className={`text-[12px] ${
+                    template === "elegant" ? "text-amber-200/80" :
+                    template === "gourmet" ? "text-amber-100/80" :
+                    template === "digital" ? "text-cyan-200/70" :
+                    template === "affiche_luxe" ? "text-purple-200/80" :
+                    "text-ink-600"
+                  }`}>{c.label}</span>
+                  <span className={`text-[13px] font-bold ${
+                    template === "elegant" ? "text-amber-100" :
+                    template === "gourmet" ? "text-amber-400" :
+                    template === "digital" ? "text-cyan-100" :
+                    template === "affiche_luxe" ? "text-purple-100" :
+                    "text-ink-900"
+                  }`}>{c.value || "—"}</span>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
 
