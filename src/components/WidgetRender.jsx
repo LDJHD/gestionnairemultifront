@@ -850,7 +850,7 @@ export default function WidgetRender({
                 className="absolute inset-x-3 bottom-3 rounded-xl px-3 py-2 text-center"
                 style={{ backgroundColor: "rgba(0,0,0,0.66)", border: `1px solid rgba(212,175,55,0.55)` }}
               >
-                <p style={{ fontFamily: F.script, color: goldLight, fontSize: 23, lineHeight: 1.1 }}>Éclat & douceur naturels</p>
+                <p style={{ fontFamily: F.script, color: goldLight, fontSize: 23, lineHeight: 1.1 }}>{slogan || "Éclat & douceur naturels"}</p>
               </div>
             </div>
 
