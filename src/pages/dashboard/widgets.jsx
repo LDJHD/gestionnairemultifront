@@ -19,10 +19,59 @@ const MODELES = {
     { value: "supermarche", label: "Supermarché — bleu/jaune/rouge", desc: "Panier, accroche rouge, checklist, grille produits, bandeau bleu." },
     { value: "maboutique", label: "MaBoutique — orange/bleu", desc: "Sac orange, bannière marine, atouts ronds, CTA rouge." },
     { value: "annonce", label: "Annonce importante — bleu/jaune", desc: "Mégaphone, bandeau ANNONCE, encadré pointillé, 4 pastilles." },
+    { value: "bellechic", label: "Belle & Chic — noir & or (beauté)", desc: "Affiche cosmétique luxe : emblème doré, ruban, photo beauté, bienfaits, grille produits, bandeau noir & or." },
+    { value: "jobeats", label: "Jobeat's Closet — bordeaux & crème (mode)", desc: "Affiche mode : grand titre rouge, liste DEALS IN, collage produits, bandeau contact bordeaux." },
   ],
 };
 
-const SECTIONS = ["Entrées", "Plats principaux", "Nos Plats", "Boissons", "Nos Boissons", "Desserts", "Nos Desserts", "Promotions", "Menus", "Snacks"];
+const SECTIONS = [
+  "Entrées", "Plats principaux", "Nos Plats", "Boissons", "Nos Boissons", "Desserts", "Nos Desserts", "Promotions", "Menus", "Snacks",
+  "Soins visage", "Soins corps", "Parfums", "Maquillage", "Cosmétiques",
+  "Dresses", "Bags", "Shoes", "Necklaces", "Accessoires", "Nouveautés",
+];
+
+/* Données de démonstration par modèle : l'aperçu doit ressembler au vrai métier. */
+const DEMOS = {
+  bellechic: [
+    { section: "Soins visage", label: "Crème Visage Éclat", value: "7 500 F" },
+    { section: "Soins visage", label: "Crème de Jour", value: "9 000 F" },
+    { section: "Soins corps", label: "Lait Corporel Hydratant", value: "6 500 F" },
+    { section: "Parfums", label: "Eau de Parfum", value: "15 000 F" },
+    { section: "Maquillage", label: "Rouge à lèvres", value: "4 500 F" },
+    { section: "Maquillage", label: "Palette teint", value: "8 000 F" },
+  ],
+  jobeats: [
+    { section: "Dresses", label: "Robe de soirée", value: "12 000 F" },
+    { section: "Bags", label: "Sac à main", value: "18 000 F" },
+    { section: "Shoes", label: "Escarpins", value: "15 000 F" },
+    { section: "Necklaces", label: "Collier doré", value: "8 000 F" },
+  ],
+  supermarche: [
+    { section: "Promotions", label: "Riz parfumé 25 kg", value: "18 500 F" },
+    { section: "Promotions", label: "Huile végétale 5 L", value: "6 500 F" },
+    { section: "Promotions", label: "Lait en poudre 400 g", value: "4 500 F" },
+    { section: "Promotions", label: "Savon de toilette", value: "1 200 F" },
+  ],
+  maboutique: [
+    { section: "Nouveautés", label: "Sac à main cuir", value: "12 000 F" },
+    { section: "Nouveautés", label: "Montre élégante", value: "25 000 F" },
+    { section: "Nouveautés", label: "Parfum femme", value: "15 000 F" },
+    { section: "Nouveautés", label: "Chaussures tendance", value: "18 000 F" },
+  ],
+  annonce: [
+    { section: "", label: "Livraison offerte dès 20 000 F", value: "" },
+    { section: "", label: "-20 % sur toute la cosmétique", value: "" },
+    { section: "", label: "Nouveaux arrivages chaque semaine", value: "" },
+    { section: "", label: "Paiement à la livraison disponible", value: "" },
+  ],
+};
+
+const DEMO_MENU = [
+  { section: "Nos Plats", label: "Riz sauté spécial", value: "3 000 F", image: "" },
+  { section: "Nos Plats", label: "Poulet braisé", value: "3 000 F", image: "" },
+  { section: "Nos Boissons", label: "Jus naturel", value: "1 000 F", image: "" },
+  { section: "Nos Desserts", label: "Gâteau maison", value: "1 500 F", image: "" },
+];
 
 export default function Widgets() {
   const [items, setItems] = useState([]);
@@ -130,21 +179,25 @@ export default function Widgets() {
   };
 
   const champsRemplis = champs.filter((c) => String(c.label || "").trim());
-  const champsApercu =
-    champsRemplis.length > 0
-      ? champsRemplis
-      : [
-          { section: "Nos Plats", label: "Riz sauté spécial", value: "3 000 F", image: "" },
-          { section: "Nos Plats", label: "Poulet braisé", value: "3 000 F", image: "" },
-          { section: "Nos Boissons", label: "Jus naturel", value: "1 000 F", image: "" },
-          { section: "Nos Desserts", label: "Gâteau maison", value: "1 500 F", image: "" },
-        ];
+  const champsApercu = champsRemplis.length > 0 ? champsRemplis : DEMOS[template] || DEMO_MENU;
+  const nomApercu =
+    template === "bellechic" ? "Belle & Chic" : template === "jobeats" ? "Jobeat's Closet" : "Votre boutique";
+  const titreApercu =
+    titre ||
+    (template === "bellechic"
+      ? "Une beauté naturelle, une confiance absolue !"
+      : template === "jobeats"
+        ? "Closet"
+        : "Titre du widget");
 
   return (
     <div className="mt-6 mb-10 flex flex-col gap-6 animate-fade-in">
       <header className="flex flex-col gap-2">
         <h1 className="lg-page-title">Widgets — Menus & Affiches</h1>
-        <p className="lg-page-sub">Des modèles inspirés de tes affiches : menus noir & or, Délice, Bella Vita, Chez Royal, supermarché, MaBoutique, annonce.</p>
+        <p className="lg-page-sub">
+          Des modèles inspirés de tes affiches : menus noir & or, Délice, Bella Vita, Chez Royal, supermarché,
+          MaBoutique, annonce, Belle &amp; Chic (beauté) et Jobeat&apos;s Closet (mode).
+        </p>
       </header>
 
       {/* Formulaire de création */}
@@ -279,11 +332,11 @@ export default function Widgets() {
         </div>
         <div className="max-h-[620px] overflow-y-auto rounded-2xl border border-ink-200">
           <WidgetRender
-            titre={titre || "Titre du widget"}
+            titre={titreApercu}
             type={type}
             template={template}
             champs={champsApercu}
-            boutiqueNom="Votre boutique"
+            boutiqueNom={nomApercu}
             slogan={slogan}
             imagePrincipale={imagePrincipale}
             telephone={telephone}

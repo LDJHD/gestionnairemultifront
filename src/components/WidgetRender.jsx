@@ -54,6 +54,17 @@ function PrintBtn({ onPrint, style, label = "Télécharger / Imprimer" }) {
   );
 }
 
+/** Icône de substitution cohérente avec le type d'article (mode). */
+function iconeMode(section = "", label = "") {
+  const s = `${section} ${label}`.toLowerCase();
+  if (/(robe|dress|jupe|skirt|ensemble)/.test(s)) return "👗";
+  if (/(sac|bag|pochette|purse|valise)/.test(s)) return "👜";
+  if (/(chauss|shoe|escarpin|sandale|basket|sneaker|botte)/.test(s)) return "👠";
+  if (/(collier|necklace|bijou|bague|boucle|bracelet|montre)/.test(s)) return "💍";
+  if (/(parfum|perfume)/.test(s)) return "🧴";
+  return "🛍️";
+}
+
 function Dotted({ color = "rgba(0,0,0,0.35)" }) {
   return (
     <span
@@ -749,6 +760,362 @@ export default function WidgetRender({
           <div className="mt-3 text-center">
             <PrintBtn onPrint={onPrint} style={{ backgroundColor: red, color: "#ffffff" }} />
           </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ═══════════════════════════════════════════════════════════════
+  //  BELLE & CHIC — noir & or, cosmétique (Beauté naturelle, élégance dorée)
+  // ═══════════════════════════════════════════════════════════════
+  if (t === "bellechic") {
+    const black = "#0a0a0a";
+    const gold = "#d4af37";
+    const goldLight = "#f2d98a";
+    const goldDeep = "#a67c00";
+    const cream = "#fdf8ee";
+    const avantages = [
+      { e: "🌿", l: "Produits de qualité" },
+      { e: "💁🏽‍♀️", l: "Soins adaptés à tous types de peau" },
+      { e: "🏷️", l: "Prix abordables" },
+      { e: "🎧", l: "Conseils personnalisés" },
+      { e: "🚚", l: "Livraison rapide partout" },
+    ];
+    return (
+      <div
+        className="min-h-screen px-3 py-5 sm:px-5"
+        style={{
+          background: "linear-gradient(160deg,#0a0a0a 0%,#181104 52%,#0a0a0a 100%)",
+          color: "#ffffff",
+          ...printBase,
+        }}
+      >
+        <div
+          className="mx-auto max-w-4xl overflow-hidden rounded-[28px]"
+          style={{ background: "linear-gradient(180deg,#0d0d0d,#070707)", border: `1px solid rgba(212,175,55,0.5)` }}
+        >
+          {/* En-tête */}
+          <div className="px-5 pt-6 text-center">
+            <div
+              className="mx-auto grid h-16 w-16 place-items-center rounded-full"
+              style={{ border: `2px solid ${gold}`, background: "radial-gradient(circle at 32% 25%,#3a2c0d,#0d0d0d)", fontSize: 30 }}
+            >
+              👑
+            </div>
+            <h1
+              style={{
+                fontFamily: F.serif,
+                color: "#ffffff",
+                fontSize: 42,
+                fontWeight: 800,
+                lineHeight: 1.05,
+                marginTop: 8,
+                wordBreak: "break-word",
+              }}
+            >
+              {boutiqueNom}
+            </h1>
+            <div className="mt-2 flex items-center justify-center gap-3">
+              <span className="h-px w-10" style={{ backgroundColor: gold }} />
+              <p style={{ fontFamily: F.sans, color: goldLight, fontSize: 10, fontWeight: 800, letterSpacing: "0.36em", textTransform: "uppercase" }}>
+                Cosmétiques
+              </p>
+              <span className="h-px w-10" style={{ backgroundColor: gold }} />
+            </div>
+            <p className="mt-2" style={{ fontFamily: F.script, color: cream, fontSize: 26, lineHeight: 1.15 }}>
+              {slogan || "Prenez soin de vous, rayonnez en beauté !"}
+            </p>
+          </div>
+
+          {/* Ruban doré */}
+          <div
+            className="mx-4 mt-4 rounded-xl px-4 py-3 text-center"
+            style={{ background: `linear-gradient(90deg,${goldDeep},${goldLight} 45%,${goldDeep})`, color: "#1a1200" }}
+          >
+            <p style={{ fontFamily: F.sans, fontSize: 15, fontWeight: 900, lineHeight: 1.2 }}>
+              {titre || "Une beauté naturelle, une confiance absolue !"}
+            </p>
+          </div>
+
+          {/* Photo + bienfaits */}
+          <div className="mt-4 grid gap-4 px-4 md:grid-cols-2">
+            <div className="relative">
+              <HeroImage
+                src={imagePrincipale}
+                emoji="💄"
+                className="h-72 w-full rounded-2xl md:h-full"
+                style={{ border: `2px solid ${gold}` }}
+              />
+              <div
+                className="absolute inset-x-3 bottom-3 rounded-xl px-3 py-2 text-center"
+                style={{ backgroundColor: "rgba(0,0,0,0.66)", border: `1px solid rgba(212,175,55,0.55)` }}
+              >
+                <p style={{ fontFamily: F.script, color: goldLight, fontSize: 23, lineHeight: 1.1 }}>Éclat & douceur naturels</p>
+              </div>
+            </div>
+
+            <div className="flex flex-col justify-center gap-2">
+              {avantages.map((a, i) => (
+                <div
+                  key={i}
+                  className="flex items-center gap-3 rounded-full px-3 py-2.5"
+                  style={{ backgroundColor: cream, border: `1px solid ${gold}` }}
+                >
+                  <span
+                    className="grid h-9 w-9 flex-none place-items-center rounded-full text-white"
+                    style={{ background: `radial-gradient(circle at 30% 25%,${goldLight},${goldDeep})`, fontSize: 16 }}
+                  >
+                    {a.e}
+                  </span>
+                  <span style={{ fontFamily: F.sans, color: "#2a1f0b", fontSize: 12.5, fontWeight: 800, lineHeight: 1.2 }}>{a.l}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Produits */}
+          {items.length > 0 && (
+            <div className="mt-5 px-4">
+              <div className="flex items-center gap-3">
+                <span className="h-px flex-1" style={{ backgroundColor: "rgba(212,175,55,0.45)" }} />
+                <p style={{ fontFamily: F.script, color: goldLight, fontSize: 24 }}>Nos produits</p>
+                <span className="h-px flex-1" style={{ backgroundColor: "rgba(212,175,55,0.45)" }} />
+              </div>
+              <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
+                {items.map((it, i) => (
+                  <div
+                    key={i}
+                    className="overflow-hidden rounded-xl"
+                    style={{ backgroundColor: "#121212", border: `1px solid rgba(212,175,55,0.4)` }}
+                  >
+                    {it.image ? (
+                      <img src={imgUrl(it.image)} alt="" className="h-28 w-full object-cover" />
+                    ) : (
+                      <div
+                        className="grid h-28 w-full place-items-center"
+                        style={{ background: "linear-gradient(135deg,#241a07,#0e0b04)", fontSize: 30 }}
+                      >
+                        {["🧴", "💧", "💄", "🌸", "✨", "🧼"][i % 6]}
+                      </div>
+                    )}
+                    <div className="flex items-center justify-between gap-2 px-2 py-2">
+                      <span className="min-w-0 flex-1 truncate" style={{ color: "#ffffff", fontSize: 11.5, fontWeight: 700 }}>
+                        {it.label}
+                      </span>
+                      {it.value && (
+                        <span
+                          className="flex-none rounded px-1.5 py-0.5"
+                          style={{ backgroundColor: gold, color: "#1a1200", fontSize: 10.5, fontWeight: 900 }}
+                        >
+                          {it.value}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Bandeau noir & or */}
+          <div className="mt-5" style={{ backgroundColor: black, borderTop: `2px solid ${gold}` }}>
+            <div className="px-5 py-5 text-center">
+              <p style={{ fontFamily: F.script, color: goldLight, fontSize: 30, lineHeight: 1.1 }}>Votre beauté, notre priorité !</p>
+              <div className="mt-3 grid grid-cols-3 gap-2">
+                {[[ "💎", "Qualité garantie" ], [ "🛡️", "Sécurité d'achat" ], [ "🛒", "Achat en ligne (disponible)" ]].map(([e, l], i) => (
+                  <div key={i} className="flex flex-col items-center gap-1.5">
+                    <span
+                      className="grid h-11 w-11 place-items-center rounded-full"
+                      style={{ border: `2px solid ${gold}`, background: "radial-gradient(circle at 30% 25%,#33260a,#0a0a0a)", fontSize: 18 }}
+                    >
+                      {e}
+                    </span>
+                    <p style={{ color: cream, fontSize: 10.5, fontWeight: 700, lineHeight: 1.2 }}>{l}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div
+                className="mx-auto mt-4 inline-flex max-w-full items-center justify-center gap-2 rounded-full px-6 py-3"
+                style={{ background: `linear-gradient(90deg,${goldDeep},${goldLight} 50%,${goldDeep})`, color: "#1a1200" }}
+              >
+                <span style={{ fontSize: 17 }}>🛒</span>
+                <span style={{ fontFamily: F.sans, fontSize: 13.5, fontWeight: 900 }}>Commandez dès maintenant !</span>
+                <span style={{ fontSize: 16 }}>›</span>
+              </div>
+
+              <div className="mt-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
+                <span style={{ color: goldLight, fontSize: 12, fontWeight: 700 }}>☎ {telephone || "+229 01 97 00 00 00"}</span>
+                <span style={{ color: goldLight, fontSize: 12, fontWeight: 700 }}>📍 {adresse || "Cotonou, Bénin"}</span>
+              </div>
+              <p className="mt-2" style={{ fontFamily: F.script, color: cream, fontSize: 22 }}>{pied || "Parce que vous méritez le meilleur…"}</p>
+              <div className="mt-3">
+                <PrintBtn onPrint={onPrint} style={{ backgroundColor: gold, color: "#1a1200" }} />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ═══════════════════════════════════════════════════════════════
+  //  JOBEAT'S CLOSET — bordeaux & crème, mode (affiche)
+  // ═══════════════════════════════════════════════════════════════
+  if (t === "jobeats") {
+    const red = "#a3122b";
+    const dark = "#6d0a18";
+    const cream = "#fff6f2";
+    const ink = "#2a0a10";
+    const rayures = `repeating-linear-gradient(90deg,${red} 0 14px,#ffffff 14px 22px)`;
+    return (
+      <div className="min-h-screen px-3 py-5 sm:px-5" style={{ background: "linear-gradient(180deg,#fffdfc,#fff1ec)", color: ink, ...printBase }}>
+        <div
+          className="mx-auto max-w-4xl overflow-hidden rounded-2xl bg-white shadow-2xl"
+          style={{ border: `3px solid ${red}` }}
+        >
+          <div className="h-2 w-full" style={{ background: rayures }} />
+
+          {/* En-tête */}
+          <div className="px-5 pt-5 text-center">
+            <p style={{ color: red, fontSize: 9.5, fontWeight: 900, letterSpacing: "0.32em", textTransform: "uppercase" }}>
+              Boutique en ligne
+            </p>
+            <h1
+              style={{
+                fontFamily: F.poster,
+                color: red,
+                fontSize: 46,
+                lineHeight: 0.98,
+                letterSpacing: "0.02em",
+                textShadow: "2px 2px 0 #ffffff, 4px 4px 0 rgba(109,10,24,0.18)",
+                marginTop: 2,
+                wordBreak: "break-word",
+              }}
+            >
+              {String(boutiqueNom || "Jobeat's Closet").toUpperCase()}
+            </h1>
+            <p style={{ fontFamily: F.script, color: dark, fontSize: 40, lineHeight: 1 }}>{titre || "Closet"}</p>
+            <span
+              className="mt-1 inline-block rounded-full px-4 py-1.5"
+              style={{ backgroundColor: red, color: "#ffffff", fontSize: 11, fontWeight: 800 }}
+            >
+              {slogan || "Anything ladies and quality"}
+            </span>
+          </div>
+
+          {/* Corps : liste + collage */}
+          <div className="mt-4 grid gap-4 px-4 md:grid-cols-[0.9fr_1.1fr]">
+            <div>
+              <div className="inline-block rounded-md px-4 py-1.5" style={{ backgroundColor: red }}>
+                <span style={{ fontFamily: F.sans, color: "#ffffff", fontSize: 12.5, fontWeight: 900, letterSpacing: "0.12em" }}>
+                  DEALS IN :
+                </span>
+              </div>
+
+              <div className="mt-3 space-y-3">
+                {items.length === 0 && (
+                  <p style={{ color: "#7a5560", fontSize: 12, fontStyle: "italic" }}>Ajoutez vos articles pour les afficher ici.</p>
+                )}
+                {groups.map((g, gi) => (
+                  <div key={gi}>
+                    {g.section && (
+                      <p style={{ color: dark, fontSize: 11.5, fontWeight: 900, letterSpacing: "0.08em", textTransform: "uppercase" }}>
+                        {g.section}
+                      </p>
+                    )}
+                    <ul className="mt-1 space-y-1">
+                      {g.items.map((it, i) => (
+                        <li key={i} className="flex items-center gap-2">
+                          <span className="h-2 w-2 flex-none rounded-full" style={{ backgroundColor: red }} />
+                          <span className="min-w-0 flex-1 truncate" style={{ color: ink, fontSize: 13, fontWeight: 700 }}>
+                            {it.label}
+                          </span>
+                          {it.value && (
+                            <span
+                              className="flex-none rounded px-1.5 py-0.5"
+                              style={{ backgroundColor: "#ffe3ea", color: dark, fontSize: 11, fontWeight: 900 }}
+                            >
+                              {it.value}
+                            </span>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-4 flex flex-wrap items-center gap-2">
+                <span
+                  className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5"
+                  style={{ border: `1.5px solid ${red}`, color: dark, fontSize: 11, fontWeight: 800 }}
+                >
+                  🚚 Livraison disponible
+                </span>
+                <span
+                  className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5"
+                  style={{ backgroundColor: "#ffe3ea", color: dark, fontSize: 11, fontWeight: 800 }}
+                >
+                  ✅ Qualité garantie
+                </span>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <HeroImage
+                src={imagePrincipale}
+                emoji="👗"
+                className="col-span-2 h-40 w-full rounded-xl"
+                style={{ border: `3px solid ${red}`, background: "linear-gradient(135deg,#ffe3ea,#ffd0da)" }}
+              />
+              {items.slice(0, 4).map((it, i) => (
+                <div
+                  key={i}
+                  className="overflow-hidden rounded-xl"
+                  style={{ border: `2px solid ${red}`, backgroundColor: cream }}
+                >
+                  {it.image ? (
+                    <img src={imgUrl(it.image)} alt="" className="h-24 w-full object-cover" />
+                  ) : (
+                    <div
+                      className="grid h-24 w-full place-items-center"
+                      style={{ background: "linear-gradient(135deg,#ffe3ea,#ffd0da)", fontSize: 28 }}
+                    >
+                      {iconeMode(it.section, it.label)}
+                    </div>
+                  )}
+                  <p className="truncate px-1.5 py-1" style={{ color: ink, fontSize: 10.5, fontWeight: 800 }}>
+                    {it.label}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* CTA + contact */}
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-2 px-4">
+            <span
+              className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-white"
+              style={{ backgroundColor: red, fontSize: 13, fontWeight: 900 }}
+            >
+              🛒 Commandez maintenant !
+            </span>
+            <span style={{ color: dark, fontSize: 12, fontWeight: 800 }}>
+              ☎ {telephone || "0540580582"} · 📍 {adresse || "Cotonou, Bénin"}
+            </span>
+          </div>
+
+          <div className="mt-4 px-4 py-3 text-center" style={{ backgroundColor: dark }}>
+            <p style={{ fontFamily: F.script, color: "#ffffff", fontSize: 24 }}>
+              {pied || "Merci pour votre confiance !"}
+            </p>
+          </div>
+
+          <div className="pb-4 text-center">
+            <PrintBtn onPrint={onPrint} style={{ backgroundColor: red, color: "#ffffff", marginTop: 12 }} />
+          </div>
+          <div className="h-2 w-full" style={{ background: rayures }} />
         </div>
       </div>
     );

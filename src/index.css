@@ -461,3 +461,55 @@ h1, h2, h3, h4, h5, h6, .font-display {
   letter-spacing: -0.03em;
 }
 
+/* ==========================================================================
+   SITE 3 — ÉDITORIAL PREMIUM (ivoire, encre, or)
+   ========================================================================== */
+.boutique-site3.boutique-page {
+  background: #faf6ee;
+  color: #14110f;
+}
+.boutique-site3 ::selection {
+  background: rgba(184, 146, 74, 0.24);
+  color: #14110f;
+}
+.boutique-site3 .font-display {
+  letter-spacing: -0.02em;
+}
+
+/* ---------------------------------------------------------------------------
+   SITE 3 — ÉDITORIAL PREMIUM : on force la palette dorée/encre sur tous les
+   composants internes hérités (panier, checkout, aperçu rapide, paniers
+   sauvegardés) afin que le tout soit cohérent avec le design.
+   --------------------------------------------------------------------------- */
+.boutique-site3 .bg-boutique-900,
+.boutique-site3 .bg-boutique-950 {
+  background-color: #14110f !important;
+}
+.boutique-site3 .bg-boutique-800 { background-color: #241f19 !important; }
+.boutique-site3 .bg-boutique-700 { background-color: #4a3a24 !important; }
+.boutique-site3 .bg-boutique-600 { background-color: #b8924a !important; }
+.boutique-site3 .bg-boutique-100 { background-color: #f3ecdf !important; }
+.boutique-site3 .bg-boutique-50 { background-color: #faf6ee !important; }
+.boutique-site3 .text-boutique-900,
+.boutique-site3 .text-boutique-800 { color: #14110f !important; }
+.boutique-site3 .text-boutique-700,
+.boutique-site3 .text-boutique-600 { color: #5b5147 !important; }
+.boutique-site3 .text-boutique-100,
+.boutique-site3 .text-boutique-50 { color: #faf6ee !important; }
+.boutique-site3 .border-boutique-300,
+.boutique-site3 .border-boutique-200 { border-color: rgba(20,17,15,0.12) !important; }
+.boutique-site3 .bg-boutique-deep {
+  background-image: linear-gradient(150deg, #0e0c0a 0%, #14110f 45%, #3a2f1e 100%) !important;
+}
+.boutique-site3 .shadow-glow {
+  box-shadow: 0 0 0 1px rgba(184,146,74,0.25), 0 16px 38px -12px rgba(184,146,74,0.45) !important;
+}
+.site3-add {
+  transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+}
+.site3-add:hover {
+  background-color: #b8924a !important;
+  color: #14110f !important;
+}
+
+

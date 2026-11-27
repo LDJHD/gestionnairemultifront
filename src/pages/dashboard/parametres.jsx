@@ -492,6 +492,7 @@ export default function ParametresBoutique() {
                   { v: "classique", label: "Classique", desc: "Hero avec dégradé + catalogue" },
                   { v: "minimal", label: "Minimal (pro)", desc: "Sans hero, catalogue direct" },
                   { v: "moderne", label: "Boutique 2 (premium)", desc: "Design moderne, épuré et professionnel" },
+                  { v: "site3", label: "Modèle site 3 — Éditorial premium", desc: "Le plus beau design : hero éditorial, univers, cartes produit raffinées, ivoire & or." },
                 ].map((t) => (
                   <button
                     key={t.v}

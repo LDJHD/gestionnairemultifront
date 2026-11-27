@@ -55,12 +55,22 @@ import {
   TuileVisuel,
   fmt,
 } from "./ui";
+import {
+  Site3Bandeau,
+  Site3Catalogue,
+  Site3Footer,
+  Site3Header,
+  Site3Hero,
+  Site3Promo,
+  Site3Trust,
+  Site3Univers,
+} from "./site3";
 
 const API = import.meta.env.VITE_API_URL;
 
 /** Options de tri du catalogue. */
 const TRIS = [
-  { valeur: "defaut", label: "Tri : recommended" },
+  { valeur: "defaut", label: "Tri : recommandé" },
   { valeur: "prix_asc", label: "Prix croissant" },
   { valeur: "prix_desc", label: "Prix décroissant" },
   { valeur: "nom", label: "Nom (A → Z)" },
@@ -157,40 +167,63 @@ function Hero({ data, heroFond = 1 }) {
 /* ===========================================================================
  * HÉROS MODERNE (Boutique 2)
  * =========================================================================== */
-function HeroModerne({ data }) {
+function HeroModerne({ data, heroFond = 1 }) {
   const { activite, vitrine, localisation, produits } = data;
+  const sombre = !!heroFond;
   return (
     <div className="mx-auto max-w-[1400px] px-4 pt-6 sm:px-8 sm:pt-8">
-      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-900 px-8 py-16 text-white shadow-2xl sm:px-12 sm:py-20">
+      <section
+        className={`relative overflow-hidden rounded-3xl px-8 py-16 shadow-2xl sm:px-12 sm:py-20 ${
+          sombre
+            ? "bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-900 text-white"
+            : "border border-slate-200 bg-white text-slate-900"
+        }`}
+      >
         <div className="relative z-10 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
           <div className="max-w-xl">
-            <p className="text-[11px] font-bold tracking-[0.25em] text-indigo-300 uppercase">Boutique officielle</p>
-            <h1 className="mt-3 font-display text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
+            <p className={`text-[11px] font-bold tracking-[0.25em] uppercase ${sombre ? "text-indigo-300" : "text-indigo-600"}`}>
+              Boutique officielle
+            </p>
+            <h1
+              className={`mt-3 font-display text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl ${
+                sombre ? "text-white" : "text-slate-900"
+              }`}
+            >
               {activite.nom}
             </h1>
-            <p className="mt-4 text-[15px] leading-relaxed text-slate-300">
+            <p className={`mt-4 text-[15px] leading-relaxed ${sombre ? "text-slate-300" : "text-slate-600"}`}>
               {produits.length} article{produits.length > 1 ? "s" : ""} disponible{produits.length > 1 ? "s" : ""}.
               {vitrine?.livraison_active ? " Livraison à domicile ou retrait en boutique." : " Retrait en boutique."}
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <a
                 href="#catalogue"
-                className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-bold text-slate-900 shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl active:scale-[0.98]"
+                className={`inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-bold shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl active:scale-[0.98] ${
+                  sombre ? "bg-white text-slate-900" : "bg-slate-900 text-white"
+                }`}
               >
                 Explorer le catalogue
                 <ArrowRightIcon className="h-4 w-4" />
               </a>
               <Link
                 to="/commande/suivi"
-                className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-6 py-3 text-sm font-bold text-white backdrop-blur transition-all duration-200 hover:border-white/40 hover:bg-white/10"
+                className={`inline-flex items-center gap-2 rounded-full border px-6 py-3 text-sm font-bold backdrop-blur transition-all duration-200 ${
+                  sombre
+                    ? "border-white/20 bg-white/5 text-white hover:border-white/40 hover:bg-white/10"
+                    : "border-slate-300 bg-white text-slate-800 hover:border-slate-400 hover:bg-slate-50"
+                }`}
               >
                 Suivre ma commande
               </Link>
             </div>
           </div>
           {Boolean(localisation?.adresse || localisation?.ville) && (
-            <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-[13px] text-slate-300 backdrop-blur">
-              <MapPinIcon className="h-4 w-4 flex-none text-indigo-300" />
+            <div
+              className={`flex items-center gap-2 rounded-xl border px-4 py-3 text-[13px] backdrop-blur ${
+                sombre ? "border-white/10 bg-white/5 text-slate-300" : "border-slate-200 bg-slate-50 text-slate-600"
+              }`}
+            >
+              <MapPinIcon className={`h-4 w-4 flex-none ${sombre ? "text-indigo-300" : "text-indigo-600"}`} />
               <span>{localisation.adresse || localisation.ville}</span>
             </div>
           )}
@@ -1682,10 +1715,20 @@ export default function Boutique() {
 
   const { activite, vitrine, paiements } = data;
   const seuil = Number(vitrine?.livraison_gratuite_des || 0);
+  const estSite3 = vitrine?.template_boutique === "site3";
 
   return (
-    <div className={`min-h-screen boutique-page font-sans ${data?.vitrine?.template_boutique === "moderne" ? "boutique-moderne" : ""}`}>
-      <BandeauAnnonce activite={activite} vitrine={vitrine} paiements={paiements} />
+    <div
+      className={`min-h-screen boutique-page font-sans ${
+        vitrine?.template_boutique === "moderne" ? "boutique-moderne" : ""
+      } ${estSite3 ? "boutique-site3" : ""}`}
+      style={estSite3 ? { background: "#faf6ee" } : undefined}
+    >
+      {estSite3 ? (
+        <Site3Bandeau activite={activite} vitrine={vitrine} paiements={paiements} />
+      ) : (
+        <BandeauAnnonce activite={activite} vitrine={vitrine} paiements={paiements} />
+      )}
 
       {/* ══════════════ ENTÊTE + RAIL (un seul bloc collant) ══════════════
           En-tête et rail partagent le même conteneur `sticky` : aucun décalage
@@ -1693,6 +1736,21 @@ export default function Boutique() {
           recherche est dans la barre (≥ md) ou sur une 2ᵉ ligne (< md). */}
       {vue === "catalogue" && (
         <BarreSticky>
+          {estSite3 ? (
+            <Site3Header
+              activite={activite}
+              recherche={recherche}
+              setRecherche={setRecherche}
+              nombreArticles={nombreArticles}
+              onOuvrirPanier={() =>
+                panier.length ? setTiroirOuvert(true) : toast.info("Votre panier est vide.")
+              }
+              categories={categories}
+              categorieFiltre={categorieFiltre}
+              setCategorieFiltre={setCategorieFiltre}
+            />
+          ) : (
+            <>
           <EnteteVitrine
             activite={activite}
             recherche={recherche}
@@ -1732,27 +1790,75 @@ export default function Boutique() {
               </div>
             </div>
           </div>
+            </>
+          )}
         </BarreSticky>
       )}
 
       {vue !== "catalogue" && (
         <div className="sticky top-0 z-40">
-          <EnteteVitrine
-            activite={activite}
-            recherche={recherche}
-            setRecherche={setRecherche}
-            nombreArticles={nombreArticles}
-            onOuvrirPanier={() =>
-              panier.length ? setTiroirOuvert(true) : toast.info("Votre panier est vide.")
-            }
-          />
+          {estSite3 ? (
+            <Site3Header
+              activite={activite}
+              recherche={recherche}
+              setRecherche={setRecherche}
+              nombreArticles={nombreArticles}
+              onOuvrirPanier={() =>
+                panier.length ? setTiroirOuvert(true) : toast.info("Votre panier est vide.")
+              }
+            />
+          ) : (
+            <EnteteVitrine
+              activite={activite}
+              recherche={recherche}
+              setRecherche={setRecherche}
+              nombreArticles={nombreArticles}
+              onOuvrirPanier={() =>
+                panier.length ? setTiroirOuvert(true) : toast.info("Votre panier est vide.")
+              }
+            />
+          )}
         </div>
       )}
 
       <main>
         {/* ══════════════ CATALOGUE ══════════════ */}
         {vue === "catalogue" && (
-          <>
+          estSite3 ? (
+            <>
+              {vitrine?.hero_affiche !== 0 && (
+                <Site3Hero data={data} api={API} heroFond={vitrine?.hero_fond} />
+              )}
+              <Site3Trust items={avantages({ vitrine, paiements })} />
+              <Site3Promo vitrine={vitrine} seuil={seuil} />
+              <Site3Univers
+                categories={categories}
+                categorieFiltre={categorieFiltre}
+                setCategorieFiltre={setCategorieFiltre}
+              />
+              <Site3Catalogue
+                produitsAffiches={produitsAffiches}
+                total={produitsFiltres.length}
+                categories={categories}
+                categorieFiltre={categorieFiltre}
+                setCategorieFiltre={setCategorieFiltre}
+                recherche={recherche}
+                setRecherche={setRecherche}
+                tri={tri}
+                setTri={setTri}
+                tris={TRIS}
+                page={page}
+                nbPages={nbPages}
+                allerPage={allerPage}
+                ruptures={ruptures}
+                api={API}
+                onApercu={setApercu}
+                onAjouter={ajouterAuPanier}
+                ajouteId={ajouteId}
+              />
+            </>
+          ) : (
+            <>
             {data?.vitrine?.template_boutique === "classique" && data?.vitrine?.hero_affiche !== 0 && (
               <Hero data={data} heroFond={data?.vitrine?.hero_fond} />
             )}
@@ -1765,8 +1871,8 @@ export default function Boutique() {
               </div>
             )}
 
-            {data?.vitrine?.template_boutique === "moderne" && (
-              <HeroModerne data={data} />
+            {data?.vitrine?.template_boutique === "moderne" && data?.vitrine?.hero_affiche !== 0 && (
+              <HeroModerne data={data} heroFond={data?.vitrine?.hero_fond} />
             )}
 
             <div className="mx-auto max-w-[1400px] px-4 pt-7 sm:px-8 sm:pt-9">
@@ -1838,7 +1944,8 @@ export default function Boutique() {
                 />
               )}
             </section>
-          </>
+            </>
+          )
         )}
 
         {/* ══════════════ CHECKOUT ══════════════ */}
@@ -1871,7 +1978,11 @@ export default function Boutique() {
         )}
       </main>
 
-      <PiedVitrine activite={activite} vitrine={vitrine} paiements={paiements} />
+      {estSite3 ? (
+        <Site3Footer activite={activite} vitrine={vitrine} paiements={paiements} />
+      ) : (
+        <PiedVitrine activite={activite} vitrine={vitrine} paiements={paiements} />
+      )}
 
       {/* ══════════════ TIROIR PANIER ══════════════ */}
       <PanierTiroir
